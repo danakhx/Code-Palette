@@ -16,12 +16,20 @@ FetchContent_Declare(glfw
 )
 FetchContent_MakeAvailable(glfw)
 
+FetchContent_Declare(glm
+    URL https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz
+)
+FetchContent_MakeAvailable(glm)
+
+
 find_package(OpenGL REQUIRED)
 
+file(GLOB SOURCES CONFIGURE_DEPENDS Template/src/*.cpp)
+
 add_executable(OpenGLStarter
-    Template/main.cpp
+    ${SOURCES}
     Template/src/glad.c
 )
 
 target_include_directories(OpenGLStarter PRIVATE Template/include)
-target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL)
+target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm)
