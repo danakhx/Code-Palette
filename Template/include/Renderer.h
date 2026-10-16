@@ -7,3 +7,5 @@ void clearScreen();
 void drawRect(float x, float y, float w, float h, const glm::vec4& color);
 void drawTriangle(float x, float y, float w, float h, const glm::vec4& color);
 void cleanupRenderer();
+void drawText(const char* text, float x, float y, float scale, glm::vec4 color);
+float textWidth(const char* text, float scale);
