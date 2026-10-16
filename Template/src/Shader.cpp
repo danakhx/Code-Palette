@@ -43,12 +43,8 @@ GLuint compileShader(GLenum type, const char* source) {
 }
 
 GLuint createShaderProgram() {
-    return createShaderProgram(vertexShaderSource, fragmentShaderSource);
-}
-
-GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource) {
-    GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
-    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
+    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);

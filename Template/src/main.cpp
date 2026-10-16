@@ -4,7 +4,6 @@
 #include "Game.h"
 
 #include "Renderer.h"
-#include "Text.h"
 
 int main() {
     if (!glfwInit()) return -1;
@@ -30,10 +29,6 @@ int main() {
 
     // --- Set up shader, geometry and projection ---
     initRenderer();
-    if (!initText("C:/Windows/Fonts/arial.ttf", 48)) {
-        glfwTerminate();
-        return -1;
-    }
 
     // --- Render loop ---
     while (!glfwWindowShouldClose(window)) {
@@ -44,7 +39,6 @@ int main() {
     }
 
     // --- Cleanup ---
-    cleanupText();
     cleanupRenderer();
 
     glfwTerminate();
