@@ -3,3 +3,4 @@
 
 GLuint compileShader(GLenum type, const char* source);
 GLuint createShaderProgram();
+GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource);

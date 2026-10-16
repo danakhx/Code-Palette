@@ -1,7 +1,8 @@
 #include "Game.h"
 #include "Renderer.h"
+#include "Text.h"
 
-GameState gameState = GameState::PLAYING;
+GameState gameState = GameState::MAIN_MENU;
 
 void renderGame() {
     switch (gameState) {
@@ -26,4 +27,21 @@ void drawGameScreen(){
         drawRect(125.0f, 605.0f, 1030.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
 
 }
-void drawMainMenu()   { /* background + buttons */ }
+
+static void drawCenteredText(const std::string& text, float x, float y, float w, float h, float scale, const glm::vec4& color) {
+    float textX = x + (w - textWidth(text, scale)) / 2.0f;
+    float textY = y + (h - textHeight(text, scale)) / 2.0f;
+    drawText(text, textX, textY, scale, color);
+}
+
+void drawMainMenu()   {
+    drawCenteredText("Avengers Assemble!", 0.0f, 600.0f, 1280.0f, 100.0f, 2.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    drawCenteredText("By Code Palette :)", 0.0f, 550.0f, 1280.0f, 50.0f, 0.5f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    drawRect(390.0f, 390.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f)); //start button
+    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.6f, 0.2f, 0.2f, 1.0f)); //audio button (bonus remove if no time)
+    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.2f, 0.6f, 1.0f)); //exit button
+
+    drawCenteredText("START", 390.0f, 390.0f, 500.0f, 100.0f, 1.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    drawCenteredText("AUDIO", 390.0f, 270.0f, 500.0f, 100.0f, 1.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    drawCenteredText("EXIT",  390.0f, 150.0f, 500.0f, 100.0f, 1.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+ }

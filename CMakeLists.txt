@@ -21,6 +21,17 @@ FetchContent_Declare(glm
 )
 FetchContent_MakeAvailable(glm)
 
+# FreeType for text rendering; optional compression/image deps are disabled
+set(FT_DISABLE_ZLIB     ON CACHE BOOL "" FORCE)
+set(FT_DISABLE_BZIP2    ON CACHE BOOL "" FORCE)
+set(FT_DISABLE_PNG      ON CACHE BOOL "" FORCE)
+set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
+set(FT_DISABLE_BROTLI   ON CACHE BOOL "" FORCE)
+FetchContent_Declare(freetype
+    URL https://github.com/freetype/freetype/archive/refs/tags/VER-2-13-3.tar.gz
+)
+FetchContent_MakeAvailable(freetype)
+
 
 find_package(OpenGL REQUIRED)
 
@@ -32,4 +43,4 @@ add_executable(OpenGLStarter
 )
 
 target_include_directories(OpenGLStarter PRIVATE Template/include)
-target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm)
+target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm freetype)
