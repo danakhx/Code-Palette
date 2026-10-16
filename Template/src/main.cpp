@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Game.h"
 
-#include "Shader.h"
 #include "Renderer.h"
 
 int main() {
@@ -12,7 +12,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Triangle", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720,"Code Palette", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create window\n";
         glfwTerminate();
@@ -25,25 +25,21 @@ int main() {
         return -1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1280, 720);
 
-    // --- Build shader program ---
-    GLuint shaderProgram = createShaderProgram();
-
-    // --- Set up geometry ---
+    // --- Set up shader, geometry and projection ---
     initRenderer();
 
     // --- Render loop ---
     while (!glfwWindowShouldClose(window)) {
-        render(shaderProgram);
-
+        clearScreen();
+        renderGame();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // --- Cleanup ---
     cleanupRenderer();
-    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
     return 0;
