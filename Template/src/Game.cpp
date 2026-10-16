@@ -1,15 +1,29 @@
 #include "Game.h"
 #include "Renderer.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
 
-GameState gameState = GameState::MAIN_MENU;
+GameState gameState = GameState::PAUSED;
 
 void renderGame() {
     switch (gameState) {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:   drawGameScreen(); break;
+        case GameState::PAUSED:
+        drawGameScreen();
+        drawRect(0,0,1280,720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
+        drawPauseScreen(); break; 
         default: break;
     }
 }
+void onKey(int key) {
+            if (key == GLFW_KEY_ESCAPE) gameState = GameState::PAUSED;
+           /* jump selected lanes */ 
+           /* duck selected lanes */ 
+         
+    }
+
 void drawGameScreen(){
 
         drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
@@ -34,4 +48,14 @@ void drawMainMenu()   {
     drawText("Sound", 600, 325, 3.0f, glm::vec4(1, 1, 1, 1));
     drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.2f, 0.6f, 1.0f)); //exit button
     drawText("Exit", 610, 205, 3.0f, glm::vec4(1, 1, 1, 1));
+ }
+
+ void drawPauseScreen(){
+    drawTextCentered("Game Paused", 0, 550, 1280, 50, 5.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(390.0f, 390.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f)); //continue button
+    drawTextCentered("Continue", 390, 390, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.6f, 0.2f, 0.2f, 1.0f)); //restart button
+    drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.2f, 0.6f, 1.0f)); //return button
+    drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
  }

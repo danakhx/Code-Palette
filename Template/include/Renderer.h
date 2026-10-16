@@ -9,3 +9,4 @@ void drawTriangle(float x, float y, float w, float h, const glm::vec4& color);
 void cleanupRenderer();
 void drawText(const char* text, float x, float y, float scale, glm::vec4 color);
 float textWidth(const char* text, float scale);
+void drawTextCentered(const char* text, float rx, float ry, float rw, float rh, float scale, glm::vec4 color);

@@ -60,6 +60,9 @@ glBindVertexArray(0);
     glUseProgram(shader);
     glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f);
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void drawText(const char* text, float x, float y, float scale, glm::vec4 color) {
@@ -97,6 +100,13 @@ void drawText(const char* text, float x, float y, float scale, glm::vec4 color) 
 
 float textWidth(const char* text, float scale) {
     return stb_easy_font_width((char*)text) * scale;
+}
+
+void drawTextCentered(const char* text, float rx, float ry, float rw, float rh,
+                      float scale, glm::vec4 color) {
+    float tx = rx + (rw - textWidth(text, scale)) / 2.0f;
+    float ty = ry + rh / 2.0f + (7.0f * scale) / 2.0f;  
+    drawText(text, tx, ty, scale, color);
 }
 
 void clearScreen() {

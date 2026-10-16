@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Game.h"
+#include "Input.h"
 
 #include "Renderer.h"
 
@@ -26,6 +27,8 @@ int main() {
     }
 
     glViewport(0, 0, 1280, 720);
+
+   // glfwSetKeyCallback(window, keyCallback);
 
     // --- Set up shader, geometry and projection ---
     initRenderer();
