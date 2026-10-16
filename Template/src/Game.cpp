@@ -3,8 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Input.h"
+#include "UI.h"
 
-GameState gameState = GameState::PAUSED;
+GameState gameState = GameState::MAIN_MENU;
+extern GLFWwindow* gWindow;
 
 void renderGame() {
     switch (gameState) {
@@ -18,11 +21,45 @@ void renderGame() {
     }
 }
 void onKey(int key) {
-            if (key == GLFW_KEY_ESCAPE) gameState = GameState::PAUSED;
+            if (key == GLFW_KEY_ESCAPE) {
+            if (gameState == GameState::PLAYING)     gameState = GameState::PAUSED;
+            else if (gameState == GameState::PAUSED) gameState = GameState::PLAYING;
+}
+
            /* jump selected lanes */ 
            /* duck selected lanes */ 
          
     }
+
+//  LESA HA3MEL EL ONLICK FUNCTION
+void onClick(float mouseX, float mouseY){
+    if(gameState == GameState::MAIN_MENU){
+        if(isMouseOver(mStart, mouseX, mouseY)){
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(mExit, mouseX, mouseY)){
+            glfwSetWindowShouldClose(gWindow, true);return;
+        }
+    }
+    else if(gameState == GameState::PAUSED){
+        if(isMouseOver(pContinue, mouseX, mouseY)){
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(pRestart, mouseX, mouseY)){
+            // restart the game (restart function not done yet)
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(pMainMenu, mouseX, mouseY)){
+            //restart the game (restart function not done yet)
+            gameState = GameState::MAIN_MENU; return;
+
+        }
+    }
+    else if(gameState == GameState::PLAYING){
+        //PLAYING KOL HAGA BA2A 
+    }
+}
+
 
 void drawGameScreen(){
 
@@ -40,22 +77,3 @@ void drawGameScreen(){
         drawRect(125.0f, 605.0f, 1030.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
 
 }
-void drawMainMenu()   {
-    drawText("Avengers Assemble!", 395, 550, 5.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 390.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f)); //start button
-    drawText("Start", 610, 445, 3.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.6f, 0.2f, 0.2f, 1.0f)); //audio button (bonus remove if no time)
-    drawText("Sound", 600, 325, 3.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.2f, 0.6f, 1.0f)); //exit button
-    drawText("Exit", 610, 205, 3.0f, glm::vec4(1, 1, 1, 1));
- }
-
- void drawPauseScreen(){
-    drawTextCentered("Game Paused", 0, 550, 1280, 50, 5.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 390.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f)); //continue button
-    drawTextCentered("Continue", 390, 390, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.6f, 0.2f, 0.2f, 1.0f)); //restart button
-    drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
-    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.2f, 0.6f, 1.0f)); //return button
-    drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
- }
