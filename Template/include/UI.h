@@ -1,4 +1,5 @@
 #pragma once
+#include "charactersload.h"
 
 struct Button{
     float x, y, w, h;
@@ -14,3 +15,6 @@ extern Button pMainMenu;
 
 void drawMainMenu();
 void drawPauseScreen();
+
+extern Pixeldata Loki;
+bool loadLoki();

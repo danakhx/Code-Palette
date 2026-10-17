@@ -6,6 +6,7 @@
 #include <iostream>
 #include "stb_easy_font.h"
 #include <vector>
+#include "UI.h"
 
 static GLuint shader = 0;
 static GLuint characterShader = 0;// id shader prog char
@@ -16,6 +17,7 @@ static GLuint characterVAO = 0;
 static GLuint characterVBO = 0;
 static GLuint characterTexture = 0;
 static GLuint crouchTexture = 0;
+static GLuint lokiTexture = 0;
 static bool isCrouching = false;
 
 
@@ -32,6 +34,7 @@ void initRenderer() {
     glGenVertexArrays(1, &textVAO);glGenBuffers(1, &textVBO);glBindVertexArray(textVAO);glBindBuffer(GL_ARRAY_BUFFER, textVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);glEnableVertexAttribArray(0);
     glBindVertexArray(0);
+    lokiTexture = characterstextures(Loki);
 
     float triVertices[] = {
         0.0f, 0.0f, 0.0f,
@@ -196,6 +199,7 @@ void cleanupRenderer() {
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     glDeleteTextures(1, &crouchTexture);
+    glDeleteTextures(1, &lokiTexture);
 }
 
 //characters  texture
@@ -238,4 +242,20 @@ void drawplayer(){
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     
+}
+//general drawing sprite function might be better badal function le kol character
+// using it for loki anyway
+void drawSprite(GLuint texture, float x, float y, float w, float h){
+    glUseProgram(characterShader);
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+    model = glm::scale(model, glm::vec3(w, h, 1.0f));
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(glGetUniformLocation(characterShader, "characterTexture"), 0);
+    glUniformMatrix4fv(glGetUniformLocation(characterShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glBindVertexArray(characterVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+void drawLoki(float x, float y, float w, float h){
+    drawSprite(lokiTexture, x, y, w, h);
 }

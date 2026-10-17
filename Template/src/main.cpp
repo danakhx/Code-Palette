@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "CharactersLoad.h"
 #include "Input.h"
+#include "UI.h"
 
 #include "Renderer.h"
 
@@ -40,6 +41,10 @@ int main() {
     std::cout << "Spider-Man crouching image loaded!" << std::endl;} 
     else {std::cout << "Failed to load Spider-Man crouching image." << std::endl;}
 
+
+    //loki test
+    if(!loadLoki()) std::cout << "Failed to load Loki image." << std::endl;
+    else std::cout << "Loki image loaded!" << std::endl;
 
     glViewport(0, 0, 1280, 720);
 

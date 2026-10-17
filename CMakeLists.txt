@@ -41,4 +41,5 @@ target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm)
 # directory the exe is launched from (e.g. build/).
 target_compile_definitions(OpenGLStarter PRIVATE
     CHARACTERS_DIR="${CMAKE_SOURCE_DIR}/Template/src/characters/"
+    ENTITIES_DIR="${CMAKE_SOURCE_DIR}/Template/src/Entities/"
 )
