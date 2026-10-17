@@ -3,7 +3,7 @@
 
 // --- Shader sources ---
 static const char* vertexShaderSource = R"(
-#version 410 core
+#version 430 core
 layout (location = 0) in vec3 aPos;
 
 uniform mat4 projection;
@@ -16,7 +16,7 @@ void main()
 )";
 
 static const char* fragmentShaderSource = R"(
-#version 410 core
+#version 430 core
 out vec4 FragColor;
 
 uniform vec4 color;
@@ -30,7 +30,7 @@ void main()
 // shader for el texture char
 
 static const char* charvertexShaderSource =R"(
-#version 410 core 
+#version 430 core 
 layout (location = 0) in vec3 aPos;
 layout (location=1) in vec2 aTexCoord;
 
@@ -48,7 +48,7 @@ void main()
 
 
 static const char* chartextureFragmentShaderSource = R"(
-#version 410 core
+#version 430 core
 in vec2 TexCoord;
 uniform sampler2D characterTexture;
 out vec4 FragColor;
