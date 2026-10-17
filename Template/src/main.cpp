@@ -13,7 +13,7 @@ int main() {
     if (!glfwInit()) return -1;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(1280, 720,"Code Palette", nullptr, nullptr);
@@ -36,7 +36,9 @@ int main() {
     std::cout << "Spider-Man image loaded!" << std::endl;}
     else {
     std::cout << "Failed to load Spider-Man image." << std::endl;}
-
+    if (loadSPCROUCH()) {
+    std::cout << "Spider-Man crouching image loaded!" << std::endl;} 
+    else {std::cout << "Failed to load Spider-Man crouching image." << std::endl;}
 
 
     glViewport(0, 0, 1280, 720);
@@ -44,13 +46,14 @@ int main() {
     glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, cursorCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
-
+    
     // --- Set up shader, geometry and projection ---
     initRenderer();
    
     // --- Render loop ---
     while (!glfwWindowShouldClose(window)) {
         clearScreen();
+        setCrouching(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
         renderGame();
         glfwSwapBuffers(window);
         glfwPollEvents();

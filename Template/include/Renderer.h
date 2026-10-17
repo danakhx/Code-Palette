@@ -8,6 +8,7 @@ void drawRect(float x, float y, float w, float h, const glm::vec4& color);
 void drawTriangle(float x, float y, float w, float h, const glm::vec4& color);
 void cleanupRenderer();
 void drawplayer();
+void setCrouching(bool crouching);
 
 GLuint characterstextures(Pixeldata player);
 void drawText(const char* text, float x, float y, float scale, glm::vec4 color);

@@ -77,5 +77,5 @@ void drawGameScreen(){
         drawRect(125.0f, 605.0f, 1030.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
         drawplayer();
 }
-void drawMainMenu()   { /* background + buttons */ }
+//void drawMainMenu()   { /* background + buttons */ }
 

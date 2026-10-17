@@ -11,28 +11,27 @@ static GLuint shader = 0;
 static GLuint characterShader = 0;// id shader prog char
 static GLuint triVAO = 0, triVBO = 0;
 static GLuint rectVAO = 0, rectVBO = 0;
+static GLuint textVAO = 0, textVBO = 0;
 static GLuint characterVAO = 0;
 static GLuint characterVBO = 0;
 static GLuint characterTexture = 0;
-  
+static GLuint crouchTexture = 0;
+static bool isCrouching = false;
+
+
+void setCrouching(bool crouching)
+{
+    isCrouching = crouching;
+}
+
 void initRenderer() {
     shader = createShaderProgram();
     characterShader = newtextureShaderProgram();
     characterTexture = characterstextures(SPstand);
-    
-    // --- Unit shapes (0..1), scaled/moved by the model matrix ---
-static GLuint textVAO = 0, textVBO = 0;
-
-void initRenderer() {
-    shader = createShaderProgram();
-
-    glGenVertexArrays(1, &textVAO);
-glGenBuffers(1, &textVBO);
-glBindVertexArray(textVAO);
-glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-glEnableVertexAttribArray(0);
-glBindVertexArray(0);
+    crouchTexture = characterstextures(SPcrouch);
+    glGenVertexArrays(1, &textVAO);glGenBuffers(1, &textVBO);glBindVertexArray(textVAO);glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
     float triVertices[] = {
         0.0f, 0.0f, 0.0f,
@@ -196,6 +195,7 @@ void cleanupRenderer() {
     glDeleteProgram(characterShader);
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
+    glDeleteTextures(1, &crouchTexture);
 }
 
 //characters  texture
@@ -227,7 +227,8 @@ void drawplayer(){
 
     model = glm::scale(model,glm::vec3(90.0f, 90.0f, 1.0f));
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,characterTexture);
+    GLuint currentTexture = isCrouching ? crouchTexture : characterTexture;
+    glBindTexture(GL_TEXTURE_2D, currentTexture);
     glBindVertexArray(characterVAO);
     
     GLuint x=glGetUniformLocation(characterShader,"characterTexture");
