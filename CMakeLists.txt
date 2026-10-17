@@ -36,3 +36,10 @@ target_include_directories(OpenGLStarter PRIVATE
     Template/lib
 )
 target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm)
+
+# Absolute path to the character images so they load no matter which
+# directory the exe is launched from (e.g. build/).
+target_compile_definitions(OpenGLStarter PRIVATE
+    CHARACTERS_DIR="${CMAKE_SOURCE_DIR}/Template/src/characters/"
+    ENTITIES_DIR="${CMAKE_SOURCE_DIR}/Template/src/Entities/"
+)

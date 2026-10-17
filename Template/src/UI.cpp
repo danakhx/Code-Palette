@@ -4,7 +4,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "stb_image.h"
 
+#ifndef ENTITIES_DIR
+#define ENTITIES_DIR "Template/src/Entities/"
+#endif
+
+Pixeldata Loki;
+
+bool loadLoki(){
+    Loki.ppointer=stbi_load(ENTITIES_DIR "loki.png",&Loki.width,&Loki.height,&Loki.channels,0);
+    if (Loki.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
 
 Button mStart    = {390, 390, 500, 100};
 Button mExit     = {390, 150, 500, 100};
@@ -18,6 +32,10 @@ bool isMouseOver(const Button& b, float mx, float my) {
 }
 
 void drawMainMenu()   {
+    drawRect(100, 380, 200, 80, glm::vec4(1, 1, 1, 1.));
+    drawTextCentered("Welcome back, Avenger!", 100, 380, 200, 80, 1.5f, glm::vec4(0, 0, 0, 1));
+    drawTriangle(185, 380, 30, -25, glm::vec4(1,1,1,1));
+    drawLoki(0, 100, 400, 400);
     drawText("Avengers Assemble!", 395, 550, 5.0f, glm::vec4(1, 1, 1, 1));
     drawRect(390.0f, 390.0f, 500.0f, 100.0f, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f)); //start button
     drawText("Start", 610, 445, 3.0f, glm::vec4(1, 1, 1, 1));
