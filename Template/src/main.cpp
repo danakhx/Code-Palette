@@ -2,14 +2,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Game.h"
-
+#include "CharactersLoad.h"
 #include "Renderer.h"
 
 int main() {
     if (!glfwInit()) return -1;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(1280, 720,"Code Palette", nullptr, nullptr);
@@ -19,17 +19,26 @@ int main() {
         return -1;
     }
     glfwMakeContextCurrent(window);
+    
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to init GLAD\n";
         return -1;
     }
+     
+      //test :
+    if (loadSPSTAND()) {
+    std::cout << "Spider-Man image loaded!" << std::endl;}
+    else {
+    std::cout << "Failed to load Spider-Man image." << std::endl;}
+
+
 
     glViewport(0, 0, 1280, 720);
 
     // --- Set up shader, geometry and projection ---
     initRenderer();
-
+   
     // --- Render loop ---
     while (!glfwWindowShouldClose(window)) {
         clearScreen();
