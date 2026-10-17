@@ -1,15 +1,66 @@
 #include "Game.h"
 #include "Renderer.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include "Input.h"
+#include "UI.h"
 
-GameState gameState = GameState::PLAYING;
+GameState gameState = GameState::MAIN_MENU;
+extern GLFWwindow* gWindow;
 
 void renderGame() {
     switch (gameState) {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:   drawGameScreen(); break;
+        case GameState::PAUSED:
+        drawGameScreen();
+        drawRect(0,0,1280,720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
+        drawPauseScreen(); break; 
         default: break;
     }
 }
+void onKey(int key) {
+            if (key == GLFW_KEY_ESCAPE) {
+            if (gameState == GameState::PLAYING)     gameState = GameState::PAUSED;
+            else if (gameState == GameState::PAUSED) gameState = GameState::PLAYING;
+}
+
+           /* jump selected lanes */ 
+           /* duck selected lanes */ 
+         
+    }
+
+//  LESA HA3MEL EL ONLICK FUNCTION
+void onClick(float mouseX, float mouseY){
+    if(gameState == GameState::MAIN_MENU){
+        if(isMouseOver(mStart, mouseX, mouseY)){
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(mExit, mouseX, mouseY)){
+            glfwSetWindowShouldClose(gWindow, true);return;
+        }
+    }
+    else if(gameState == GameState::PAUSED){
+        if(isMouseOver(pContinue, mouseX, mouseY)){
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(pRestart, mouseX, mouseY)){
+            // restart the game (restart function not done yet)
+            gameState = GameState::PLAYING; return;
+        }
+        else if(isMouseOver(pMainMenu, mouseX, mouseY)){
+            //restart the game (restart function not done yet)
+            gameState = GameState::MAIN_MENU; return;
+
+        }
+    }
+    else if(gameState == GameState::PLAYING){
+        //PLAYING KOL HAGA BA2A 
+    }
+}
+
+
 void drawGameScreen(){
 
         drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background

@@ -3,7 +3,11 @@
 #include <iostream>
 #include "Game.h"
 #include "CharactersLoad.h"
+#include "Input.h"
+
 #include "Renderer.h"
+
+GLFWwindow* gWindow = nullptr;
 
 int main() {
     if (!glfwInit()) return -1;
@@ -13,6 +17,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(1280, 720,"Code Palette", nullptr, nullptr);
+    gWindow=window;
     if (!window) {
         std::cerr << "Failed to create window\n";
         glfwTerminate();
@@ -35,6 +40,10 @@ int main() {
 
 
     glViewport(0, 0, 1280, 720);
+
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetCursorPosCallback(window, cursorCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
     // --- Set up shader, geometry and projection ---
     initRenderer();
