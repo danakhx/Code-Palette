@@ -14,17 +14,12 @@ static GLuint rectVAO = 0, rectVBO = 0;
 static GLuint characterVAO = 0;
 static GLuint characterVBO = 0;
 static GLuint characterTexture = 0;
-  
-void initRenderer() {
-    shader = createShaderProgram();
-    characterShader = newtextureShaderProgram();
-    characterTexture = characterstextures(SPstand);
-    
-    // --- Unit shapes (0..1), scaled/moved by the model matrix ---
 static GLuint textVAO = 0, textVBO = 0;
 
 void initRenderer() {
     shader = createShaderProgram();
+    characterShader = newtextureShaderProgram();
+    characterTexture = characterstextures(SPstand);
 
     glGenVertexArrays(1, &textVAO);
 glGenBuffers(1, &textVBO);
