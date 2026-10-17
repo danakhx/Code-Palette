@@ -3,5 +3,3 @@
 
 GLuint compileShader(GLenum type, const char* source);
 GLuint createShaderProgram();
-GLuint newtextureShaderProgram();
-

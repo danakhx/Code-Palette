@@ -31,8 +31,5 @@ add_executable(OpenGLStarter
     Template/src/glad.c
 )
 
-target_include_directories(OpenGLStarter PRIVATE
-    Template/include
-    Template/lib
-)
+target_include_directories(OpenGLStarter PRIVATE Template/include)
 target_link_libraries(OpenGLStarter PRIVATE glfw OpenGL::GL glm::glm)
