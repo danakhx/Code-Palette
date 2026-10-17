@@ -2,13 +2,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Renderer.h"
 #include "Shader.h"
-#include "charactersload.h"
-#include <iostream>
 #include "stb_easy_font.h"
 #include <vector>
 
 static GLuint shader = 0;
-static GLuint characterShader = 0;// id shader prog char
 static GLuint triVAO = 0, triVBO = 0;
 static GLuint rectVAO = 0, rectVBO = 0;
 static GLuint textVAO = 0, textVBO = 0;
@@ -33,6 +30,17 @@ void initRenderer() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
+void initRenderer() {
+    shader = createShaderProgram();
+
+    glGenVertexArrays(1, &textVAO);
+glGenBuffers(1, &textVBO);
+glBindVertexArray(textVAO);
+glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+glBindVertexArray(0);
+
     float triVertices[] = {
         0.0f, 0.0f, 0.0f,
         1.0f, 0.0f, 0.0f,
@@ -47,34 +55,6 @@ void initRenderer() {
         1.0f, 1.0f, 0.0f,
         0.0f, 1.0f, 0.0f
     };
-
-    // vertices bas lel character
-    float charVertices[]={
-       0,0,0,0,0,
-       1,0,0,1,0,
-       1,1,0,1,1,
-       0,0,0,0,0,
-       1,1,0,1,1,
-       0,1,0,0,1,                        //xyzuv
-    };
-    
-
-    glGenVertexArrays(1,&characterVAO);glGenBuffers(1,&characterVBO);
-    glBindVertexArray(characterVAO);glBindBuffer(GL_ARRAY_BUFFER,characterVBO);
-    glBufferData(GL_ARRAY_BUFFER,sizeof(charVertices),charVertices,GL_STATIC_DRAW);
-    
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-
-
 
     glGenVertexArrays(1, &triVAO);
     glGenBuffers(1, &triVBO);
@@ -101,12 +81,6 @@ void initRenderer() {
     glm::mat4 projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f);
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-
-    //char 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glUseProgram(characterShader);
-    glUniformMatrix4fv(glGetUniformLocation(characterShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -154,9 +128,6 @@ void drawTextCentered(const char* text, float rx, float ry, float rw, float rh,
     float ty = ry + rh / 2.0f + (7.0f * scale) / 2.0f;  
     drawText(text, tx, ty, scale, color);
 }
-    
-
-
 
 void clearScreen() {
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
@@ -189,10 +160,6 @@ void cleanupRenderer() {
     glDeleteVertexArrays(1, &rectVAO);
     glDeleteBuffers(1, &rectVBO);
     glDeleteProgram(shader);
-    glDeleteVertexArrays(1, &characterVAO);
-    glDeleteBuffers(1, &characterVBO);
-    glDeleteTextures(1, &characterTexture);
-    glDeleteProgram(characterShader);
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     glDeleteTextures(1, &crouchTexture);

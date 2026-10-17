@@ -97,28 +97,3 @@ GLuint createShaderProgram() {
 
     return shaderProgram;
 }
-
-GLuint newtextureShaderProgram(){
-    GLuint textureVertexShaderSource = compileShader(GL_VERTEX_SHADER, charvertexShaderSource);
-    GLuint textureFragmentShaderSource=compileShader(GL_FRAGMENT_SHADER, chartextureFragmentShaderSource);
-    GLuint textureshaderProgram = glCreateProgram();
-    glAttachShader(textureshaderProgram, textureVertexShaderSource);
-    glAttachShader(textureshaderProgram, textureFragmentShaderSource);
-    glLinkProgram(textureshaderProgram);
-    
-
-    int success=0;
-    glGetProgramiv(textureshaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetProgramInfoLog(textureshaderProgram, 512, nullptr, infoLog);
-        std::cerr << "Shader link error:\n" << infoLog << std::endl;
-    }
-
-
-
-    glDeleteShader(textureVertexShaderSource);
-    glDeleteShader(textureFragmentShaderSource);
-
-    return textureshaderProgram;
-}

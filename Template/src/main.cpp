@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Game.h"
-#include "CharactersLoad.h"
 #include "Input.h"
 
 #include "Renderer.h"
@@ -24,7 +23,6 @@ int main() {
         return -1;
     }
     glfwMakeContextCurrent(window);
-    
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to init GLAD\n";
@@ -49,7 +47,7 @@ int main() {
     
     // --- Set up shader, geometry and projection ---
     initRenderer();
-   
+
     // --- Render loop ---
     while (!glfwWindowShouldClose(window)) {
         clearScreen();
