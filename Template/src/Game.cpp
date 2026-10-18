@@ -35,6 +35,7 @@ void onKey(int key) {
 void onClick(float mouseX, float mouseY){
     if(gameState == GameState::MAIN_MENU){
         if(isMouseOver(mStart, mouseX, mouseY)){
+            //CUTSCENE HENAAAAA
             gameState = GameState::PLAYING; return;
         }
         else if(isMouseOver(mExit, mouseX, mouseY)){
@@ -73,11 +74,13 @@ void drawGameScreen(){
         drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
         drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
         drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
-        drawRect(120.0f, 600.0f, 1040.0f, 120.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border (#263238)
-        drawRect(125.0f, 605.0f, 1030.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        //player shop will include players ad=nd coin count
+        //each slot will take 200px since the full thing is 800
+        drawRect(200.0f, 600.0f, 810.0f, 120.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
+        drawRect(205.0f, 605.0f, 800.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
         drawplayer();
 }
 
 
-//void drawMainMenu()   { /* background + buttons */ }
+
 
