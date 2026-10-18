@@ -7,3 +7,6 @@ void renderGame();
 void drawGameScreen();
 void onKey(int key);
 void onClick(float mouseX, float mouseY);
+bool loadInfinityGuantlet();
+void drawInfinityGuantlet(float x, float y, float w, float h);
+void cleanupGame();

@@ -5,9 +5,15 @@
 #include <iostream>
 #include "Input.h"
 #include "UI.h"
+#include "stb_image.h"
+#ifndef ENTITIES_DIR
+#define ENTITIES_DIR "Template/src/Entities/"
+#endif
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
+Pixeldata infinityGuantlet;
+static GLuint guantletTexture=0;
 
 void renderGame() {
     switch (gameState) {
@@ -61,6 +67,19 @@ void onClick(float mouseX, float mouseY){
     }
 }
 
+bool loadInfinityGuantlet(){
+    infinityGuantlet.ppointer= stbi_load(ENTITIES_DIR "infinityGuantlet.png",
+    &infinityGuantlet.width, &infinityGuantlet.height, &infinityGuantlet.channels,0);
+        if(infinityGuantlet.ppointer == nullptr){
+            return false;
+        }
+        guantletTexture=characterstextures(infinityGuantlet);
+        return true;
+}
+void drawInfinityGuantlet(float x, float y, float w, float h){
+    drawSprite(guantletTexture, x, y, w, h);
+
+}
 
 void drawGameScreen(){
 
@@ -73,6 +92,7 @@ void drawGameScreen(){
         drawRect(0.0f, 430.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 3 divider
         drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
         drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
+        drawInfinityGuantlet(50,192,80,110);
         drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
         //player shop will include players ad=nd coin count
         //each slot will take 200px since the full thing is 800
@@ -81,6 +101,8 @@ void drawGameScreen(){
         drawplayer();
 }
 
-
+void cleanupGame(){
+    glDeleteTextures(1, &guantletTexture);
+}
 
 

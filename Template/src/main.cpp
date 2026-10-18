@@ -46,6 +46,10 @@ int main() {
     if(!loadLoki()) std::cout << "Failed to load Loki image." << std::endl;
     else std::cout << "Loki image loaded!" << std::endl;
 
+    //infinity guantlet
+    if(!loadInfinityGuantlet())std::cout << "Failed to load Infinity Gauntlet image." << std::endl;
+    else std::cout << "Infinity Gauntlet image loaded!" << std::endl;
+
     glViewport(0, 0, 1280, 720);
 
     glfwSetKeyCallback(window, keyCallback);
@@ -66,6 +70,7 @@ int main() {
 
     // --- Cleanup ---
     cleanupRenderer();
+    cleanupGame();
 
     glfwTerminate();
     return 0;
