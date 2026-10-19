@@ -18,9 +18,20 @@ int wave = 1;
 int hoverLane = -1;
 int hoverCard =-1;
 int enemyCount=0;
+float spawnTimer = 4.0f;
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
+
+
+void restartGame(){
+    wave=1;
+    enemyCount=0;
+    spawnTimer=4.0f;
+    enemies.clear();
+    players.clear();
+    points.clear();
+}
 
 
 void renderGame() {
@@ -167,7 +178,6 @@ void update(float deltaTime){
     }
 }//end of test loop
 
-        static float spawnTimer = 4.0f;
         spawnTimer += deltaTime;
         if(wave ==1 && enemyCount< maxCount(1)){
             if (spawnTimer >= 4.0f) {
@@ -202,24 +212,8 @@ void update(float deltaTime){
         gameState = GameState::WON;
     }
 }
-
-        
-
     }
-
-
 }
-
-void restartGame(){
-    wave=1;
-    enemyCount=0;
-    enemies.clear();
-    players.clear();
-    points.clear();
-}
-
-
-
 void cleanupGame(){
     
 }

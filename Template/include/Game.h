@@ -21,3 +21,5 @@ void spawnMediumEnemy(int lane);
 extern int hoverLane;
 extern int hoverCard;
 int whatLane(float mouseX, float mouseY);
+void restartGame();
+int maxCount(int w);
