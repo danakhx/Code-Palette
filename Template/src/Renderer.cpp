@@ -18,6 +18,7 @@ static GLuint characterVBO = 0;
 static GLuint characterTexture = 0;
 static GLuint crouchTexture = 0;
 static GLuint lokiTexture = 0;
+static GLuint guantletTexture = 0;
 static bool isCrouching = false;
 
 
@@ -35,6 +36,7 @@ void initRenderer() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);glEnableVertexAttribArray(0);
     glBindVertexArray(0);
     lokiTexture = characterstextures(Loki);
+    guantletTexture = characterstextures(infinityGuantlet);
 
     float triVertices[] = {
         0.0f, 0.0f, 0.0f,
@@ -200,6 +202,7 @@ void cleanupRenderer() {
     glDeleteBuffers(1, &textVBO);
     glDeleteTextures(1, &crouchTexture);
     glDeleteTextures(1, &lokiTexture);
+    glDeleteTextures(1, &guantletTexture);
 }
 
 //characters  texture
@@ -258,4 +261,8 @@ void drawSprite(GLuint texture, float x, float y, float w, float h){
 }
 void drawLoki(float x, float y, float w, float h){
     drawSprite(lokiTexture, x, y, w, h);
+}
+void drawInfinityGuantlet(float x, float y, float w, float h){
+    drawSprite(guantletTexture, x, y, w, h);
+
 }

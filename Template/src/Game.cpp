@@ -9,16 +9,37 @@
 #ifndef ENTITIES_DIR
 #define ENTITIES_DIR "Template/src/Entities/"
 #endif
+#include <vector>
+
+std::vector<enemyTest> enemies;
+std::vector<player> players;
+std::vector<arcReactor> points;
+int wave = 1;
+int hoverLane = -1;
+int hoverCard =-1;
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
-Pixeldata infinityGuantlet;
-static GLuint guantletTexture=0;
+
 
 void renderGame() {
     switch (gameState) {
         case GameState::MAIN_MENU: drawMainMenu();   break;
-        case GameState::PLAYING:   drawGameScreen(); break;
+        case GameState::PLAYING:
+        drawGameScreen();
+        for(const enemyTest& enemy : enemies){
+            if(enemy.type==1){
+            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        }
+        else if (enemy.type ==2){
+            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        
+        }
+        else{
+            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        
+        }}
+        break;
         case GameState::PAUSED:
         drawGameScreen();
         drawRect(0,0,1280,720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
@@ -42,7 +63,10 @@ void onClick(float mouseX, float mouseY){
     if(gameState == GameState::MAIN_MENU){
         if(isMouseOver(mStart, mouseX, mouseY)){
             //CUTSCENE HENAAAAA
-            gameState = GameState::PLAYING; return;
+            enemies.clear();
+            gameState = GameState::PLAYING;
+            
+             return;
         }
         else if(isMouseOver(mExit, mouseX, mouseY)){
             glfwSetWindowShouldClose(gWindow, true);return;
@@ -66,43 +90,99 @@ void onClick(float mouseX, float mouseY){
         //PLAYING KOL HAGA BA2A 
     }
 }
+int whatLane(float mouseX, float mouseY){
+    if(mouseX<200.0f){
+        return -1;
+    }
+    else if(mouseY>=20.0f && mouseY<160.0f) return 1;
+    else if(mouseY>= 175.0f && mouseY< 295.0f)return 2;
+    else if(mouseY>=310.0f && mouseY<430.0f)return 3;
+    return -1;
 
-bool loadInfinityGuantlet(){
-    infinityGuantlet.ppointer= stbi_load(ENTITIES_DIR "infinityGuantlet.png",
-    &infinityGuantlet.width, &infinityGuantlet.height, &infinityGuantlet.channels,0);
-        if(infinityGuantlet.ppointer == nullptr){
-            return false;
+}
+
+float laneCenter(int lane){
+    if(lane ==1){
+        return 100.0f;
+    }
+    else if(lane ==2){
+        return 235.0f;
+    }
+    else if(lane ==3){
+        return 370.0f;
+    }
+    else{
+        return 0.0f; //invalid lane
+    }
+}
+
+void spawnEnemy(int lane){
+    enemyTest enemy= {lane, 1280.0, 100,100,100};
+    enemies.push_back(enemy);
+
+}
+void spawnEasyEnemy(int lane){
+enemyTest enemy= {lane, 1280.0, 100,100,50,1};
+    enemies.push_back(enemy);
+}
+void spawnMediumEnemy(int lane){
+enemyTest enemy= {lane, 1280.0, 100,100,50,2};
+    enemies.push_back(enemy);
+}
+void spawnHardEnemy(int lane){
+enemyTest enemy= {lane, 1280.0, 100,100,80,3};
+    enemies.push_back(enemy);
+}
+int randomLane() {
+    static int lastLane = 0;
+    int lane;
+    do {
+        lane = rand() % 3 + 1;
+    } while (lane == lastLane);
+    lastLane = lane;
+    return lane;
+}
+
+void update(float deltaTime){
+    if(gameState == GameState::PLAYING){
+        hoverLane = whatLane(mouseX, mouseY);
+        for(enemyTest& enemy : enemies){//move with time yaany d=v*t 
+            //also use & to move actual enemy not just a copy (pointer)
+            enemy.x -= enemy.speed * deltaTime;
         }
-        guantletTexture=characterstextures(infinityGuantlet);
-        return true;
-}
-void drawInfinityGuantlet(float x, float y, float w, float h){
-    drawSprite(guantletTexture, x, y, w, h);
+        static float spawnTimer = 5.0f;
+        spawnTimer += deltaTime;
+        if(wave ==1){
+            if (spawnTimer >= 5.0f) {
+            spawnEasyEnemy(randomLane());
+            spawnTimer = 0.0f;
+        }
+
+        }
+        else if (wave ==2){
+            if (spawnTimer >= 5.0f) {
+            spawnMediumEnemy(randomLane());
+            spawnTimer = 0.0f;
+        }
+
+        }
+        else if(wave ==3){
+            if (spawnTimer >= 5.0f) {
+            spawnHardEnemy(randomLane());
+            spawnTimer = 0.0f;
+        }
+
+        }
+
+    }else hoverLane = -1;
+
 
 }
 
-void drawGameScreen(){
 
-        drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
-        drawRect(0.0f, 40.0f, 1280.0f, 120.0f, glm::vec4(0.620f, 0.620f, 0.620f, 1.0f));//lane 1
-        drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
-        drawRect(0.0f, 175.0f, 1280.0f, 120.0f, glm::vec4(0.620f, 0.620f, 0.620f, 1.0f));//lane 2
-        drawRect(0.0f, 295.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 2 divider
-        drawRect(0.0f, 310.0f, 1280.0f, 120.0f, glm::vec4(0.620f, 0.620f, 0.620f, 1.0f));//lane 3
-        drawRect(0.0f, 430.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 3 divider
-        drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
-        drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
-        drawInfinityGuantlet(50,192,80,110);
-        drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
-        //player shop will include players ad=nd coin count
-        //each slot will take 200px since the full thing is 800
-        drawRect(200.0f, 600.0f, 810.0f, 120.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
-        drawRect(205.0f, 605.0f, 800.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
-        drawplayer();
-}
 
 void cleanupGame(){
-    glDeleteTextures(1, &guantletTexture);
+    
 }
 
 
