@@ -79,10 +79,12 @@ void onClick(float mouseX, float mouseY){
         }
         else if(isMouseOver(pRestart, mouseX, mouseY)){
             // restart the game (restart function not done yet)
+            restartGame();
             gameState = GameState::PLAYING; return;
         }
         else if(isMouseOver(pMainMenu, mouseX, mouseY)){
             //restart the game (restart function not done yet)
+            restartGame();
             gameState = GameState::MAIN_MENU; return;
 
         }
@@ -206,6 +208,14 @@ void update(float deltaTime){
     }
 
 
+}
+
+void restartGame(){
+    wave=1;
+    enemyCount=0;
+    enemies.clear();
+    players.clear();
+    points.clear();
 }
 
 
