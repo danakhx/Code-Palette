@@ -17,6 +17,7 @@ std::vector<arcReactor> points;
 int wave = 1;
 int hoverLane = -1;
 int hoverCard =-1;
+int enemyCount=0;
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
@@ -116,6 +117,7 @@ float laneCenter(int lane){
     }
 }
 
+
 void spawnEnemy(int lane){
     enemyTest enemy= {lane, 1280.0, 100,100,100};
     enemies.push_back(enemy);
@@ -142,6 +144,12 @@ int randomLane() {
     lastLane = lane;
     return lane;
 }
+int maxCount(int w){
+    if(w == 1) return 4;
+    if(w == 2) return 7;
+    if(w == 3) return 10;
+    return 0;
+}
 
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){
@@ -150,31 +158,52 @@ void update(float deltaTime){
             //also use & to move actual enemy not just a copy (pointer)
             enemy.x -= enemy.speed * deltaTime;
         }
-        static float spawnTimer = 5.0f;
+        //TEXT LOOP WILL BE REMOVED LATER
+        for(int i = enemies.size() - 1; i >= 0; i--){
+    if(enemies[i].x + enemies[i].w < 0){
+        enemies.erase(enemies.begin() + i);
+    }
+}//end of test loop
+
+        static float spawnTimer = 4.0f;
         spawnTimer += deltaTime;
-        if(wave ==1){
-            if (spawnTimer >= 5.0f) {
+        if(wave ==1 && enemyCount< maxCount(1)){
+            if (spawnTimer >= 4.0f) {
             spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
+            enemyCount++;
         }
 
         }
-        else if (wave ==2){
-            if (spawnTimer >= 5.0f) {
+        else if (wave ==2 && enemyCount<maxCount(2)){
+            if (spawnTimer >= 4.0f) {
             spawnMediumEnemy(randomLane());
             spawnTimer = 0.0f;
+            enemyCount++;
         }
 
         }
-        else if(wave ==3){
-            if (spawnTimer >= 5.0f) {
+        else if(wave ==3 && enemyCount<maxCount(3)){
+            if (spawnTimer >= 4.0f) {
             spawnHardEnemy(randomLane());
             spawnTimer = 0.0f;
+            enemyCount++;
         }
-
         }
+        //update wave / increment wave
+        if(enemyCount == maxCount(wave) && enemies.empty()){
+            if(wave < 3){
+                wave++;
+                enemyCount = 0;
+                spawnTimer = 4.0f; 
+    } else {
+        gameState = GameState::WON;
+    }
+}
 
-    }else hoverLane = -1;
+        
+
+    }
 
 
 }
