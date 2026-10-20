@@ -186,7 +186,7 @@ void update(float deltaTime){
             enemyCount++;
         }
 
-        }
+        }//wave 2 lazem tb2a mix of easy and medium not just medium
         else if (wave ==2 && enemyCount<maxCount(2)){
             if (spawnTimer >= 4.0f) {
             spawnMediumEnemy(randomLane());
@@ -194,7 +194,7 @@ void update(float deltaTime){
             enemyCount++;
         }
 
-        }
+        }//wave 3 mix of all
         else if(wave ==3 && enemyCount<maxCount(3)){
             if (spawnTimer >= 4.0f) {
             spawnHardEnemy(randomLane());
