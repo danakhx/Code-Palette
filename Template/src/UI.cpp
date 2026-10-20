@@ -11,7 +11,16 @@
 #endif
 
 Pixeldata Loki;
+Pixeldata infinityGuantlet;
 
+ bool loadInfinityGuantlet(){
+    infinityGuantlet.ppointer= stbi_load(ENTITIES_DIR "infinityGuantlet.png",
+    &infinityGuantlet.width, &infinityGuantlet.height, &infinityGuantlet.channels,0);
+        if(infinityGuantlet.ppointer == nullptr){
+            return false;
+        }
+        return true;
+}
 bool loadLoki(){
     Loki.ppointer=stbi_load(ENTITIES_DIR "loki.png",&Loki.width,&Loki.height,&Loki.channels,0);
     if (Loki.ppointer == nullptr) {
@@ -77,3 +86,29 @@ void drawMainMenu()   {
     drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.533f, 0.055f, 0.310f, 1.0f)); //return button
     drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
  }
+
+glm::vec4 laneColor(int lane){
+    if(lane == hoverLane) return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f); // hovered
+    return glm::vec4(0.620f, 0.620f, 0.620f, 1.0f);                     // normal
+}
+
+
+void drawGameScreen(){
+
+        drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
+        drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
+        drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
+        drawRect(0.0f, 175.0f, 1280.0f, 120.0f, laneColor(2));//lane 2
+        drawRect(0.0f, 295.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 2 divider
+        drawRect(0.0f, 310.0f, 1280.0f, 120.0f, laneColor(3));//lane 3
+        drawRect(0.0f, 430.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 3 divider
+        drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
+        drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
+        drawInfinityGuantlet(50,192,80,110);
+        drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
+        //player shop will include players ad=nd coin count
+        //each slot will take 200px since the full thing is 800
+        drawRect(200.0f, 600.0f, 810.0f, 120.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
+        drawRect(205.0f, 605.0f, 800.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        drawplayer();
+}

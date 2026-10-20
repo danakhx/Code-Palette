@@ -7,10 +7,16 @@
 #include "UI.h"
 
 #include "Renderer.h"
+#include <cstdlib>  
+#include <ctime>   
+
 
 GLFWwindow* gWindow = nullptr;
 
+float lastTime= 0.0f;
+
 int main() {
+    srand(static_cast<unsigned>(time(nullptr)));
     if (!glfwInit()) return -1;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -60,9 +66,14 @@ int main() {
     initRenderer();
    
     // --- Render loop ---
+    lastTime = (float)glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
         clearScreen();
         setCrouching(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
+        float currentTime= glfwGetTime();
+        float deltaTime= currentTime - lastTime;
+        lastTime= currentTime;
+        update(deltaTime);
         renderGame();
         glfwSwapBuffers(window);
         glfwPollEvents();

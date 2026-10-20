@@ -18,3 +18,5 @@ void drawPauseScreen();
 
 extern Pixeldata Loki;
 bool loadLoki();
+
+extern Pixeldata infinityGuantlet;
