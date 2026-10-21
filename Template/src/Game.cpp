@@ -187,7 +187,7 @@ int randomLane() {
 }
 int maxCount(int w){
     if(w == 1) return 4;
-    if(w == 2) return 7;
+    if(w == 2) return 6;
     if(w == 3) return 10;
     return 0;
 }
