@@ -34,6 +34,31 @@ Button mExit     = {390, 150, 500, 100};
 Button pContinue = {390, 390, 500, 100};
 Button pRestart  = {390, 270, 500, 100};
 Button pMainMenu = {390, 150, 500, 100};
+Button player1 = {407,585,195,130};
+Button player2={608,585,195,130};
+Button player3={809,585,195,130};
+
+void canAfford(int p){
+    switch(p){ //color them if u can afford them wl default yb2a gray
+        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                break;
+        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                break;
+        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+                break;
+        default:drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+        break;
+    }
+
+}
 
 bool isMouseOver(const Button& b, float mx, float my) {
     return mx >= b.x && mx <= b.x + b.w &&
@@ -89,7 +114,7 @@ void drawMainMenu()   {
 
 glm::vec4 laneColor(int lane){
     if(lane == hoverLane) return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f); // hovered
-    return glm::vec4(0.620f, 0.620f, 0.620f, 1.0f);                     // normal
+    return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);                     // normal
 }
 
 
@@ -108,7 +133,10 @@ void drawGameScreen(){
         drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
         //player shop will include players ad=nd coin count
         //each slot will take 200px since the full thing is 800
-        drawRect(200.0f, 600.0f, 810.0f, 120.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
-        drawRect(205.0f, 605.0f, 800.0f, 110.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
+        drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
+        drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
+        drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawplayer();
 }

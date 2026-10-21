@@ -13,12 +13,13 @@
 
 std::vector<enemyTest> enemies;
 std::vector<player> players;
-std::vector<arcReactor> points;
+std::vector<arcReactor> droppedPoints;
 int wave = 1;
 int hoverLane = -1;
 int hoverCard =-1;
 int enemyCount=0;
 float spawnTimer = 4.0f;
+int points=30;
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
@@ -30,8 +31,24 @@ void restartGame(){
     spawnTimer=4.0f;
     enemies.clear();
     players.clear();
-    points.clear();
+    droppedPoints.clear();
+    points=30;
 }
+void updateShop(int cpoints){
+    if(cpoints>=30){
+        canAfford(3);
+
+    }
+    else if(cpoints>=20){
+        canAfford(2);
+    }
+    else if(cpoints>=10){
+        canAfford(1);
+    }
+    else canAfford(0);
+
+}
+
 
 
 void renderGame() {
@@ -39,6 +56,7 @@ void renderGame() {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:
         drawGameScreen();
+        updateShop(points);
         for(const enemyTest& enemy : enemies){
             if(enemy.type==1){
             drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -102,6 +120,16 @@ void onClick(float mouseX, float mouseY){
     }
     else if(gameState == GameState::PLAYING){
         //PLAYING KOL HAGA BA2A 
+        if(isMouseOver(player1,mouseX,mouseY) && points>=10){
+            //add new player to players array with position at start of SELECTED LANE
+            //then create drawing players function to call in update()
+        }
+        else if(isMouseOver(player2, mouseX,mouseY)&& points>=20){
+
+        }
+        else if(isMouseOver(player3,mouseX,mouseY)&& points>=30){
+
+        }
     }
 }
 int whatLane(float mouseX, float mouseY){
@@ -137,15 +165,15 @@ void spawnEnemy(int lane){
 
 }
 void spawnEasyEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,50,1};
+enemyTest enemy= {lane, 1280.0, 100,100,150,1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,50,2};
+enemyTest enemy= {lane, 1280.0, 100,100,150,2};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,80,3};
+enemyTest enemy= {lane, 1280.0, 100,100,150,3};
     enemies.push_back(enemy);
 }
 int randomLane() {
@@ -167,16 +195,17 @@ int maxCount(int w){
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){
         hoverLane = whatLane(mouseX, mouseY);
+        
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t 
             //also use & to move actual enemy not just a copy (pointer)
             enemy.x -= enemy.speed * deltaTime;
         }
         //TEXT LOOP WILL BE REMOVED LATER
         for(int i = enemies.size() - 1; i >= 0; i--){
-    if(enemies[i].x + enemies[i].w < 0){
+        if(enemies[i].x + enemies[i].w < 0){
         enemies.erase(enemies.begin() + i);
-    }
-}//end of test loop
+        }
+        }//end of test loop
 
         spawnTimer += deltaTime;
         if(wave ==1 && enemyCount< maxCount(1)){
@@ -190,16 +219,19 @@ void update(float deltaTime){
         else if (wave ==2 && enemyCount<maxCount(2)){
             if (spawnTimer >= 4.0f) {
             spawnMediumEnemy(randomLane());
+            spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
-            enemyCount++;
+            enemyCount+=2;
         }
 
         }//wave 3 mix of all
         else if(wave ==3 && enemyCount<maxCount(3)){
             if (spawnTimer >= 4.0f) {
             spawnHardEnemy(randomLane());
+            spawnMediumEnemy(randomLane());
+            spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
-            enemyCount++;
+            enemyCount+=3;
         }
         }
         //update wave / increment wave
