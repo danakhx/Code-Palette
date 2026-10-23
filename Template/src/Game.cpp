@@ -55,6 +55,12 @@ void renderGame() {
         case GameState::PLAYING:
         drawGameScreen();
         updateShop(points);
+
+        //testing area
+            drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
+
+        //end testing area
+
         for(const enemyTest& enemy : enemies){
             if(enemy.type==1){
             drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));

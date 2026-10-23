@@ -384,3 +384,6 @@ void drawInfinityGuantlet(float x, float y, float w, float h){
     drawSprite(guantletTexture, x, y, w, h);
 
 }
+void drawProjectile(float x, float y, glm::vec4 color){
+    drawRect(x,y,20,5,color);
+}
