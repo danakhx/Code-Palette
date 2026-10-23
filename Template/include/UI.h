@@ -1,6 +1,12 @@
 #pragma once
+#include <glm/glm.hpp>
 #include "charactersload.h"
 
+struct GLFWwindow;
+extern float mouseX, mouseY;
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 struct Button{
     float x, y, w, h;
 };
@@ -24,7 +30,8 @@ extern Pixeldata Loki;
 bool loadLoki();
 
 extern Pixeldata infinityGuantlet;
+bool loadInfinityGuantlet();
 
-//glm::vec4 laneColor(int lane);
+glm::vec4 laneColor(int lane);
 
 void canAfford(int p);

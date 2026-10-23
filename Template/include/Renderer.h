@@ -2,6 +2,11 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include "charactersload.h"
+
+GLuint compileShader(GLenum type, const char* source);
+GLuint createShaderProgram();
+GLuint newtextureShaderProgram();
+
 void initRenderer();
 void clearScreen();
 void drawRect(float x, float y, float w, float h, const glm::vec4& color);
@@ -11,6 +16,7 @@ void drawplayer();
 void setCrouching(bool crouching);
 void drawSprite(GLuint texture, float x, float y, float w, float h);
 void drawLoki(float x, float y, float w, float h);
+void drawInfinityGuantlet(float x, float y, float w, float h);
 
 GLuint characterstextures(Pixeldata player);
 void drawText(const char* text, float x, float y, float scale, glm::vec4 color);

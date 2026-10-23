@@ -13,6 +13,33 @@
 Pixeldata Loki;
 Pixeldata infinityGuantlet;
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        onKey(key);   // in game.cpp
+    }
+}
+//MOUSE STUFF
+float mouseX=0, mouseY=0;
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+  mouseX= xpos;
+  mouseY=720.0f-ypos;
+
+}
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        mouse_callback(window, xpos, ypos);
+        onClick(mouseX, mouseY); //also in game.cpp
+    }
+}
+bool isMouseOver(const Button& b, float mx, float my) {
+    return mx >= b.x && mx <= b.x + b.w &&
+           my >= b.y && my <= b.y + b.h;
+}
+
+
  bool loadInfinityGuantlet(){
     infinityGuantlet.ppointer= stbi_load(ENTITIES_DIR "infinityGuantlet.png",
     &infinityGuantlet.width, &infinityGuantlet.height, &infinityGuantlet.channels,0);
@@ -28,7 +55,7 @@ bool loadLoki(){
     }
     return true;
 }
-
+//buttons and ui
 Button mStart    = {390, 390, 500, 100};
 Button mExit     = {390, 150, 500, 100};
 Button pContinue = {390, 390, 500, 100};
@@ -40,17 +67,17 @@ Button player3={809,585,195,130};
 
 void canAfford(int p){
     switch(p){ //color them if u can afford them wl default yb2a gray
-        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
+        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
                 break;
-        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
                 break;
-        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); 
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); 
                 break;
         default:drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
@@ -58,11 +85,6 @@ void canAfford(int p){
         break;
     }
 
-}
-
-bool isMouseOver(const Button& b, float mx, float my) {
-    return mx >= b.x && mx <= b.x + b.w &&
-           my >= b.y && my <= b.y + b.h;
 }
 
 void drawMainMenu()   {
@@ -113,7 +135,7 @@ void drawMainMenu()   {
  }
 
 glm::vec4 laneColor(int lane){
-    if(lane == hoverLane) return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f); // hovered
+    if(lane == hoverLane || lane == selectedLane) return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f); // hovered
     return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);                     // normal
 }
 

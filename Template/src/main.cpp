@@ -3,7 +3,6 @@
 #include <iostream>
 #include "Game.h"
 #include "CharactersLoad.h"
-#include "Input.h"
 #include "UI.h"
 
 #include "Renderer.h"
@@ -59,8 +58,10 @@ int main() {
     glViewport(0, 0, 1280, 720);
 
     glfwSetKeyCallback(window, keyCallback);
-    glfwSetCursorPosCallback(window, cursorCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    
     
     // --- Set up shader, geometry and projection ---
     initRenderer();

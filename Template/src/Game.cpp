@@ -3,20 +3,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "Input.h"
 #include "UI.h"
 #include "stb_image.h"
 #ifndef ENTITIES_DIR
 #define ENTITIES_DIR "Template/src/Entities/"
 #endif
-#include <vector>
 
 std::vector<enemyTest> enemies;
 std::vector<player> players;
 std::vector<arcReactor> droppedPoints;
 int wave = 1;
 int hoverLane = -1;
-int hoverCard =-1;
+int selectedLane= -1;
 int enemyCount=0;
 float spawnTimer = 4.0f;
 int points=30;
@@ -33,6 +31,7 @@ void restartGame(){
     players.clear();
     droppedPoints.clear();
     points=30;
+    selectedLane=-1;
 }
 void updateShop(int cpoints){
     if(cpoints>=30){
@@ -48,7 +47,6 @@ void updateShop(int cpoints){
     else canAfford(0);
 
 }
-
 
 
 void renderGame() {
@@ -69,6 +67,17 @@ void renderGame() {
             drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
         
         }}
+        for(const player& p : players){
+            if(p.type==1){
+                drawRect(p.x,(laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+            }
+            else if(p.type==2){
+                drawRect(p.x, (laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            }
+            else{
+                drawRect(p.x, (laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+            }
+        }
         break;
         case GameState::PAUSED:
         drawGameScreen();
@@ -77,6 +86,7 @@ void renderGame() {
         default: break;
     }
 }
+// keyboard presses
 void onKey(int key) {
             if (key == GLFW_KEY_ESCAPE) {
             if (gameState == GameState::PLAYING)     gameState = GameState::PAUSED;
@@ -88,7 +98,7 @@ void onKey(int key) {
          
     }
 
-//  LESA HA3MEL EL ONLICK FUNCTION
+// mouse clicks
 void onClick(float mouseX, float mouseY){
     if(gameState == GameState::MAIN_MENU){
         if(isMouseOver(mStart, mouseX, mouseY)){
@@ -119,24 +129,38 @@ void onClick(float mouseX, float mouseY){
         }
     }
     else if(gameState == GameState::PLAYING){
-        //PLAYING KOL HAGA BA2A 
+        int lane= whatLane(mouseX, mouseY);
+        if(lane !=-1){
+        selectedLane=lane; return;}
+        if(selectedLane!=-1){
+
         if(isMouseOver(player1,mouseX,mouseY) && points>=10){
             //add new player to players array with position at start of SELECTED LANE
             //then create drawing players function to call in update()
+            player p={selectedLane, 200.0f, 100,100,100,1,150,150,20}; //type 1==cap
+            players.push_back(p);
+            points-=10;
+            selectedLane=-1;
         }
         else if(isMouseOver(player2, mouseX,mouseY)&& points>=20){
-
+            player p={selectedLane, 200.0f, 100,100,100,2,150,150,20}; //type 2==spidey
+            players.push_back(p);
+            points-=20;
+            selectedLane=-1;
         }
         else if(isMouseOver(player3,mouseX,mouseY)&& points>=30){
-
-        }
+            player p={selectedLane, 205.0f, 100,100,0,3,150,150,20}; //type 3==hulk
+            players.push_back(p);
+            points-=30;
+            selectedLane=-1;
+        }}
     }
 }
 int whatLane(float mouseX, float mouseY){
     if(mouseX<200.0f){
         return -1;
     }
-    else if(mouseY>=20.0f && mouseY<160.0f) return 1;
+    else if(mouseY>=40.0f && mouseY<160.0f) return 1;
     else if(mouseY>= 175.0f && mouseY< 295.0f)return 2;
     else if(mouseY>=310.0f && mouseY<430.0f)return 3;
     return -1;
@@ -200,7 +224,11 @@ void update(float deltaTime){
             //also use & to move actual enemy not just a copy (pointer)
             enemy.x -= enemy.speed * deltaTime;
         }
-        //TEXT LOOP WILL BE REMOVED LATER
+        for(player& p: players){
+            p.x+=p.speed*deltaTime;
+        }
+
+        //TEST LOOP WILL BE REMOVED LATER
         for(int i = enemies.size() - 1; i >= 0; i--){
         if(enemies[i].x + enemies[i].w < 0){
         enemies.erase(enemies.begin() + i);

@@ -1,14 +1,17 @@
 #pragma once
+#include <vector>
 
 enum class GameState { MAIN_MENU, CUTSCENE, PLAYING, PAUSED, WON, LOST };
 extern GameState gameState;
+extern int hoverLane;
+extern int selectedLane;
+extern int points;
+extern int wave;
 
+//for 3amatan
 void renderGame();
-void drawGameScreen();
 void onKey(int key);
 void onClick(float mouseX, float mouseY);
-bool loadInfinityGuantlet();
-void drawInfinityGuantlet(float x, float y, float w, float h);
 void cleanupGame();
 void update(float deltaTime);   
 
@@ -18,8 +21,9 @@ void spawnEnemy(int lane);
 void spawnEasyEnemy(int lane);
 void spawnHardEnemy(int lane);
 void spawnMediumEnemy(int lane);
-extern int hoverLane;
-extern int hoverCard;
 int whatLane(float mouseX, float mouseY);
 void restartGame();
 int maxCount(int w);
+void updateShop(int cpoints);
+int randomLane();
+

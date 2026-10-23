@@ -17,6 +17,6 @@ struct enemyTest{int lane; float x;
     int hp; int maxHp; int damage;};
 
 struct player{int lane; float x; float w; float h;
-float speed; int type; int hp; int maxHp; int damage;};//hulk, spiderman, cap
+float speed; int type; int hp; int maxHp; int damage;};//type order is captain america, spiderman, hulk
 
 struct arcReactor{int lane; int x; int value;};
