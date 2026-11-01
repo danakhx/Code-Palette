@@ -57,7 +57,7 @@ void restartGame(){
     players.clear();
     droppedPoints.clear();
     points=30;
-    selectedLane=-1;
+    selectedLanes = {false, false, false, false};
     projectiles.clear();
 }
 void updateShop(int cpoints){
@@ -268,6 +268,9 @@ void onClick(float mouseX, float mouseY){
         }}
     }
 }
+}
+
+
 int whatLane(float mouseX, float mouseY){
     if(mouseX<200.0f){
         return -1;

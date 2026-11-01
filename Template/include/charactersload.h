@@ -32,12 +32,6 @@ enum class PlayerAction {
 };
 
 
-enum class PlayerAction {
-    RUNNING,
-    JUMPING,
-    DUCKING
-};
-
 
 struct player{int lane; float x; float w; float h;
 float speed; int type; int hp; int maxhp ; float projTimer; int move;

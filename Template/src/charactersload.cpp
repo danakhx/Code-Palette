@@ -19,8 +19,8 @@ Pixeldata Hulk;
 //captain a
 Pixeldata Cap;
 Pixeldata Capfight;
-pixeldata Cjump;
-pixeldata Ccrouch;
+Pixeldata Cjump;
+Pixeldata Ccrouch;
 
 bool loadfight(){
     Capfight.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/weapon.png",&Capfight.width,&Capfight.height,&Capfight.channels,0);
