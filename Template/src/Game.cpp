@@ -154,19 +154,19 @@ void onClick(float mouseX, float mouseY){
         if(isMouseOver(player1,mouseX,mouseY) && points>=10){
             //add new player to players array with position at start of SELECTED LANE
             //then create drawing players function to call in update()
-            player p={selectedLane, 200.0f, 100,100,100,1,150,150,20}; //type 1==cap
+            player p={selectedLane, 200.0f, 100,100,100,1,5,0.0f,1}; //type 1==cap
             players.push_back(p);
             points-=10;
             selectedLane=-1;
         }
         else if(isMouseOver(player2, mouseX,mouseY)&& points>=20){
-            player p={selectedLane, 200.0f, 100,100,100,2,150,150,20}; //type 2==spidey
+            player p={selectedLane, 200.0f, 100,100,100,2,5,0.0f,1}; //type 2==spidey
             players.push_back(p);
             points-=20;
             selectedLane=-1;
         }
         else if(isMouseOver(player3,mouseX,mouseY)&& points>=30){
-            player p={selectedLane, 205.0f, 100,100,0,3,150,150,20}; //type 3==hulk
+            player p={selectedLane, 205.0f, 100,100,0,3,7,0.0f,1}; //type 3==hulk
             players.push_back(p);
             points-=30;
             selectedLane=-1;
@@ -206,15 +206,15 @@ void spawnEnemy(int lane){
 
 }
 void spawnEasyEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,1};
+enemyTest enemy= {lane, 1280.0, 100,100,150,1,5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,2};
+enemyTest enemy= {lane, 1280.0, 100,100,150,2, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,3};
+enemyTest enemy= {lane, 1280.0, 100,100,150,3, 7, 0.0f, 1};
     enemies.push_back(enemy);
 }
 int randomLane() {
@@ -236,33 +236,85 @@ int randomLane() {
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){
         hoverLane = whatLane(mouseX, mouseY);
+      for(player& p : players) p.move = 1;
+      for(int i = players.size() - 1; i >= 0; i--){
+        if(players[i].hp <= 0) players.erase(players.begin() + i);
+}
+
+        for(enemyTest& e : enemies) e.move = 1;
+        for(int i = enemies.size() - 1; i >= 0; i--){
+            if(enemies[i].hp <= 0) enemies.erase(enemies.begin() + i);
+}
+
+        for(player& player:players){
+            for(enemyTest& enemy: enemies){
+                if(player.lane==enemy.lane && (player.x + player.w)>=enemy.x && player.x<=(enemy.x+enemy.w)){
+                    enemy.move=0;
+                    player.move=0;
+
+                    if(player.type==1){
+                        player.projTimer-=deltaTime;
+                        if(player.projTimer<=0.0f){
+                            enemy.hp-=1;
+                            player.projTimer=1.0f; 
+                        }
+                    }
+                    if(enemy.type==3){
+                        enemy.projTimer-=deltaTime;
+                        if(enemy.projTimer<=0.0f){
+                        player.hp-=2;
+                        enemy.projTimer=3.0f;
+                    }
+                }
+            }
+        }}
         
+        for(int i=projectiles.size()-1; i>=0;i--){
+            projectile proj= projectiles[i];
+            for(enemyTest& enemy: enemies){
+                if(proj.side==0 && proj.lane==enemy.lane && proj.x>=enemy.x && proj.x<=(enemy.x+enemy.w)){
+                    enemy.hp-=1;
+                    projectiles.erase(projectiles.begin()+i); //Because erase doesn’t take an index number; it takes an iterator, which is like a pointer to an element. begin() is an iterator pointing at element 0, so begin() + i points at element i.Because erase doesn’t take an index number; it takes an iterator, which is like a pointer to an element. begin() is an iterator pointing at element 0, so begin() + i points at element i.
+                    break;
+                }
+            }
+            for(player& p: players){
+                if(proj.side==1 && proj.lane==p.lane && proj.x>=p.x && proj.x<=(p.x+p.w)){
+                    p.hp-=1;
+                    projectiles.erase(projectiles.begin()+i);
+                    break;
+                }
+            }
+        }
+
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t 
             //also use & to move actual enemy not just a copy (pointer)
-            enemy.x -= enemy.speed * deltaTime;
+            if(enemy.move==1){
+            enemy.x -= enemy.speed * deltaTime;}
             if(enemy.type==1){
                 enemy.projTimer-=deltaTime;
                 if(enemy.projTimer<=0.0f){
                     projectile proj={enemy.lane, enemy.x, 30.0f,1};
                     projectiles.push_back(proj);
-                    enemy.projTimer=2.0f; //reset timer 
+                    enemy.projTimer=4.0f; //reset timer 
             }}
             if(enemy.type==2){
                 enemy.projTimer-=deltaTime;
                 if(enemy.projTimer<=0.0f){
                     projectile proj={enemy.lane, enemy.x, -30.0f,1};
                     projectiles.push_back(proj);
-                    enemy.projTimer=2.0f; 
+                    enemy.projTimer=3.5f; 
             }}
         }
         for(player& p: players){
-            p.x+=p.speed*deltaTime;
+            if(p.move==1){
+            p.x+=p.speed*deltaTime;}
             if(p.type==2){
                 p.projTimer-=deltaTime;
                 if(p.projTimer<=0.0f){
-                    projectile proj={p.lane, p.x, 0.0f,0};
+                    projectile proj={p.lane, p.x+p.w, 0.0f,0};
                     projectiles.push_back(proj);
-                    p.projTimer=2.0f; 
+                    p.projTimer=1.0f; 
                 }
             }
         }
@@ -290,7 +342,7 @@ void update(float deltaTime){
 
         spawnTimer += deltaTime;
         if(wave ==1 && enemyCount< 4){
-            if (spawnTimer >= 4.0f) {
+            if (spawnTimer >= 5.0f) {
             spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
             enemyCount++;
@@ -298,7 +350,7 @@ void update(float deltaTime){
 
         }//wave 2 lazem tb2a mix of easy and medium not just medium
         else if (wave ==2 && enemyCount<6){
-            if (spawnTimer >= 4.0f) {
+            if (spawnTimer >= 5.0f) {
             spawnMediumEnemy(randomLane());
             spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
@@ -307,7 +359,7 @@ void update(float deltaTime){
 
         }//wave 3 mix of all
         else if(wave ==3 && enemyCount<12){
-            if (spawnTimer >= 4.0f) {
+            if (spawnTimer >= 5.0f) {
             spawnHardEnemy(randomLane());
             spawnMediumEnemy(randomLane());
             spawnEasyEnemy(randomLane());
