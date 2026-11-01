@@ -14,11 +14,11 @@ extern bool loadSPWEB();
 
 struct enemyTest{int lane; float x; 
     float w; float h; float speed;int type; //type 1=easy, 2=medium, 3=hard
-    int hp; int maxHp; int damage; float projTimer;};
+    int hp;float projTimer; int move;}; //0 standing 1 moving
 
 struct player{int lane; float x; float w; float h;
-float speed; int type; int hp; int maxHp; int damage; float projTimer;};//type order is captain america, spiderman, hulk
+float speed; int type; int hp;  float projTimer; int move;};//type order is captain america, spiderman, hulk
 
 struct arcReactor{int lane; int x; int value;};
 
-struct projectile{int lane; float x; float y; int side;}; //zero hero one loser
+struct projectile{int lane; float x; float y; int side; int dmg;}; //zero hero one loser
