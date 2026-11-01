@@ -12,6 +12,7 @@
 std::vector<enemyTest> enemies;
 std::vector<player> players;
 std::vector<arcReactor> droppedPoints;
+std::vector<projectile> projectiles;
 int wave = 1;
 int hoverLane = -1;
 int selectedLane= -1;
@@ -32,6 +33,7 @@ void restartGame(){
     droppedPoints.clear();
     points=30;
     selectedLane=-1;
+    projectiles.clear();
 }
 void updateShop(int cpoints){
     if(cpoints>=30){
@@ -57,7 +59,7 @@ void renderGame() {
         updateShop(points);
 
         //testing area
-            drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
+            //drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
 
         //end testing area
 
@@ -83,6 +85,15 @@ void renderGame() {
             else{
                 drawRect(p.x, (laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
             }
+        }
+        for(const projectile& proj: projectiles){
+            if(proj.side==0){
+                drawProjectile(proj.x,laneCenter(proj.lane)+proj.y,glm::vec4(0.0f,1.0f,0.0f,1.0f));
+            }
+            else{
+                drawProjectile(proj.x,laneCenter(proj.lane)+proj.y,glm::vec4(1.0f,0.0f,0.0f,1.0f));
+            }
+
         }
         break;
         case GameState::PAUSED:
@@ -215,12 +226,12 @@ int randomLane() {
     lastLane = lane;
     return lane;
 }
-int maxCount(int w){
-    if(w == 1) return 4;
-    if(w == 2) return 6;
-    if(w == 3) return 10;
-    return 0;
-}
+ int maxCount(int w){
+    if(w==1) return 4;
+    else if(w==2) return 6;
+    else if(w==3) return 12;
+    return 0;}
+
 
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){
@@ -229,10 +240,46 @@ void update(float deltaTime){
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t 
             //also use & to move actual enemy not just a copy (pointer)
             enemy.x -= enemy.speed * deltaTime;
+            if(enemy.type==1){
+                enemy.projTimer-=deltaTime;
+                if(enemy.projTimer<=0.0f){
+                    projectile proj={enemy.lane, enemy.x, 30.0f,1};
+                    projectiles.push_back(proj);
+                    enemy.projTimer=2.0f; //reset timer 
+            }}
+            if(enemy.type==2){
+                enemy.projTimer-=deltaTime;
+                if(enemy.projTimer<=0.0f){
+                    projectile proj={enemy.lane, enemy.x, -30.0f,1};
+                    projectiles.push_back(proj);
+                    enemy.projTimer=2.0f; 
+            }}
         }
         for(player& p: players){
             p.x+=p.speed*deltaTime;
+            if(p.type==2){
+                p.projTimer-=deltaTime;
+                if(p.projTimer<=0.0f){
+                    projectile proj={p.lane, p.x, 0.0f,0};
+                    projectiles.push_back(proj);
+                    p.projTimer=2.0f; 
+                }
+            }
         }
+        for(projectile& proj: projectiles){
+            if(proj.side==0){
+                proj.x+= 200.0f*deltaTime;
+            }
+            if(proj.side==1){
+                proj.x-= 200.0f*deltaTime;
+            }
+
+        }
+        //removing projs
+        for(int i = projectiles.size() - 1; i >= 0; i--){
+        if(projectiles[i].x > 1280.0f || projectiles[i].x < 200.0f){   
+        projectiles.erase(projectiles.begin() + i);
+    }}
 
         //TEST LOOP WILL BE REMOVED LATER
         for(int i = enemies.size() - 1; i >= 0; i--){
@@ -242,7 +289,7 @@ void update(float deltaTime){
         }//end of test loop
 
         spawnTimer += deltaTime;
-        if(wave ==1 && enemyCount< maxCount(1)){
+        if(wave ==1 && enemyCount< 4){
             if (spawnTimer >= 4.0f) {
             spawnEasyEnemy(randomLane());
             spawnTimer = 0.0f;
@@ -250,7 +297,7 @@ void update(float deltaTime){
         }
 
         }//wave 2 lazem tb2a mix of easy and medium not just medium
-        else if (wave ==2 && enemyCount<maxCount(2)){
+        else if (wave ==2 && enemyCount<6){
             if (spawnTimer >= 4.0f) {
             spawnMediumEnemy(randomLane());
             spawnEasyEnemy(randomLane());
@@ -259,7 +306,7 @@ void update(float deltaTime){
         }
 
         }//wave 3 mix of all
-        else if(wave ==3 && enemyCount<maxCount(3)){
+        else if(wave ==3 && enemyCount<12){
             if (spawnTimer >= 4.0f) {
             spawnHardEnemy(randomLane());
             spawnMediumEnemy(randomLane());
