@@ -134,10 +134,13 @@ void drawMainMenu()   {
     drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
  }
 
-glm::vec4 laneColor(int lane){
-    if(lane == hoverLane || lane == selectedLane) return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f); // hovered
-    return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);                     // normal
-}
+glm::vec4 laneColor(int lane) {
+
+    if (lane == hoverLane || selectedLanes[lane])
+        return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f);
+
+    return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);
+}// howa eh da
 
 
 void drawGameScreen(){

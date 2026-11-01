@@ -21,6 +21,34 @@ static GLuint lokiTexture = 0;
 static GLuint guantletTexture = 0;
 static bool isCrouching = false;
 
+//cap run and fight
+static GLuint crunTexture = 0;
+static GLuint cfightTexture = 0;
+static GLuint cjumpTex=0;
+static GLuint ccrouchTex=0;
+// this is caps animation frames ashan msh divided helw had to have them csalculated
+struct SpriteFrame {
+    float uStart;
+    float uEnd;
+};
+// ustart u end variabels
+static const SpriteFrame capFightFrames[] = {
+    {0.00153f, 0.13936f}, // Frame 1
+    {0.14242f, 0.34609f}, // Frame 2
+    {0.34916f, 0.56355f}, // Frame 3
+    {0.56662f, 0.78101f}, // Frame 4
+    {0.78407f, 0.99847f}  // Frame 5
+};
+
+
+
+
+
+
+
+
+
+
 static const char* vertexShaderSource = R"(
 #version 410 core
 layout (location = 0) in vec3 aPos;
@@ -76,6 +104,12 @@ void main()
     FragColor = texture(characterTexture,TexCoord);
 }
 )";
+
+
+
+
+
+
 
 
 
@@ -157,6 +191,12 @@ void initRenderer() {
     glBindVertexArray(0);
     lokiTexture = characterstextures(Loki);
     guantletTexture = characterstextures(infinityGuantlet);
+    //cap
+    crunTexture = characterstextures(Cap);
+    cfightTexture = characterstextures(Capfight);
+    cjumpTex=characterstextures(Cjump);
+    ccrouchTex=characterstextures(Ccrouch);
+
 
     float triVertices[] = {
         0.0f, 0.0f, 0.0f,
@@ -321,9 +361,14 @@ void cleanupRenderer() {
     glDeleteTextures(1, &crouchTexture);
     glDeleteTextures(1, &lokiTexture);
     glDeleteTextures(1, &guantletTexture);
+
+    glDeleteTextures(1, &crunTexture);
+    glDeleteTextures(1, &cfightTexture);
+    glDeleteTextures(1,&cjumpTex);
+    glDeleteTextures(1,&ccrouchTex);
 }
 
-//characters  texture
+//characters  texture eftkery takes el image data  uploads it ka texture
 
 GLuint characterstextures(Pixeldata player){
      GLuint textureID=0;
@@ -386,4 +431,85 @@ void drawInfinityGuantlet(float x, float y, float w, float h){
 }
 void drawProjectile(float x, float y, glm::vec4 color){
     drawRect(x,y,20,5,color);
+}
+
+
+// we need this le captan maerica ashan howa sprite sheet 
+void drawSpriteFrame(GLuint texture, float x, float y, float w, float h, int frameIndex) {
+
+    //3ashan manst3mlsh frame msh existent
+    if (frameIndex < 0 || frameIndex >= 5) {
+    return;
+}
+
+    // Select the requested frame
+    SpriteFrame frame = capFightFrames[frameIndex];
+
+    // Update the texture coordinates
+    float frameVertices[] = {
+        0, 0, 0, frame.uStart, 0,
+        1, 0, 0, frame.uEnd,   0,
+        1, 1, 0, frame.uEnd,   1,
+
+        0, 0, 0, frame.uStart, 0,
+        1, 1, 0, frame.uEnd,   1,
+        0, 1, 0, frame.uStart, 1
+    };
+
+    // Update the existing character VBO
+    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(frameVertices), frameVertices);
+
+    // Position and size
+    glUseProgram(characterShader);
+
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+    model = glm::scale(model, glm::vec3(w, h, 1.0f));
+
+    // Bind the texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glUniform1i(glGetUniformLocation(characterShader, "characterTexture"), 0);
+
+    glUniformMatrix4fv(
+        glGetUniformLocation(characterShader, "model"),
+        1, GL_FALSE, glm::value_ptr(model)
+    );
+
+    // Draw
+    glBindVertexArray(characterVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // Restore the original full-texture coordinates
+    float originalVertices[] = {
+    0, 0, 0, 0, 0,
+    1, 0, 0, 1, 0,
+    1, 1, 0, 1, 1,
+
+    0, 0, 0, 0, 0,
+    1, 1, 0, 1, 1,
+    0, 1, 0, 0, 1 };
+   
+    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(originalVertices), originalVertices);
+
+
+}
+// ashan msh nexpose it globally el xture w bas game cpp ely y2raaa
+
+
+
+void drawCaptainAmericaFight(float x, float y, float w, float h, int frameIndex) {
+    drawSpriteFrame(cfightTexture, x, y, w, h, frameIndex);
+}
+void drawCaptainAmericaRun(float x, float y, float w, float h) {
+    drawSprite(crunTexture, x, y, w, h);
+}
+void drawCjump(float x, float y, float w, float h){
+    drawSprite(cjumpTex, x, y, w, h);
+
+}
+void drawCcrouch(float x, float y, float w, float h){
+    drawSprite(ccrouchTex, x, y, w, h);
 }

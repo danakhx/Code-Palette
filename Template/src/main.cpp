@@ -47,6 +47,19 @@ int main() {
     else {std::cout << "Failed to load Spider-Man crouching image." << std::endl;}
 
 
+     if (loadCap()){std::cout << "Captain America sprite loaded!" << std::endl;}
+    else{std::cout << "Failed to load Captain America sprite!" << std::endl;}
+
+    if (loadfight()){std::cout << "Captain America fight sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load Captain America fight sprite!" << std::endl;}
+
+     if (loadCcrouch()){std::cout << "Captain America crouch  loaded!" << std::endl;}
+    else{std::cout<< "Failed to load Captain America crouch sprite!" << std::endl;}
+     
+    if (loadCjump()){std::cout << "Captain America j sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load Captain America j sprite!" << std::endl;}
+
+
     //loki test
     if(!loadLoki()) std::cout << "Failed to load Loki image." << std::endl;
     else std::cout << "Loki image loaded!" << std::endl;
@@ -87,3 +100,5 @@ int main() {
     glfwTerminate();
     return 0;
 }
+
+
