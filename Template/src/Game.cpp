@@ -76,8 +76,6 @@ void updateShop(int cpoints){
 }
 
 
-
-
 void renderGame() {
     switch (gameState) {
         case GameState::MAIN_MENU: drawMainMenu();   break;
@@ -123,7 +121,7 @@ void renderGame() {
             drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
         
         }
-    float top = laneCenter(enemy.lane) - enemy.h/2 + enemy.h;    
+        float top = laneCenter(enemy.lane) - enemy.h/2 + enemy.h;    
             float w = enemy.w;                                     
             float h = 6.0f;
             float y = top + 2.0f;
@@ -132,8 +130,9 @@ void renderGame() {
             if(frac < 0.0f) frac = 0.0f;
 
             drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));          
-            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f));   }
-
+            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f)); 
+    }
+        
         for(const player& p : players){
             if(p.type==1){
                 drawRect(p.x,(laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -153,8 +152,7 @@ void renderGame() {
             if(frac < 0.0f) frac = 0.0f;
 
             drawRect(p.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));        
-            drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f)); 
-
+            drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f));
         }
         for(const projectile& proj: projectiles){
             if(proj.side==0){
@@ -229,43 +227,95 @@ void onClick(float mouseX, float mouseY){
             gameState = GameState::PLAYING; return;
         }
         else if(isMouseOver(pRestart, mouseX, mouseY)){
-          
+            // restart the game (restart function not done yet)
             restartGame();
             gameState = GameState::PLAYING; return;
         }
         else if(isMouseOver(pMainMenu, mouseX, mouseY)){
-           
+            //restart the game (restart function not done yet)
             restartGame();
             gameState = GameState::MAIN_MENU; return;
 
         }
     }
-    else if(gameState == GameState::PLAYING){
-        int lane= whatLane(mouseX, mouseY);
-        if(lane !=-1){
-        selectedLanes[lane] = !selectedLanes[lane]; return;}
-        if(selectedLane!=-1){
+ else if (gameState == GameState::PLAYING) {
 
-        if(isMouseOver(player1,mouseX,mouseY) && points>=10){
-            //add new player to players array with position at start of SELECTED LANE
-            //then create drawing players function to call in update()
-            player p={selectedLane, 200.0f, 100,100,100,1,5,5,0.0f,1}; //type 1==cap
-            players.push_back(p);
-            points-=10;
-            selectedLane=-1;
+    int lane = whatLane(mouseX, mouseY);
+
+    // Select or deselect a lane
+    if (lane != -1) {
+        selectedLanes[lane] = !selectedLanes[lane];
+        return;
+    }
+
+    // Check that at least one lane is selected
+    if (selectedLanes[1] || selectedLanes[2] || selectedLanes[3]) {
+
+        // Count selected lanes
+        int Counter = 0;
+
+        for (int i = 1; i < 4; i++) {
+            if (selectedLanes[i]) {
+                Counter++;
+            }
         }
-        else if(isMouseOver(player2, mouseX,mouseY)&& points>=20){
-            player p={selectedLane, 200.0f, 100,100,100,2,5,5,0.0f,1}; //type 2==spidey
-            players.push_back(p);
-            points-=20;
-            selectedLane=-1;
+
+        // Identify the selected character
+        int characterType = 0;
+        int characterPrice = 0;
+
+        if (isMouseOver(player1, mouseX, mouseY)) {
+            characterType = 1;
+            characterPrice = 10;
         }
-        else if(isMouseOver(player3,mouseX,mouseY)&& points>=30){
-            player p={selectedLane, 205.0f, 100,100,0,3,7,7,0.0f,1}; //type 3==hulk
-            players.push_back(p);
-            points-=30;
-            selectedLane=-1;
-        }}
+        else if (isMouseOver(player2, mouseX, mouseY)) {
+            characterType = 2;
+            characterPrice = 20;
+        }
+        else if (isMouseOver(player3, mouseX, mouseY)) {
+            characterType = 3;
+            characterPrice = 30;
+        }
+
+        // Only proceed if a character button was clicked
+        if (characterType != 0) {
+
+            int total = Counter * characterPrice;
+
+            // Check affordability BEFORE creating players
+            if (points >= total) {
+
+                // Create a character in every selected lane
+                for (int i = 1; i < 4; i++) {
+
+                    if (selectedLanes[i]) {
+
+                        if (characterType == 1) {
+                            player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
+                            players.push_back(p);
+                        }
+                        else if (characterType == 2) {
+                            player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
+                            players.push_back(p);
+                        }
+                        else if (characterType == 3) {
+                            player p = {i, 205.0f, 100, 100, 0, 3, 7, 7, 0.0f, 1};
+                            players.push_back(p);
+                        }
+                    }
+                }
+
+                // Deduct the total cost ONCE
+                points -= total;
+
+                // Clear selections after successful purchase
+                selectedLanes = {false, false, false, false};
+            }
+            else {
+                // Not enough points:
+                // Do nothing. Keep selections and points unchanged.
+            }
+        }
     }
 }
 }
@@ -308,11 +358,11 @@ enemyTest enemy= {lane, 1280.0, 100,100,150,1,5,5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,2, 5,5, 0.0f, 1};
+enemyTest enemy= {lane, 1280.0, 100,100,150,2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,3, 7,7, 0.0f, 1};
+enemyTest enemy= {lane, 1280.0, 100,100,150,3, 7, 7, 0.0f, 1};
     enemies.push_back(enemy);
 }
 int randomLane() {
