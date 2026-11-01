@@ -24,3 +24,9 @@ float textWidth(const char* text, float scale);
 void drawTextCentered(const char* text, float rx, float ry, float rw, float rh, float scale, glm::vec4 color);
 
 void drawProjectile(float x, float y, glm::vec4);
+
+void drawSprite(GLuint texture, float x, float y, float w, float h);
+void drawCaptainAmericaFight(float x, float y, float w, float h, int frameIndex);
+void drawCaptainAmericaRun(float x, float y, float w, float h);
+void drawCcrouch(float x, float y, float w, float h);
+void drawCjump(float x, float y, float w, float h);

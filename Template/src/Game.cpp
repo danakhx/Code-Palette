@@ -15,10 +15,35 @@ std::vector<arcReactor> droppedPoints;
 std::vector<projectile> projectiles;
 int wave = 1;
 int hoverLane = -1;
-int selectedLane= -1;
+std::array<bool, 4> selectedLanes = {false, false, false, false};
 int enemyCount=0;
 float spawnTimer = 4.0f;
 int points=30;
+
+
+// Captain America movement test
+float capX = 100.0f;
+float capY = 60.0f;
+float capWidth = 90.0f;
+float capHeight = 90.0f;
+
+float capSpeed = 150.0f;
+
+float villainX = 850.0f;
+float villainY = 60.0f;
+float villainWidth = 100.0f;
+float villainHeight = 100.0f;
+
+bool capIsFighting = false;
+
+// Captain America fighting animation
+int capFightFrame = 0;
+float capFightTimer = 0.0f;
+const float capFrameDuration = 0.15f;
+
+
+
+
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
@@ -56,7 +81,28 @@ void renderGame() {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:
         drawGameScreen();
+        //drawCaptainAmericaFight(400.0f, 60.0f, 90.0f, 90.0f, 0);
         updateShop(points);
+
+        // Captain America fighting animation test
+        
+        //drawCaptainAmericaFight(400.0f, 60.0f, 90.0f, 90.0f, 0);
+        // Captain America movement test
+        
+        // Draw Captain America according to his current state
+        if (capIsFighting) {
+            drawCaptainAmericaFight(capX, capY, capWidth, capHeight, capFightFrame );}
+            else {
+                 drawCaptainAmericaRun(
+        capX, capY, capWidth, capHeight);}
+
+
+
+
+
+
+        // Temporary villain
+        drawRect(villainX, villainY, villainWidth, villainHeight,glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
         //testing area
             //drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
@@ -104,16 +150,41 @@ void renderGame() {
     }
 }
 // keyboard presses
-void onKey(int key) {
-            if (key == GLFW_KEY_ESCAPE) {
-            if (gameState == GameState::PLAYING)     gameState = GameState::PAUSED;
-            else if (gameState == GameState::PAUSED) gameState = GameState::PLAYING;
-}
 
-           /* jump selected lanes */ 
-           /* duck selected lanes */ 
-         
+
+void setPlayerAction(PlayerAction action) {
+
+    for (player& p : players) {
+
+        if (selectedLanes[p.lane] && p.type != 3) {
+            p.action = action;
+            p.actionTimer = 0.0f;
+            p.jumpOffset = 0.0f;
+        }
     }
+}
+void onKey(int key) {
+
+    if (key == GLFW_KEY_ESCAPE) {
+        if (gameState == GameState::PLAYING)
+            gameState = GameState::PAUSED;
+        else if (gameState == GameState::PAUSED)
+            gameState = GameState::PLAYING;
+
+        return;
+    }
+
+    if (gameState != GameState::PLAYING)
+        return;
+
+    if (key == GLFW_KEY_W || key == GLFW_KEY_UP) {
+        setPlayerAction(PlayerAction::JUMPING);
+    }
+
+    else if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN) {
+        setPlayerAction(PlayerAction::DUCKING);
+    }
+}
 
 // mouse clicks
 void onClick(float mouseX, float mouseY){
@@ -148,7 +219,7 @@ void onClick(float mouseX, float mouseY){
     else if(gameState == GameState::PLAYING){
         int lane= whatLane(mouseX, mouseY);
         if(lane !=-1){
-        selectedLane=lane; return;}
+        selectedLanes[lane] = !selectedLanes[lane]; return;}
         if(selectedLane!=-1){
 
         if(isMouseOver(player1,mouseX,mouseY) && points>=10){
@@ -234,7 +305,41 @@ int randomLane() {
 
 
 void update(float deltaTime){
-    if(gameState == GameState::PLAYING){
+    if(gameState == GameState::PLAYING){ 
+
+        // Captain America moves towards the villain
+        if (!capIsFighting) {
+            capX += capSpeed * deltaTime;
+
+            // Stop when Captain America reaches the villain
+            if (capX + capWidth >= villainX) {
+                capX = villainX - capWidth;
+                capIsFighting = true;
+            }
+        }
+
+         // Update fighting animation
+         if (capIsFighting) {
+            capFightTimer += deltaTime;
+            if (capFightTimer >= capFrameDuration) {
+                capFightTimer -= capFrameDuration;
+                capFightFrame++;
+                if (capFightFrame >= 5) {
+                    capFightFrame = 0;
+                  } 
+                }
+            }
+
+        // Keep Captain America inside the screen
+        if (capX + capWidth > 1280.0f) {
+            capX = 1280.0f - capWidth;
+        }
+        
+        
+
+
+
+
         hoverLane = whatLane(mouseX, mouseY);
       for(player& p : players) p.move = 1;
       for(int i = players.size() - 1; i >= 0; i--){

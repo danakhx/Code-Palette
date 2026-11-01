@@ -15,7 +15,46 @@ Pixeldata SPcrouch;
 Pixeldata SPstand;
 Pixeldata SPweb;
 Pixeldata Hulk;
+
+//captain a
 Pixeldata Cap;
+Pixeldata Capfight;
+pixeldata Cjump;
+pixeldata Ccrouch;
+
+bool loadfight(){
+    Capfight.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/weapon.png",&Capfight.width,&Capfight.height,&Capfight.channels,0);
+    if (Capfight.ppointer==nullptr){
+        return false;
+    }
+    return true;
+}
+
+bool loadCjump(){
+    Cjump.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/jump.png",&Cjump.width,&Cjump.height,&Cjump.channels,0);
+    if (Cjump.ppointer==nullptr){
+        return false;
+    }
+    return true;
+}
+
+bool loadCcrouch(){
+    Ccrouch.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/crouch.png",&Ccrouch.width,&Ccrouch.height,&Ccrouch.channels,0);
+    if (Ccrouch.ppointer==nullptr){
+        return false;
+    }
+    return true;
+}
+
+
+bool loadCap(){
+    Cap.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/run.png",&Cap.width,&Cap.height,&Cap.channels,0);
+    if (Cap.ppointer==nullptr){
+        return false;
+    }
+    return true;
+    
+}
 
 
 bool loadSPCROUCH(){
@@ -44,3 +83,4 @@ bool loadSPWEB(){
     }
     return true;
 }
+
