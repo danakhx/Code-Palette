@@ -23,7 +23,7 @@ bool loadCcrouch();
 
 struct enemyTest{int lane; float x; 
     float w; float h; float speed;int type; //type 1=easy, 2=medium, 3=hard
- int hp;float projTimer; int move;}; //0 standing 1 moving
+                  int hp;int maxhp;float projTimer; int move;}; //0 standing 1 moving
 
 enum class PlayerAction {
     RUNNING,
@@ -40,7 +40,7 @@ enum class PlayerAction {
 
 
 struct player{int lane; float x; float w; float h;
-float speed; int type; int hp;  float projTimer; int move;
+float speed; int type; int hp; int maxhp ; float projTimer; int move;
  PlayerAction action; float actionTimer; float jumpOffset; };//type order is captain america, spiderman, hulk
 
 struct arcReactor{int lane; int x; int value;};
