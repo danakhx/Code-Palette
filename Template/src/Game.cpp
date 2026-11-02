@@ -19,7 +19,7 @@ std::array<bool, 4> selectedLanes = {false, false, false, false};
 int enemyCount=0;
 float spawnTimer = 4.0f;
 int points=30;
-
+std::vector<impactEffect> impacts;
 
 // Captain America movement test
 float capX = 100.0f;
@@ -41,7 +41,9 @@ int capFightFrame = 0;
 float capFightTimer = 0.0f;
 const float capFrameDuration = 0.15f;
 
-
+const float jumpDuration = 0.8f;
+const float duckDuration = 0.6f;
+const float jumpHeight = 80.0f;
 
 
 
@@ -107,14 +109,42 @@ void renderGame() {
     }
         
         for(const player& p : players){
+             float playerY = laneCenter(p.lane) - p.h / 2.0f;
+              // Smaller visual dimensions
+             float drawW = p.w * 0.75f;
+             float drawH = p.h * 0.75f;
+            float drawX = p.x + (p.w - drawW) / 2.0f;   // Keep character centered horizontally
+             // Keep character anchored to the bottom of its original position
+             float drawY = playerY;
             if(p.type==1){
-                drawRect(p.x,(laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+                
+                 if(p.fighting){
+                    drawCaptainAmericaFight(drawX,drawY, drawW,drawH,p.fightFrame);
+                 }
+                
+                
+                
+                else if(p.action == PlayerAction::JUMPING){
+                     drawCjump(drawX, drawY + p.jumpOffset, drawW, drawH);
+                 }
+                else if(p.action == PlayerAction::DUCKING){
+                    drawCcrouch(drawX, drawY, drawW, drawH);
+                }
+                else{
+                    drawCaptainAmericaRun(drawX, drawY, drawW, drawH);
+                }
+
             }
             else if(p.type==2){
-                drawRect(p.x, (laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                if(p.action == PlayerAction::DUCKING){
+                     drawSPcrouch(drawX, drawY - 15.0f, drawW, drawH);
+                }
+                else{
+                     drawSPstand(drawX  - 15.0f, drawY + p.jumpOffset - 25.0f, drawW+ 25.0f, drawH  + 30.0f);
+                }
             }
             else{
-                drawRect(p.x, (laneCenter(p.lane)-p.h/2), p.w, p.h, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+                drawhulk(p.x, playerY, p.w, p.h);
             }
             float top = laneCenter(p.lane) - p.h/2 + p.h;         
             float w = p.w;                                    
@@ -128,13 +158,28 @@ void renderGame() {
             drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f));
         }
         for(const projectile& proj: projectiles){
+            float projectileY = laneCenter(proj.lane) + proj.y;//leh
             if(proj.side==0){
-                drawProjectile(proj.x,laneCenter(proj.lane)+proj.y,glm::vec4(0.0f,1.0f,0.0f,1.0f));
+                drawweb(proj.x, projectileY, 40.0f, 25.0f);
             }
             else{
-                drawProjectile(proj.x,laneCenter(proj.lane)+proj.y,glm::vec4(1.0f,0.0f,0.0f,1.0f));
+                drawProjectile(proj.x,projectileY, glm::vec4(1.0f,0.0f,0.0f,1.0f));
             }
         }
+        // DRAW IMPACT EFFECTS HERE
+
+        for(const impactEffect& impact : impacts){
+
+            float impactY = laneCenter(impact.lane) + impact.y;
+
+            drawimpact(
+                impact.x,
+                impactY,
+                60.0f,
+                60.0f
+            );
+        }
+
         for(const arcReactor& point: droppedPoints){
             drawpointReactor(point.x,laneCenter(point.lane)-50.0f,30.0f,30.0f);
         }
@@ -153,7 +198,7 @@ void setPlayerAction(PlayerAction action) {
 
     for (player& p : players) {
 
-        if (selectedLanes[p.lane] && p.type != 3) {
+        if ((p.type == 1 || p.type == 2) &&  p.lane >= 1 && p.lane <= 3 && selectedLanes[p.lane]) {
             p.action = action;
             p.actionTimer = 0.0f;
             p.jumpOffset = 0.0f;
@@ -331,8 +376,43 @@ void update(float deltaTime){
     hoverLane = whatLane(mouseX, mouseY);
       for(player& p : players) p.move = 1; //set all players movable
       for(int i = players.size() - 1; i >= 0; i--){ //players die loop
-        if(players[i].hp <= 0) players.erase(players.begin() + i);
-}
+        if(players[i].hp <= 0) players.erase(players.begin() + i); }
+
+        // JUMP AND DUCK ANIMATION UPDATE
+        for(player& p : players){///////ayo
+
+            if(p.action == PlayerAction::JUMPING){
+
+                p.actionTimer += deltaTime;
+
+                // Spider-Man jump: smooth upward and downward movement
+                float t = p.actionTimer / jumpDuration;
+
+                if(t <= 1.0f){
+                    p.jumpOffset = 4.0f * jumpHeight * t * (1.0f-t);
+                }
+
+                // Finish jump
+                if(p.actionTimer >= jumpDuration){
+                    p.action = PlayerAction::RUNNING;
+                    p.actionTimer = 0.0f;
+                    p.jumpOffset = 0.0f;
+                }
+            }
+
+            else if(p.action == PlayerAction::DUCKING){
+
+                p.actionTimer += deltaTime;
+
+                if(p.actionTimer >= duckDuration){
+                    p.action = PlayerAction::RUNNING;
+                    p.actionTimer = 0.0f;
+                    p.jumpOffset = 0.0f;
+                }
+            }
+        }
+
+
 
         for(enemyTest& e : enemies) e.move = 1; //set all enemmies movable
         for(int i = enemies.size() - 1; i >= 0; i--){ //ENEMIES DIE LOOP FOR POINTS AMD REMOVING ENEMIES
@@ -357,46 +437,99 @@ void update(float deltaTime){
             }
         }
 
-        for(player& player:players){ //collisions loop lazm y2ofo
+        for(player& p : players){
+            bool touchingEnemy = false;//collisions loop lazm y2ofo
             for(enemyTest& enemy: enemies){
-                if(player.lane==enemy.lane && (player.x + player.w)>=enemy.x && player.x<=(enemy.x+enemy.w)){
+                if(p.lane==enemy.lane && p.x + p.w >= enemy.x && p.x <= enemy.x + enemy.w){
+                    touchingEnemy = true;
                     enemy.move=0;
-                    player.move=0;
+                    p.move=0;
 
-                    if(player.type==1){
-                        player.projTimer-=deltaTime;
-                        if(player.projTimer<=0.0f){
-                            enemy.hp-=1;
-                            player.projTimer=1.0f; 
+                    if(p.type==1){
+                        p.fighting = true;
+                        p.fightTimer += deltaTime;
+                        if(p.fightTimer >= capFrameDuration){
+                            p.fightTimer = 0.0f;
+                            p.fightFrame++;
+                            if(p.fightFrame >= 5){
+                                  p.fightFrame = 0;
+                                    enemy.hp -= 1;
+
+                            }
+                            
+                            
                         }
                     }
                     if(enemy.type==3){
                         enemy.projTimer-=deltaTime;
                         if(enemy.projTimer<=0.0f){
-                        player.hp-=2;
+                        p.hp-=2;
                         enemy.projTimer=3.0f;
                     }
                 }
-            }
-        }}
-        
-        for(int i=projectiles.size()-1; i>=0;i--){ //projectiles loop and collisions
-            projectile proj= projectiles[i];
-            for(enemyTest& enemy: enemies){
-                if(proj.side==0 && proj.lane==enemy.lane && proj.x>=enemy.x && proj.x<=(enemy.x+enemy.w)){
-                    enemy.hp-=1;
-                    projectiles.erase(projectiles.begin()+i); //Because erase doesn’t take an index number; it takes an iterator, which is like a pointer to an element. begin() is an iterator pointing at element 0, so begin() + i points at element i.Because erase doesn’t take an index number; it takes an iterator, which is like a pointer to an element. begin() is an iterator pointing at element 0, so begin() + i points at element i.
-                    break;
-                }
-            }
-            for(player& p: players){
-                if(proj.side==1 && proj.lane==p.lane && proj.x>=p.x && proj.x<=(p.x+p.w)){
-                    p.hp-=1;
-                    projectiles.erase(projectiles.begin()+i);
-                    break;
-                }
+                break;
             }
         }
+        // No enemy touching Cap anymore
+        if(!touchingEnemy && p.type == 1){
+             p.fighting = false;
+             p.fightFrame = 0;
+             p.fightTimer = 0.0f;
+    }
+    if(!touchingEnemy){
+        p.move = 1;
+    }
+}      
+        
+for(int i = projectiles.size() - 1; i >= 0; i--){
+
+    projectile proj = projectiles[i];
+    bool projectileHit = false;
+
+    // Spider-Man's web hits an enemy
+    for(enemyTest& enemy : enemies){
+
+        if(proj.side == 0 &&
+           proj.lane == enemy.lane &&
+           proj.x >= enemy.x &&
+           proj.x <= enemy.x + enemy.w){
+
+            enemy.hp -= 1;
+
+            impactEffect impact = {
+                enemy.lane,
+                enemy.x,
+                proj.y,
+                0.0f
+            };
+
+            impacts.push_back(impact);
+
+            projectileHit = true;
+            break;
+        }
+    }
+
+    // Enemy projectile hits a player
+    for(player& p : players){
+
+        if(proj.side == 1 &&
+           proj.lane == p.lane &&
+           proj.x >= p.x &&
+           proj.x <= p.x + p.w){
+
+            p.hp -= 1;
+            projectileHit = true;
+            break;
+        }
+    }
+
+    // Remove projectile ONLY once
+    if(projectileHit){
+        projectiles.erase(projectiles.begin() + i);
+    }
+}
+
 
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
             //also use & to move actual enemy not just a copy (pointer)
@@ -438,11 +571,25 @@ void update(float deltaTime){
             }
 
         }
+        for(int i = impacts.size() - 1; i >= 0; i--){ // UPDATE IMPACT EFFECTS HERE
+            impacts[i].timer += deltaTime;
+
+            if(impacts[i].timer >= 0.25f){
+                impacts.erase(impacts.begin() + i);
+            }
+        }
+
         //removing projs if they go offscreen
+        
         for(int i = projectiles.size() - 1; i >= 0; i--){
-        if(projectiles[i].x > 1280.0f || projectiles[i].x < 200.0f){   
-        projectiles.erase(projectiles.begin() + i);
-    }}
+
+            if(projectiles[i].x > 1280.0f ||
+            projectiles[i].x < 200.0f){
+
+                projectiles.erase(projectiles.begin() + i);
+            }
+        }
+
 
         //TEST LOOP WILL BE REMOVED LATER
         for(int i = enemies.size() - 1; i >= 0; i--){

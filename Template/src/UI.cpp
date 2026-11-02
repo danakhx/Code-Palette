@@ -249,5 +249,5 @@ void drawGameScreen(){
         drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
-        drawplayer();
+        //drawplayer();
 }

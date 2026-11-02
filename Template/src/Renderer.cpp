@@ -611,3 +611,11 @@ void drawgrayHulk(float x, float y, float w, float h){
 void drawpointReactor(float x, float y, float w, float h){
     drawSprite(pointReactorTexture,x,y,w,h);
 }
+
+void drawSPstand(float x, float y, float w, float h){
+    drawSprite(characterTexture, x, y, w, h);
+}
+
+void drawSPcrouch(float x, float y, float w, float h){
+    drawSprite(crouchTexture, x, y, w, h);
+}

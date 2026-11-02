@@ -28,3 +28,9 @@ int maxCount(int w);
 void updateShop(int cpoints);
 int randomLane();
 
+struct impactEffect {
+    int lane;
+    float x;
+    float y;
+    float timer;
+};
