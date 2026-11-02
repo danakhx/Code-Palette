@@ -5,12 +5,16 @@ struct Pixeldata{
     int width; int height; int channels; unsigned char* ppointer;
 };
 
-extern Pixeldata SPweb;
+extern Pixeldata web;
+extern Pixeldata webimpact;
 extern Pixeldata SPstand;
 extern Pixeldata SPcrouch;
 extern bool loadSPSTAND();
 extern bool loadSPCROUCH();
-extern bool loadSPWEB();
+bool loadweb();
+bool loadwebimpact();
+extern Pixeldata hulk;
+bool loadhulk();
 
 extern Pixeldata Capfight;
 extern Pixeldata Cap;
@@ -20,6 +24,17 @@ bool loadCap();
 bool loadfight();
 bool loadCjump();
 bool loadCcrouch();
+
+//villlllaisnsnn
+extern Pixeldata thanos;
+extern Pixeldata doom;
+extern Pixeldata magneto;
+
+bool loadmagneto();
+bool loadthanos();
+bool loaddoom();
+
+
 
 struct enemyTest{int lane; float x; 
     float w; float h; float speed;int type; //type 1=easy, 2=medium, 3=hard

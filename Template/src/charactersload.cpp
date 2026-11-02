@@ -9,12 +9,17 @@
 #include "stb_image.h"
 
 
+Pixeldata hulk;
+//ashrar
+Pixeldata magneto;
+Pixeldata doom;
+Pixeldata thanos;
 
 
 Pixeldata SPcrouch;
 Pixeldata SPstand;
-Pixeldata SPweb;
-Pixeldata Hulk;
+Pixeldata web;
+Pixeldata webimpact;
 
 //captain a
 Pixeldata Cap;
@@ -22,6 +27,16 @@ Pixeldata Capfight;
 Pixeldata Cjump;
 Pixeldata Ccrouch;
 
+
+
+bool loadhulk(){
+    hulk.ppointer=stbi_load(CHARACTERS_DIR "hulk/hulk.png",&hulk.width,&hulk.height,&hulk.channels,0);
+    if (hulk.ppointer==nullptr){
+        return false;
+    }
+    return true;
+
+}
 bool loadfight(){
     Capfight.ppointer=stbi_load(CHARACTERS_DIR "captainAmerica/weapon.png",&Capfight.width,&Capfight.height,&Capfight.channels,0);
     if (Capfight.ppointer==nullptr){
@@ -76,11 +91,47 @@ bool loadSPSTAND(){
     return true;
 }
 
-bool loadSPWEB(){
-    SPweb.ppointer=stbi_load(CHARACTERS_DIR "spiderman/web.png",&SPweb.width,&SPweb.height,&SPweb.channels,0);
-    if (SPweb.ppointer == nullptr) {
+
+//thanos
+bool loadthanos(){
+    thanos.ppointer=stbi_load(CHARACTERS_DIR "thanos/thanos.png",&thanos.width,&thanos.height,&thanos.channels,0);
+    if (thanos.ppointer == nullptr) {
         return false;
     }
     return true;
 }
 
+// magneto
+bool loadmagneto(){
+    magneto.ppointer=stbi_load(CHARACTERS_DIR "magneto/magneto.png",&magneto.width,&magneto.height,&magneto.channels,0);
+    if (magneto.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+
+//i am doom
+bool loaddoom(){
+    doom.ppointer=stbi_load(CHARACTERS_DIR "doom/doom.png",&doom.width,&doom.height,&doom.channels,0);
+    if (doom.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+
+bool loadweb(){
+    web.ppointer=stbi_load(CHARACTERS_DIR "spiderman/web.png",&web.width,&web.height,&web.channels,0);
+    if (web.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+
+}
+bool loadwebimpact(){
+    webimpact.ppointer=stbi_load(CHARACTERS_DIR "spiderman/collision.png",&webimpact.width,&webimpact.height,&webimpact.channels,0);
+    if (webimpact.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+
+}

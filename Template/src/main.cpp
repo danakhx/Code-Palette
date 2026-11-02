@@ -59,6 +59,27 @@ int main() {
     if (loadCjump()){std::cout << "Captain America j sprite loaded!" << std::endl;}
     else{std::cout<< "Failed to load Captain America j sprite!" << std::endl;}
 
+     // villain test
+    if (loaddoom()){std::cout << "doom sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load dooom" << std::endl;}
+
+    if (loadmagneto()){std::cout << "magneto sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load magneot sprite" << std::endl;}
+    if (loadthanos()){std::cout << "thanos sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load tanos sprite!" << std::endl;}
+
+    if (loadhulk()){std::cout << "hulk sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load hulk sprite" << std::endl;}
+
+    if (loadweb()){std::cout << "web sprite loaded!" << std::endl;}
+    else{std::cout<< "Failed to load web sprite" << std::endl;}
+
+    if (loadwebimpact()){std::cout << "imp loaded!" << std::endl;}
+    else{std::cout<< "Failed to load imp sprite" << std::endl;}
+
+
+
+
 
     //loki test
     if(!loadLoki()) std::cout << "Failed to load Loki image." << std::endl;

@@ -30,3 +30,9 @@ void drawCaptainAmericaFight(float x, float y, float w, float h, int frameIndex)
 void drawCaptainAmericaRun(float x, float y, float w, float h);
 void drawCcrouch(float x, float y, float w, float h);
 void drawCjump(float x, float y, float w, float h);
+void drawdoom(float x, float y, float w, float h);
+void drawthanos(float x, float y, float w, float h);
+void drawmagneto(float x, float y, float w, float h);
+void drawhulk(float x, float y, float w, float h);
+void drawimpact(float x, float y, float w, float h);
+void drawweb(float x, float y, float w, float h);

@@ -41,12 +41,18 @@ static const SpriteFrame capFightFrames[] = {
 };
 
 
+//hulk texture
+static GLuint hulktex=0;
+
+// ashrar
+static GLuint ttex=0;
+static GLuint dtex=0;
+static GLuint mtex=0;
 
 
-
-
-
-
+// spidermn web
+static GLuint WebTexture = 0;
+static GLuint impactTexture = 0;
 
 
 static const char* vertexShaderSource = R"(
@@ -196,6 +202,17 @@ void initRenderer() {
     cfightTexture = characterstextures(Capfight);
     cjumpTex=characterstextures(Cjump);
     ccrouchTex=characterstextures(Ccrouch);
+    hulktex=characterstextures(hulk);
+
+    WebTexture =characterstextures(web);
+    impactTexture = characterstextures(webimpact);
+
+
+    //ayo initilatzaton
+    // Enemy textures
+    dtex = characterstextures(doom);
+    mtex = characterstextures(magneto);
+    ttex = characterstextures(thanos);
 
 
     float triVertices[] = {
@@ -366,6 +383,17 @@ void cleanupRenderer() {
     glDeleteTextures(1, &cfightTexture);
     glDeleteTextures(1,&cjumpTex);
     glDeleteTextures(1,&ccrouchTex);
+    
+    glDeleteTextures(1,&hulktex);
+
+    glDeleteTextures(1,&mtex);
+    glDeleteTextures(1,&dtex);
+    glDeleteTextures(1,&ttex);       
+    
+    glDeleteTextures(1,&WebTexture);
+    glDeleteTextures(1,&impactTexture);
+
+
 }
 
 //characters  texture eftkery takes el image data  uploads it ka texture
@@ -512,4 +540,26 @@ void drawCjump(float x, float y, float w, float h){
 }
 void drawCcrouch(float x, float y, float w, float h){
     drawSprite(ccrouchTex, x, y, w, h);
+}
+
+void drawmagneto(float x, float y, float w, float h){
+     drawSprite(mtex, x, y, w, h);
+}
+void drawdoom(float x, float y, float w, float h){
+     drawSprite(dtex, x, y, w, h);
+}
+void drawthanos(float x, float y, float w, float h){
+     drawSprite(ttex, x, y, w, h);
+}
+
+void drawhulk(float x, float y, float w, float h){
+    drawSprite(hulktex,x,y,w,h);
+}
+
+void drawweb(float x, float y, float w, float h){
+    drawSprite(WebTexture,x,y,w,h);
+    
+}
+void drawimpact(float x, float y, float w, float h){
+    drawSprite(impactTexture,x,y,w,h);
 }

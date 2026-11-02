@@ -102,7 +102,7 @@ void renderGame() {
 
 
         // Temporary villain
-        drawRect(villainX, villainY, villainWidth, villainHeight,glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+       //drawRect(villainX, villainY, villainWidth, villainHeight,glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
         //testing area
             //drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
@@ -110,18 +110,14 @@ void renderGame() {
         //end testing area
 
         for(const enemyTest& enemy : enemies){
+            float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
             if(enemy.type==1){
-            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        }
-        else if (enemy.type ==2){
-            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-        
-        }
-        else{
-            drawRect(enemy.x, (laneCenter(enemy.lane)-enemy.h/2), enemy.w, enemy.h, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-        
-        }
-        float top = laneCenter(enemy.lane) - enemy.h/2 + enemy.h;    
+            drawdoom(enemy.x, enemyY, enemy.w, enemy.h);}
+            else if (enemy.type ==2){
+            drawmagneto(enemy.x, enemyY, enemy.w, enemy.h); }
+            else{
+             drawthanos(enemy.x, enemyY, enemy.w, enemy.h);}
+            float top = laneCenter(enemy.lane) - enemy.h/2 + enemy.h;    
             float w = enemy.w;                                     
             float h = 6.0f;
             float y = top + 2.0f;
@@ -385,15 +381,23 @@ void update(float deltaTime){
     if(gameState == GameState::PLAYING){ 
 
         // Captain America moves towards the villain
+        // Captain America moves until he collides with any enemy
         if (!capIsFighting) {
-            capX += capSpeed * deltaTime;
+             capX += capSpeed * deltaTime;
+             for (const enemyTest& enemy : enemies) {
+             // Check collision with an enemy in any lane
+               if (capX + capWidth >= enemy.x &&
+            capX <= enemy.x + enemy.w &&
+            capY + capHeight >= laneCenter(enemy.lane) - enemy.h / 2.0f &&
+            capY <= laneCenter(enemy.lane) + enemy.h / 2.0f) {
 
-            // Stop when Captain America reaches the villain
-            if (capX + capWidth >= villainX) {
-                capX = villainX - capWidth;
-                capIsFighting = true;
-            }
+            // Stop Captain America at the collision point
+            capX = enemy.x - capWidth;
+            capIsFighting = true;
+            break;
         }
+    }
+}
 
          // Update fighting animation
          if (capIsFighting) {
