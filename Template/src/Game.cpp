@@ -60,19 +60,22 @@ void restartGame(){
     selectedLanes = {false, false, false, false};
     projectiles.clear();
 }
-void updateShop(int cpoints){
-    if(cpoints>=30){
+void updateShop(int cpoints){ //rendering shop and grayscale
+     int count = 0;
+        for (int i = 1; i < 4; i++) {
+            if (selectedLanes[i]) {
+                count++;
+            }}
+    if(cpoints>=30 && cpoints>=30*count){
         canAfford(3);
-
     }
-    else if(cpoints>=20){
+    else if(cpoints>=20 && cpoints>=20*count){
         canAfford(2);
     }
-    else if(cpoints>=10){
+    else if(cpoints>=10 && cpoints>=10*count){
         canAfford(1);
     }
     else canAfford(0);
-
 }
 
 
@@ -81,34 +84,7 @@ void renderGame() {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:
         drawGameScreen();
-        //drawCaptainAmericaFight(400.0f, 60.0f, 90.0f, 90.0f, 0);
         updateShop(points);
-
-        // Captain America fighting animation test
-        
-        //drawCaptainAmericaFight(400.0f, 60.0f, 90.0f, 90.0f, 0);
-        // Captain America movement test
-        
-        // Draw Captain America according to his current state
-        if (capIsFighting) {
-            drawCaptainAmericaFight(capX, capY, capWidth, capHeight, capFightFrame );}
-            else {
-                 drawCaptainAmericaRun(
-        capX, capY, capWidth, capHeight);}
-
-
-
-
-
-
-        // Temporary villain
-       //drawRect(villainX, villainY, villainWidth, villainHeight,glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-
-        //testing area
-            //drawProjectile(500,500,glm::vec4(1.0f,1.0f,1.0f,1.0f));
-
-        //end testing area
-
         for(const enemyTest& enemy : enemies){
             float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
             if(enemy.type==1){
@@ -237,29 +213,18 @@ void onClick(float mouseX, float mouseY){
  else if (gameState == GameState::PLAYING) {
 
     int lane = whatLane(mouseX, mouseY);
-
-    // Select or deselect a lane
     if (lane != -1) {
         selectedLanes[lane] = !selectedLanes[lane];
         return;
     }
-
-    // Check that at least one lane is selected
     if (selectedLanes[1] || selectedLanes[2] || selectedLanes[3]) {
-
-        // Count selected lanes
         int Counter = 0;
-
         for (int i = 1; i < 4; i++) {
             if (selectedLanes[i]) {
                 Counter++;
-            }
-        }
-
-        // Identify the selected character
+            }}
         int characterType = 0;
         int characterPrice = 0;
-
         if (isMouseOver(player1, mouseX, mouseY)) {
             characterType = 1;
             characterPrice = 10;
@@ -272,20 +237,11 @@ void onClick(float mouseX, float mouseY){
             characterType = 3;
             characterPrice = 30;
         }
-
-        // Only proceed if a character button was clicked
         if (characterType != 0) {
-
             int total = Counter * characterPrice;
-
-            // Check affordability BEFORE creating players
             if (points >= total) {
-
-                // Create a character in every selected lane
                 for (int i = 1; i < 4; i++) {
-
                     if (selectedLanes[i]) {
-
                         if (characterType == 1) {
                             player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
                             players.push_back(p);
@@ -300,19 +256,9 @@ void onClick(float mouseX, float mouseY){
                         }
                     }
                 }
-
-                // Deduct the total cost ONCE
                 points -= total;
-
-                // Clear selections after successful purchase
                 selectedLanes = {false, false, false, false};
-            }
-            else {
-                // Not enough points:
-                // Do nothing. Keep selections and points unchanged.
-            }
-        }
-    }
+            }}}
 }
 }
 
@@ -379,49 +325,7 @@ int randomLane() {
 
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){ 
-
-        // Captain America moves towards the villain
-        // Captain America moves until he collides with any enemy
-        if (!capIsFighting) {
-             capX += capSpeed * deltaTime;
-             for (const enemyTest& enemy : enemies) {
-             // Check collision with an enemy in any lane
-               if (capX + capWidth >= enemy.x &&
-            capX <= enemy.x + enemy.w &&
-            capY + capHeight >= laneCenter(enemy.lane) - enemy.h / 2.0f &&
-            capY <= laneCenter(enemy.lane) + enemy.h / 2.0f) {
-
-            // Stop Captain America at the collision point
-            capX = enemy.x - capWidth;
-            capIsFighting = true;
-            break;
-        }
-    }
-}
-
-         // Update fighting animation
-         if (capIsFighting) {
-            capFightTimer += deltaTime;
-            if (capFightTimer >= capFrameDuration) {
-                capFightTimer -= capFrameDuration;
-                capFightFrame++;
-                if (capFightFrame >= 5) {
-                    capFightFrame = 0;
-                  } 
-                }
-            }
-
-        // Keep Captain America inside the screen
-        if (capX + capWidth > 1280.0f) {
-            capX = 1280.0f - capWidth;
-        }
-        
-        
-
-
-
-
-        hoverLane = whatLane(mouseX, mouseY);
+    hoverLane = whatLane(mouseX, mouseY);
       for(player& p : players) p.move = 1;
       for(int i = players.size() - 1; i >= 0; i--){
         if(players[i].hp <= 0) players.erase(players.begin() + i);

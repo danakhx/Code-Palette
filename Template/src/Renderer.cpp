@@ -19,6 +19,17 @@ static GLuint characterTexture = 0;
 static GLuint crouchTexture = 0;
 static GLuint lokiTexture = 0;
 static GLuint guantletTexture = 0;
+
+
+//shop related
+static GLuint capFaceTexture = 0;
+static GLuint grayCapTexture = 0;
+static GLuint spiderFaceTexture = 0;
+static GLuint graySpiderTexture = 0;
+static GLuint hulkFaceTexture = 0;
+static GLuint grayHulkTexture = 0;
+static GLuint pointReactorTexture = 0;
+
 static bool isCrouching = false;
 
 //cap run and fight
@@ -111,14 +122,6 @@ void main()
 }
 )";
 
-
-
-
-
-
-
-
-
 GLuint compileShader(GLenum type, const char* source) {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, nullptr);
@@ -197,6 +200,18 @@ void initRenderer() {
     glBindVertexArray(0);
     lokiTexture = characterstextures(Loki);
     guantletTexture = characterstextures(infinityGuantlet);
+
+    //shop
+    capFaceTexture      = characterstextures(capFace);
+    grayCapTexture      = characterstextures(grayCap);
+    spiderFaceTexture   = characterstextures(spiderFace);
+    graySpiderTexture   = characterstextures(graySpider);
+    hulkFaceTexture     = characterstextures(hulkFace);
+    grayHulkTexture     = characterstextures(grayHulk);
+    pointReactorTexture = characterstextures(pointReactor);
+
+
+
     //cap
     crunTexture = characterstextures(Cap);
     cfightTexture = characterstextures(Capfight);
@@ -393,6 +408,15 @@ void cleanupRenderer() {
     glDeleteTextures(1,&WebTexture);
     glDeleteTextures(1,&impactTexture);
 
+    //shop related
+    glDeleteTextures(1,&capFaceTexture);
+    glDeleteTextures(1,&grayCapTexture);
+    glDeleteTextures(1,&spiderFaceTexture);
+    glDeleteTextures(1,&graySpiderTexture);
+    glDeleteTextures(1,&hulkFaceTexture);
+    glDeleteTextures(1,&grayHulkTexture);
+    glDeleteTextures(1,&pointReactorTexture);
+
 
 }
 
@@ -562,4 +586,28 @@ void drawweb(float x, float y, float w, float h){
 }
 void drawimpact(float x, float y, float w, float h){
     drawSprite(impactTexture,x,y,w,h);
+}
+
+
+//shop related
+void drawcapFace(float x, float y, float w, float h){
+    drawSprite(capFaceTexture,x,y,w,h);
+}
+void drawgrayCap(float x, float y, float w, float h){
+    drawSprite(grayCapTexture,x,y,w,h);
+}
+void drawspiderFace(float x, float y, float w, float h){
+    drawSprite(spiderFaceTexture,x,y,w,h);
+}
+void drawgraySpider(float x, float y, float w, float h){
+    drawSprite(graySpiderTexture,x,y,w,h);
+}
+void drawhulkFace(float x, float y, float w, float h){
+    drawSprite(hulkFaceTexture,x,y,w,h);
+}
+void drawgrayHulk(float x, float y, float w, float h){
+    drawSprite(grayHulkTexture,x,y,w,h);
+}
+void drawpointReactor(float x, float y, float w, float h){
+    drawSprite(pointReactorTexture,x,y,w,h);
 }

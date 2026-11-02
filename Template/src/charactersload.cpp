@@ -27,8 +27,6 @@ Pixeldata Capfight;
 Pixeldata Cjump;
 Pixeldata Ccrouch;
 
-
-
 bool loadhulk(){
     hulk.ppointer=stbi_load(CHARACTERS_DIR "hulk/hulk.png",&hulk.width,&hulk.height,&hulk.channels,0);
     if (hulk.ppointer==nullptr){

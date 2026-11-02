@@ -35,3 +35,20 @@ bool loadInfinityGuantlet();
 glm::vec4 laneColor(int lane);
 
 void canAfford(int p);
+
+//shop related
+extern Pixeldata capFace;
+extern Pixeldata grayCap;
+extern Pixeldata spiderFace;
+extern Pixeldata graySpider;
+extern Pixeldata hulkFace;
+extern Pixeldata grayHulk;
+extern Pixeldata pointReactor;
+
+bool loadCapFace();
+bool loadGrayCap();
+bool loadSpiderFace();
+bool loadGraySpider();
+bool loadHulkFace();
+bool loadGrayHulk();
+bool loadPointReactor();

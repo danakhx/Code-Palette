@@ -77,10 +77,6 @@ int main() {
     if (loadwebimpact()){std::cout << "imp loaded!" << std::endl;}
     else{std::cout<< "Failed to load imp sprite" << std::endl;}
 
-
-
-
-
     //loki test
     if(!loadLoki()) std::cout << "Failed to load Loki image." << std::endl;
     else std::cout << "Loki image loaded!" << std::endl;
@@ -88,6 +84,22 @@ int main() {
     //infinity guantlet
     if(!loadInfinityGuantlet())std::cout << "Failed to load Infinity Gauntlet image." << std::endl;
     else std::cout << "Infinity Gauntlet image loaded!" << std::endl;
+
+    //shop tests
+    if(!loadCapFace()) std::cout << "Failed to load Captain America face image." << std::endl;
+    else std::cout << "Captain America face image loaded!" << std::endl;
+    if(!loadGrayCap()) std::cout << "Failed to load Gray Captain America image." << std::endl;
+    else std::cout << "Gray Captain America image loaded!" << std::endl;
+    if(!loadSpiderFace()) std::cout << "Failed to load Spider-Man face image." << std::endl;
+    else std::cout << "Spider-Man face image loaded!" << std::endl;
+    if(!loadGraySpider()) std::cout << "Failed to load Gray Spider-Man image." << std::endl;
+    else std::cout << "Gray Spider-Man image loaded!" << std::endl;
+    if(!loadHulkFace()) std::cout << "Failed to load Hulk face image." << std::endl;
+    else std::cout << "Hulk face image loaded!" << std::endl;
+    if(!loadGrayHulk()) std::cout << "Failed to load Gray Hulk image." << std::endl;
+    else std::cout << "Gray Hulk image loaded!" << std::endl;
+    if(!loadPointReactor()) std::cout << "Failed to load Point Reactor image." << std::endl;
+    else std::cout << "Point Reactor image loaded!" << std::endl;
 
     glViewport(0, 0, 1280, 720);
 

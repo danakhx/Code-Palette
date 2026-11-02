@@ -36,3 +36,12 @@ void drawmagneto(float x, float y, float w, float h);
 void drawhulk(float x, float y, float w, float h);
 void drawimpact(float x, float y, float w, float h);
 void drawweb(float x, float y, float w, float h);
+
+//shop related
+void drawcapFace(float x, float y, float w, float h);
+void drawgrayCap(float x, float y, float w, float h);
+void drawspiderFace(float x, float y, float w, float h);
+void drawgraySpider(float x, float y, float w, float h);
+void drawhulkFace(float x, float y, float w, float h);
+void drawgrayHulk(float x, float y, float w, float h);
+void drawpointReactor(float x, float y, float w, float h);
