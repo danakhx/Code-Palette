@@ -13,6 +13,15 @@
 Pixeldata Loki;
 Pixeldata infinityGuantlet;
 
+//shop and points
+Pixeldata capFace;
+Pixeldata grayCap;
+Pixeldata spiderFace;
+Pixeldata graySpider;
+Pixeldata hulkFace;
+Pixeldata grayHulk;
+Pixeldata pointReactor;
+
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
         onKey(key);   // in game.cpp
@@ -55,6 +64,59 @@ bool loadLoki(){
     }
     return true;
 }
+
+//load shop
+bool loadCapFace(){
+    capFace.ppointer=stbi_load(ENTITIES_DIR "capFace.png",&capFace.width,&capFace.height,&capFace.channels,0);
+    if (capFace.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadGrayCap(){
+    grayCap.ppointer=stbi_load(ENTITIES_DIR "grayCap.png",&grayCap.width,&grayCap.height,&grayCap.channels,0);
+    if (grayCap.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadSpiderFace(){
+    spiderFace.ppointer=stbi_load(ENTITIES_DIR "spiderFace.png",&spiderFace.width,&spiderFace.height,&spiderFace.channels,0);
+    if (spiderFace.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadGraySpider(){
+    graySpider.ppointer=stbi_load(ENTITIES_DIR "graySpider.png",&graySpider.width,&graySpider.height,&graySpider.channels,0);
+    if (graySpider.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadHulkFace(){
+    hulkFace.ppointer=stbi_load(ENTITIES_DIR "hulkFace.png",&hulkFace.width,&hulkFace.height,&hulkFace.channels,0);
+    if (hulkFace.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadGrayHulk(){
+    grayHulk.ppointer=stbi_load(ENTITIES_DIR "grayHulk.png",&grayHulk.width,&grayHulk.height,&grayHulk.channels,0);
+    if (grayHulk.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadPointReactor(){
+    pointReactor.ppointer=stbi_load(ENTITIES_DIR "pointReactor.png",&pointReactor.width,&pointReactor.height,&pointReactor.channels,0);
+    if (pointReactor.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+
+
 //buttons and ui
 Button mStart    = {390, 390, 500, 100};
 Button mExit     = {390, 150, 500, 100};
@@ -65,23 +127,46 @@ Button player1 = {407,585,195,130};
 Button player2={608,585,195,130};
 Button player3={809,585,195,130};
 
+void drawPrices(){
+    drawTextCentered("$10",    414.0f, 588.0f, 180.0f, 32.0f, 2.0f, glm::vec4(1, 1, 1, 1));
+    drawTextCentered("$20", 615.0f, 588.0f, 180.0f, 32.0f, 2.0f, glm::vec4(1, 1, 1, 1));
+    drawTextCentered("$30",   816.0f, 588.0f, 180.0f, 32.0f, 2.0f, glm::vec4(1, 1, 1, 1));
+
+}
+
 void canAfford(int p){
     switch(p){ //color them if u can afford them wl default yb2a gray
-        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+                drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+                drawgraySpider(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
+                drawPrices();
                 break;
         case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+                drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
+                drawPrices();
                 break;
         case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+                drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); 
+                drawhulkFace(867.5f, 620.0f, 80.0f, 86.2f);
+                drawPrices();
                 break;
         default:drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                drawgrayCap(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+                drawgraySpider(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
+                drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
+                drawPrices();
         break;
     }
 
@@ -160,6 +245,8 @@ void drawGameScreen(){
         //each slot will take 200px since the full thing is 800
         drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
         drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        drawpointReactor(268.5f, 625.0f, 70.0f, 70.0f);
+        drawText("Points:$", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
         drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
