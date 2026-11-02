@@ -85,6 +85,7 @@ void renderGame() {
         case GameState::PLAYING:
         drawGameScreen();
         updateShop(points);
+        drawText(std::to_string(points).c_str(), 315, 608, 2.0f, glm::vec4(1, 1, 1, 1));
         for(const enemyTest& enemy : enemies){
             float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
             if(enemy.type==1){
@@ -133,7 +134,9 @@ void renderGame() {
             else{
                 drawProjectile(proj.x,laneCenter(proj.lane)+proj.y,glm::vec4(1.0f,0.0f,0.0f,1.0f));
             }
-
+        }
+        for(const arcReactor& point: droppedPoints){
+            drawpointReactor(point.x,laneCenter(point.lane)-50.0f,30.0f,30.0f);
         }
         break;
         case GameState::PAUSED:
@@ -326,17 +329,35 @@ int randomLane() {
 void update(float deltaTime){
     if(gameState == GameState::PLAYING){ 
     hoverLane = whatLane(mouseX, mouseY);
-      for(player& p : players) p.move = 1;
-      for(int i = players.size() - 1; i >= 0; i--){
+      for(player& p : players) p.move = 1; //set all players movable
+      for(int i = players.size() - 1; i >= 0; i--){ //players die loop
         if(players[i].hp <= 0) players.erase(players.begin() + i);
 }
 
-        for(enemyTest& e : enemies) e.move = 1;
-        for(int i = enemies.size() - 1; i >= 0; i--){
-            if(enemies[i].hp <= 0) enemies.erase(enemies.begin() + i);
-}
+        for(enemyTest& e : enemies) e.move = 1; //set all enemmies movable
+        for(int i = enemies.size() - 1; i >= 0; i--){ //ENEMIES DIE LOOP FOR POINTS AMD REMOVING ENEMIES
+            if(enemies[i].hp <= 0){
+                arcReactor ar;
+                if(enemies[i].type==1){
+                ar= {enemies[i].lane, enemies[i].x,10};}
+                else if(enemies[i].type==2){
+                ar= {enemies[i].lane, enemies[i].x,15};}
+                else{
+                ar= {enemies[i].lane, enemies[i].x,20};}
+                droppedPoints.push_back(ar);
+                enemies.erase(enemies.begin() + i);
+}}
 
-        for(player& player:players){
+        for(player& p:players){ //players collect points
+            for(int i= droppedPoints.size()-1;i>=0;i--){
+                if(droppedPoints[i].lane==p.lane && p.x + p.w -10.0f >= droppedPoints[i].x && p.x <= droppedPoints[i].x + 20.0f){
+                    points+=droppedPoints[i].value;
+                    droppedPoints.erase(droppedPoints.begin()+i);
+                }
+            }
+        }
+
+        for(player& player:players){ //collisions loop lazm y2ofo
             for(enemyTest& enemy: enemies){
                 if(player.lane==enemy.lane && (player.x + player.w)>=enemy.x && player.x<=(enemy.x+enemy.w)){
                     enemy.move=0;
@@ -359,7 +380,7 @@ void update(float deltaTime){
             }
         }}
         
-        for(int i=projectiles.size()-1; i>=0;i--){
+        for(int i=projectiles.size()-1; i>=0;i--){ //projectiles loop and collisions
             projectile proj= projectiles[i];
             for(enemyTest& enemy: enemies){
                 if(proj.side==0 && proj.lane==enemy.lane && proj.x>=enemy.x && proj.x<=(enemy.x+enemy.w)){
@@ -377,7 +398,7 @@ void update(float deltaTime){
             }
         }
 
-        for(enemyTest& enemy : enemies){//move with time yaany d=v*t 
+        for(enemyTest& enemy : enemies){//move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
             //also use & to move actual enemy not just a copy (pointer)
             if(enemy.move==1){
             enemy.x -= enemy.speed * deltaTime;}
@@ -396,7 +417,7 @@ void update(float deltaTime){
                     enemy.projTimer=3.5f; 
             }}
         }
-        for(player& p: players){
+        for(player& p: players){ //MOVING PLAYERS AND SPIDERMAN SHOOTS
             if(p.move==1){
             p.x+=p.speed*deltaTime;}
             if(p.type==2){
@@ -408,7 +429,7 @@ void update(float deltaTime){
                 }
             }
         }
-        for(projectile& proj: projectiles){
+        for(projectile& proj: projectiles){ //moving projectiles
             if(proj.side==0){
                 proj.x+= 200.0f*deltaTime;
             }
@@ -417,7 +438,7 @@ void update(float deltaTime){
             }
 
         }
-        //removing projs
+        //removing projs if they go offscreen
         for(int i = projectiles.size() - 1; i >= 0; i--){
         if(projectiles[i].x > 1280.0f || projectiles[i].x < 200.0f){   
         projectiles.erase(projectiles.begin() + i);
@@ -429,7 +450,7 @@ void update(float deltaTime){
         enemies.erase(enemies.begin() + i);
         }
         }//end of test loop
-
+        //below is wave management kolaha
         spawnTimer += deltaTime;
         if(wave ==1 && enemyCount< 4){
             if (spawnTimer >= 5.0f) {

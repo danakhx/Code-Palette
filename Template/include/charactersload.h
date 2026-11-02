@@ -52,6 +52,6 @@ struct player{int lane; float x; float w; float h;
 float speed; int type; int hp; int maxhp ; float projTimer; int move;
  PlayerAction action; float actionTimer; float jumpOffset; };//type order is captain america, spiderman, hulk
 
-struct arcReactor{int lane; int x; int value;};
+struct arcReactor{int lane; float x; int value;};
 
 struct projectile{int lane; float x; float y; int side; int dmg;}; //zero hero one loser

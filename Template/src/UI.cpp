@@ -219,13 +219,12 @@ void drawMainMenu()   {
     drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
  }
 
-glm::vec4 laneColor(int lane) {
-
-    if (lane == hoverLane || selectedLanes[lane])
-        return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f);
+glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
+    if (lane == hoverLane || selectedLanes[lane]){
+        return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f);}
 
     return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);
-}// howa eh da
+}
 
 
 void drawGameScreen(){
@@ -241,12 +240,12 @@ void drawGameScreen(){
         drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
         drawInfinityGuantlet(50,192,80,110);
         drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
-        //player shop will include players ad=nd coin count
+        //player shop will include players and coin count
         //each slot will take 200px since the full thing is 800
         drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
         drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
         drawpointReactor(268.5f, 625.0f, 70.0f, 70.0f);
-        drawText("Points:$", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
+        drawText("Points: $", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
         drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
