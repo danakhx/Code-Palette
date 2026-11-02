@@ -136,7 +136,7 @@ void drawPrices(){
 
 void canAfford(int p){
     switch(p){ //color them if u can afford them wl default yb2a gray
-        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f));
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 drawgraySpider(666.5f, 620.0f, 70.0f, 86.2f);
@@ -144,19 +144,19 @@ void canAfford(int p){
                 drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;
-        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f)); 
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.776f, 0.157f, 0.157f, 1.0f));
                 drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
                 drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;
-        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)); 
+        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f)); 
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.776f, 0.157f, 0.157f, 1.0f));
                 drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
-                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)); 
+                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.180f, 0.490f, 0.196f, 1.0f)); 
                 drawhulkFace(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;

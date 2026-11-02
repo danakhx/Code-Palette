@@ -339,11 +339,11 @@ void update(float deltaTime){
             if(enemies[i].hp <= 0){
                 arcReactor ar;
                 if(enemies[i].type==1){
-                ar= {enemies[i].lane, enemies[i].x,10};}
-                else if(enemies[i].type==2){
                 ar= {enemies[i].lane, enemies[i].x,15};}
-                else{
+                else if(enemies[i].type==2){
                 ar= {enemies[i].lane, enemies[i].x,20};}
+                else{
+                ar= {enemies[i].lane, enemies[i].x,25};}
                 droppedPoints.push_back(ar);
                 enemies.erase(enemies.begin() + i);
 }}
