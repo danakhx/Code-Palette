@@ -34,8 +34,24 @@ bool loadmagneto();
 bool loadthanos();
 bool loaddoom();
 
-
-
+///cutscene
+extern Pixeldata d1;
+extern Pixeldata d2;
+extern Pixeldata kneel;
+extern Pixeldata thought;
+bool load1();
+bool load2();
+bool load3();
+extern Pixeldata u;
+extern Pixeldata f;
+extern Pixeldata m1;
+extern Pixeldata m2;
+extern Pixeldata t1;
+extern Pixeldata t2;
+bool loadm1();
+bool loadm2();
+bool loadt1();
+bool loadt2();
 struct enemyTest{int lane; float x; 
     float w; float h; float speed;int type; //type 1=easy, 2=medium, 3=hard
                   int hp;int maxhp;float projTimer; int move;}; //0 standing 1 moving
@@ -55,3 +71,7 @@ float speed; int type; int hp; int maxhp ; float projTimer; int move;   // we ad
 struct arcReactor{int lane; float x; int value;};
 
 struct projectile{int lane; float x; float y; int side; int dmg;}; //zero hero one loser
+
+bool loadthought();
+bool loadu();
+bool loadf();

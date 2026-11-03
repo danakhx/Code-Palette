@@ -50,7 +50,94 @@ const float jumpHeight = 80.0f;
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow* gWindow;
 
+static double doomSceneStart = -1.0;
+static const double DOOM_FPS = 4.0;      // frames per second
+static const int    DOOM_FRAMES = 8;
+const double DOOM_RISE_DURATION = 0.5;
+const int MAG_FRAMES = 8;
+const int MAG_FPS = 4;
+const double DOOM_SPEECH_DURATION = 2.5;
+const double MAG_SPEECH_DURATION = 2.0;
+// call this once when the scene begins
+void startDoomScene() {
+    doomSceneStart = glfwGetTime();
+}
 
+// true once all 8 frames have played
+bool doomSceneDone()
+{
+    if (doomSceneStart < 0.0)
+        return false;
+
+    double seatedDuration =
+        (double)(DOOM_FRAMES + 3) / DOOM_FPS;
+
+    double magnetoDuration =
+        (double)MAG_FRAMES / MAG_FPS;
+
+    double totalDuration =
+        seatedDuration
+        + DOOM_RISE_DURATION
+        + DOOM_SPEECH_DURATION
+        + magnetoDuration
+        + MAG_SPEECH_DURATION;
+
+    return (glfwGetTime() - doomSceneStart) >= totalDuration;
+}
+
+int doomSceneFrame() {
+    if (doomSceneStart < 0.0) return 0;
+    int f = (int)((glfwGetTime() - doomSceneStart) * DOOM_FPS);
+    return f >= DOOM_FRAMES ? DOOM_FRAMES - 1 : f;   // hold on the last frame
+}
+
+int doomSceneSecondFrame()
+{
+    if (doomSceneStart < 0.0)
+        return 0;
+
+    double secondSheetStart =
+        (double)DOOM_FRAMES / DOOM_FPS;
+
+    double elapsed =
+        glfwGetTime() - doomSceneStart - secondSheetStart;
+
+    if (elapsed < 0.0)
+        return 0;
+
+    int f = (int)(elapsed * DOOM_FPS);
+
+    return f >= 3 ? 2 : f;
+}
+
+int magnetoSceneFrame()
+{
+    if (doomSceneStart < 0.0)
+        return 0;
+
+    // Duration of Doom's two seated sprite sheets
+    double seatedDuration =
+        (double)(DOOM_FRAMES + 3) / DOOM_FPS;
+
+    // When Doom finishes standing and finishes speaking
+    double magnetoStart =
+        seatedDuration +
+        DOOM_RISE_DURATION +
+        DOOM_SPEECH_DURATION;
+
+    // Time elapsed since Magneto started his animation
+    double elapsed =
+        glfwGetTime() - doomSceneStart - magnetoStart;
+
+    if (elapsed < 0.0)
+        return 0;
+
+    // Calculate Magneto's current frame
+    int frame = (int)(elapsed * MAG_FPS);
+
+    // Hold on the last frame after the animation ends
+    return frame >= MAG_FRAMES ? MAG_FRAMES - 1 : frame;
+}
 void restartGame(){
     wave=1;
     enemyCount=0;
@@ -82,6 +169,174 @@ void updateShop(int cpoints){ //rendering shop and grayscale
 
 
 void renderGame() {
+    //int doomFrame = (int)(glfwGetTime() * 8.0) % 8;
+    
+    if (gameState == GameState::CUTSCENE){
+        double elapsed = glfwGetTime() - doomSceneStart;
+
+        // Calculate the different scene timings
+        double seatedDuration =
+            (double)(DOOM_FRAMES + 3) / DOOM_FPS;
+
+        double doomStandStart =
+            seatedDuration + DOOM_RISE_DURATION;
+
+        double magnetoStart =
+            doomStandStart + DOOM_SPEECH_DURATION;
+
+        double magnetoDuration =
+            (double)MAG_FRAMES / MAG_FPS;
+
+        double magnetoEnd =
+            magnetoStart + magnetoDuration;
+
+
+        // Speech bubble colours
+        glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
+        glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
+        glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
+
+
+        // Before his animation, Magneto holds his helmet
+        if (elapsed < magnetoStart)
+        {
+            drawm1(285, 224.25f, 126, 181);
+            drawt1(890, 224.25f, 161.25f, 180);
+        }
+        else
+        {
+            // After Doom's speech, Magneto puts on his helmet
+            drawm2(285, 224.25f, 126, 181,magnetoSceneFrame());
+            drawt2(890, 224.25f, 170, 231.25f);
+        }
+
+
+      
+
+        // PHASE 1: Doom is seated
+        if (elapsed < seatedDuration)
+        {
+            if (elapsed < (double)DOOM_FRAMES / DOOM_FPS)
+            {
+                drawDoomFrame(
+                    430, 224.25f, 420, 271.5f,
+                    doomSceneFrame()
+                );
+            }
+            else
+            {
+                drawDoom2Frame(
+                    430, 226.5f, 420, 267,
+                    doomSceneSecondFrame()
+                );
+            }
+
+            // Thought bubble appears after Doom's first frame
+            if (elapsed >= (1.0 / DOOM_FPS))
+            {
+                drawthought(650, 370, 260, 268);
+                drawInfinityGuantlet(730, 495, 90, 90);
+            }
+        }
+
+        // PHASE 2: Doom rises
+        else if (elapsed < doomStandStart)
+        {
+            drawup(430, 224.25f, 420, 271.5f);
+        }
+
+        // PHASE 3: Doom is standing
+        else
+        {
+            drawfinal(430, 224.25f, 420, 271.5f);
+        }
+
+
+
+        // Appears when Doom finishes standing
+        // Disappears when Magneto starts his animation
+        if (elapsed >= doomStandStart && elapsed < magnetoStart)
+        {
+            // Pointer
+            drawTriangle(615, 555, 50, -35, outline);
+            drawTriangle(620, 555, 40, -27, white);
+
+            // Bubble
+            drawRect(345, 555, 590, 120, outline);
+            drawRect(349, 559, 582, 112, white);
+
+            drawTextCentered(
+                "WE NEED TO GET THE INFINITY GAUNTLET",
+                360, 610, 560, 35,
+                2.0f, textColor
+            );
+
+            drawTextCentered(
+                "TO DOOM HUMANITY!",
+                360, 575, 560, 35,
+                2.0f, textColor
+            );
+        }
+
+
+      
+
+        // Appears after Magneto finishes putting on his helmet
+    
+        // MAGNETO AND THANOS SPEECH BUBBLES
+     
+        if (elapsed >= magnetoEnd)
+        {
+            // Speech bubble colours
+            glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
+            glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
+            glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
+
+            // MAGNETO'S SPEECH BUBBLE
+           
+
+            // Pointer
+            drawTriangle(324, 520, 48, -32, outline);
+            drawTriangle(329, 520, 38, -24, white);
+
+            // Bubble outline and interior
+            drawRect(153, 520, 390, 105, outline);
+            drawRect(157, 524, 382, 97, white);
+
+            // Dialogue
+            drawTextCentered(
+                "DOOM HUMANITY!",
+                167, 556, 362, 35,
+                2.0f, textColor
+            );
+
+
+ 
+            // THANOS'S SPEECH BUBBLE
+            
+
+            // Pointer
+            drawTriangle(951, 520, 48, -32, outline);
+            drawTriangle(956, 520, 38, -24, white);
+
+            // Bubble outline and interior
+            drawRect(780, 520, 390, 105, outline);
+            drawRect(784, 524, 382, 97, white);
+
+            // Dialogue
+            drawTextCentered(
+                "DOOM HUMANITY!",
+                794, 556, 362, 35,
+                2.0f, textColor
+            );
+        }
+
+        return;
+    }
+
+        
+       
+    //drawDoomFrame(400, 200, 280, 180, 0);//checkety
     switch (gameState) {
         case GameState::MAIN_MENU: drawMainMenu();   break;
         case GameState::PLAYING:
@@ -231,17 +486,21 @@ void onKey(int key) {
 // mouse clicks
 void onClick(float mouseX, float mouseY){
     if(gameState == GameState::MAIN_MENU){
-        if(isMouseOver(mStart, mouseX, mouseY)){
+            if (isMouseOver(mStart, mouseX, mouseY)) {
+                    gameState = GameState::CUTSCENE;
+                    startDoomScene();
+                    return;
+            }
             //CUTSCENE HENAAAAA
-            enemies.clear();
-            gameState = GameState::PLAYING;
+            //enemies.clear();
+            //gameState = GameState::PLAYING;
             
-             return;
+             //return;
         }
-        else if(isMouseOver(mExit, mouseX, mouseY)){
-            glfwSetWindowShouldClose(gWindow, true);return;
-        }
+    else if(isMouseOver(mExit, mouseX, mouseY)){
+        glfwSetWindowShouldClose(gWindow, true);return;
     }
+
     else if(gameState == GameState::PAUSED){
         if(isMouseOver(pContinue, mouseX, mouseY)){
             gameState = GameState::PLAYING; return;
@@ -372,6 +631,11 @@ int randomLane() {
 
 
 void update(float deltaTime){
+    if (gameState == GameState::CUTSCENE && doomSceneDone()){
+        gameState = GameState::PLAYING;
+        return;
+    }
+    
     if(gameState == GameState::PLAYING){ 
     hoverLane = whatLane(mouseX, mouseY);
       for(player& p : players) p.move = 1; //set all players movable

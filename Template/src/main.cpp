@@ -101,6 +101,38 @@ int main() {
     if(!loadPointReactor()) std::cout << "Failed to load Point Reactor image." << std::endl;
     else std::cout << "Point Reactor image loaded!" << std::endl;
 
+    //cutscene part 1
+    if(load1()) std::cout << "Doom 1 loaded!\n";
+    else std::cout << "Failed to load Doom 1!\n";
+
+    if(load2()) std::cout << "Doom2 loaded!\n";
+    else std::cout << "Failed to load Doom 2!\n";
+
+    if(load3()) std::cout << "soldiers loaded!\n";
+    else std::cout << "Failed to load soldiers!\n";
+
+    if(loadthought()) std::cout << "thought loaded!\n";
+    else std::cout << "Failed to load thought!\n";
+
+     if(loadu()) std::cout << "u loaded!\n";
+    else std::cout << "Failed to load u!\n";
+     if(loadf()) std::cout << "thought f!\n";
+    else std::cout << "Failed to load f!\n";
+
+     if(loadm1()) std::cout << "m1 loaded\n";
+    else std::cout << "Failed to load m1\n";
+     if(loadm2()) std::cout << "thought m2\n";
+    else std::cout << "Failed to load m2\n";
+
+     if(loadt1()) std::cout << "t1 loaded\n";
+    else std::cout << "Failed to load t1\n";
+     if(loadt2()) std::cout << "thought t2\n";
+    else std::cout << "Failed to load t2\n";
+    
+
+
+
+
     glViewport(0, 0, 1280, 720);
 
     glfwSetKeyCallback(window, keyCallback);

@@ -12,7 +12,7 @@ void clearScreen();
 void drawRect(float x, float y, float w, float h, const glm::vec4& color);
 void drawTriangle(float x, float y, float w, float h, const glm::vec4& color);
 void cleanupRenderer();
-//void drawplayer();
+//void drawplayer(); was 3ashan testing if neede again
 void setCrouching(bool crouching);
 void drawSprite(GLuint texture, float x, float y, float w, float h);
 void drawLoki(float x, float y, float w, float h);
@@ -47,3 +47,17 @@ void drawgrayHulk(float x, float y, float w, float h);
 void drawpointReactor(float x, float y, float w, float h);
 void drawSPstand(float x, float y, float w, float h);
 void drawSPcrouch(float x, float y, float w, float h);
+
+
+void drawDoomFrame(float x, float y, float w, float h, int frameIndex);
+
+void drawDoom2Frame(float x, float y, float w, float h, int frameIndex);
+void drawthought(float x, float y, float w, float h);
+void drawup(float x, float y, float w, float h);
+void drawfinal(float x, float y, float w, float h);
+
+void drawm1(float x, float y, float w, float h);
+void drawm2(float x, float y, float w, float h, int frameIndex);
+
+void drawt1(float x, float y, float w, float h);
+void drawt2(float x, float y, float w, float h);

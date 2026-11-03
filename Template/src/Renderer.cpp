@@ -66,6 +66,17 @@ static GLuint WebTexture = 0;
 static GLuint impactTexture = 0;
 
 
+//ha3yat ya ged3an
+static GLuint d1t=0;
+static GLuint d2t=0;
+static GLuint kt=0;
+static GLuint thoughtt=0;
+static GLuint ut = 0;
+static GLuint ft = 0;
+static GLuint m1t=0;
+static GLuint m2t=0;
+static GLuint t1t=0;
+static GLuint t2t=0;
 static const char* vertexShaderSource = R"(
 #version 410 core
 layout (location = 0) in vec3 aPos;
@@ -228,6 +239,18 @@ void initRenderer() {
     dtex = characterstextures(doom);
     mtex = characterstextures(magneto);
     ttex = characterstextures(thanos);
+
+    //at3ascene hahahahhahhhahhs
+    d1t= characterstextures(d1);
+    d2t=characterstextures(d2);
+    kt=characterstextures(kneel);
+    thoughtt=characterstextures(thought);
+    ut = characterstextures(u);
+    ft=characterstextures(f);
+    m1t=characterstextures(m1);
+    m2t=characterstextures(m2);
+    t1t=characterstextures(t1);
+    t2t=characterstextures(t2);
 
 
     float triVertices[] = {
@@ -416,6 +439,17 @@ void cleanupRenderer() {
     glDeleteTextures(1,&hulkFaceTexture);
     glDeleteTextures(1,&grayHulkTexture);
     glDeleteTextures(1,&pointReactorTexture);
+    
+     glDeleteTextures(1,&d1t);
+     glDeleteTextures(1,&d2t);
+     glDeleteTextures(1,&kt);
+     glDeleteTextures(1,&thoughtt);
+     glDeleteTextures(1,&ut);
+     glDeleteTextures(1,&ft);
+    glDeleteTextures(1,&m1t);
+    glDeleteTextures(1,&m2t);
+    glDeleteTextures(1,&t2t);
+    glDeleteTextures(1,&t1t);
 
 
 }
@@ -508,6 +542,8 @@ void drawSpriteFrame(GLuint texture, float x, float y, float w, float h, int fra
         0, 1, 0, frame.uStart, 1
     };
 
+
+
     // Update the existing character VBO
     glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(frameVertices), frameVertices);
@@ -551,6 +587,152 @@ void drawSpriteFrame(GLuint texture, float x, float y, float w, float h, int fra
 // ashan msh nexpose it globally el xture w bas game cpp ely y2raaa
 
 
+ 
+void drawDoomFrame(float x, float y, float w, float h, int frameIndex)
+{
+    if (frameIndex < 0 || frameIndex >= 8) return;
+
+    const float frameX[] = {0, 282, 564, 846};
+    const float frameY[] = {0, 183};          // measured top-down in the PNG
+    const float frameW   = 280.0f;
+    const float frameH[] = {181.0f, 173.0f};
+
+    const float texW = 1135.0f;
+    const float texH = 358.0f;
+
+    int column = frameIndex % 4;
+    int row    = frameIndex / 4;
+
+    float pxLeft  = frameX[column] + 0.5f;
+    float pxRight = frameX[column] + frameW - 0.5f;
+    float pxTop   = frameY[row] + 0.5f;                    // top-down pixel rows
+    float pxBot   = frameY[row] + frameH[row] - 0.5f;
+
+    float uLeft  = pxLeft  / texW;
+    float uRight = pxRight / texW;
+
+    // Texture was flipped on load: v = 0 is the BOTTOM of the PNG
+    float vTop    = 1.0f - pxTop / texH;   // goes on quad top    (y = 1)
+    float vBottom = 1.0f - pxBot / texH;   // goes on quad bottom (y = 0)
+
+    float v[] = {
+        0,0,0, uLeft,  vBottom,
+        1,0,0, uRight, vBottom,
+        1,1,0, uRight, vTop,
+
+        0,0,0, uLeft,  vBottom,
+        1,1,0, uRight, vTop,
+        0,1,0, uLeft,  vTop
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(v), v);
+
+    glUseProgram(characterShader);
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+    model = glm::scale(model, glm::vec3(w, h, 1.0f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, d1t);
+    glUniform1i(glGetUniformLocation(characterShader, "characterTexture"), 0);
+    glUniformMatrix4fv(glGetUniformLocation(characterShader, "model"),
+                       1, GL_FALSE, glm::value_ptr(model));
+
+    glBindVertexArray(characterVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    float original[] = {
+        0,0,0,0,0,  1,0,0,1,0,  1,1,0,1,1,
+        0,0,0,0,0,  1,1,0,1,1,  0,1,0,0,1
+    };
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(original), original);
+}
+
+void drawDoom2Frame(float x,float y,float w, float h, int frameIndex){
+        if(frameIndex< 0 ||frameIndex >= 3){
+            return;
+        }
+        else{
+            const float frameX[] = {0, 282, 564};// these are the x coordinated of el 3 frames like le starting horizontal asl fe 2 gap pixel maben kol soora w approx 290 is max
+            
+            const float texW = 848.0f;//horizontal
+            const float texH = 178.0f;//vertical max
+            const float WidthPerFrame = 280.0f;//width frame wahda el rakam el sabt 3ala each extra
+            
+            float pxLeft  = frameX[frameIndex];// start
+            float pxRight = frameX[frameIndex] + WidthPerFrame ;//end of frame width
+            float pxheight= 177.5f;
+
+            // Convert pixel coordinates into UV coordinates bcuz we need 0-1 to identify where to apply texture 
+            float uLeft = pxLeft / texW;//0.33 maslaslan knows to apply tex men hena
+            float uRight = pxRight / texW;
+
+            //essentialy to even decimalize lazem yoba szie/total bas hena msh far2a ashan el height dayman sabet aslan thats our approah
+            float vTop = 1.0f;
+            float vBottom = 0.0f ;
+
+            float vertices[] = {
+                //tringle 1
+                0,0,0, uLeft,vBottom,
+                1,0,0, uRight,vBottom,
+                1,1,0, uRight,vTop,
+
+               //triangle 2
+               0,0,0, uLeft,vBottom,
+               1,1,0, uRight,vTop,
+               0,1,0, uLeft,vTop
+
+
+            };
+
+            glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+
+            glBufferSubData(
+                GL_ARRAY_BUFFER,
+                0,
+                sizeof(vertices),
+                vertices
+            );
+
+            //Update the vertex buffer
+            glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            // 7. Activate the character shader
+            glUseProgram(characterShader);
+
+
+
+            glm::mat4 model = glm::translate( //ashan 4by4 to change triangle vertices resizing
+            glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+
+            model = glm::scale(model, glm::vec3(w, h, 1.0f));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, d2t);
+
+            glUniform1i(glGetUniformLocation(characterShader, "characterTexture"), 0);
+
+            glUniformMatrix4fv( glGetUniformLocation(characterShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+            
+            glBindVertexArray(characterVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            float original[] = {
+                0,0,0,0,0,
+                1,0,0,1,0,
+                1,1,0,1,1,
+
+                0,0,0,0,0,
+                1,1,0,1,1,
+                0,1,0,0,1
+            };
+
+            glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(original), original);
+
+
+        }
+
+}
 
 void drawCaptainAmericaFight(float x, float y, float w, float h, int frameIndex) {
     drawSpriteFrame(cfightTexture, x, y, w, h, frameIndex);
@@ -618,4 +800,92 @@ void drawSPstand(float x, float y, float w, float h){
 
 void drawSPcrouch(float x, float y, float w, float h){
     drawSprite(crouchTexture, x, y, w, h);
+}
+
+void drawthought(float x, float y, float w, float h){
+    drawSprite(thoughtt, x, y, w, h);
+}
+
+void drawup(float x, float y, float w, float h){
+    drawSprite(ut, x, y, w, h);
+}
+void drawfinal(float x, float y, float w, float h){
+    drawSprite(ft, x, y, w, h);
+}
+
+void drawm1(float x, float y, float w, float h){
+    drawSprite(m1t, x, y, w, h);
+}
+
+void drawm2(float x, float y, float w, float h, int frameIndex){
+    if(frameIndex<0||frameIndex>=8){
+        return;
+
+    }
+    const float frameLeft[] = {
+        1, 99, 203, 298, 395, 489, 583, 692
+    };
+
+    const float frameRight[] = {
+        97, 201, 296, 393, 487, 581, 690, 799
+    };
+    const float W = 799.0f;
+    float uLeft = frameLeft[frameIndex] / W;
+    float uRight = frameRight[frameIndex] / W;
+
+    float vTop = 1.0f;
+    float vBottom = 0.0f;
+
+    float vertices[] = {
+        0,0,0, uLeft,vBottom,
+        1,0,0, uRight,vBottom,
+        1,1,0, uRight,vTop,
+
+        0,0,0, uLeft,vBottom,
+        1,1,0, uRight,vTop,
+        0,1,0, uLeft,vTop
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0,sizeof(vertices), vertices);
+    glUseProgram(characterShader); 
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f)); 
+    
+     model = glm::scale(model, glm::vec3(w, h, 1.0f));
+      glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m2t);
+        glUniform1i(
+        glGetUniformLocation(characterShader, "characterTexture"), 0);
+
+    glUniformMatrix4fv(
+        glGetUniformLocation(characterShader, "model"),
+        1, GL_FALSE, glm::value_ptr(model));
+
+    // STEP 10: Draw the selected frame
+    glBindVertexArray(characterVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // STEP 11: Restore the original vertices
+    float original[] = {
+        0,0,0,0,0,
+        1,0,0,1,0,
+        1,1,0,1,1,
+
+        0,0,0,0,0,
+        1,1,0,1,1,
+        0,1,0,0,1
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0,
+                    sizeof(original), original);
+
+}
+
+void drawt1(float x, float y, float w, float h){
+    drawSprite(t1t, x, y, w, h);
+}
+
+void drawt2(float x, float y, float w, float h){
+    drawSprite(t2t, x, y, w, h);
 }
