@@ -58,6 +58,7 @@ const int MAG_FRAMES = 8;
 const int MAG_FPS = 4;
 const double DOOM_SPEECH_DURATION = 2.5;
 const double MAG_SPEECH_DURATION = 2.0;
+const double TEMPLE_DURATION = 8.0;
 // call this once when the scene begins
 void startDoomScene() {
     doomSceneStart = glfwGetTime();
@@ -80,7 +81,7 @@ bool doomSceneDone()
         + DOOM_RISE_DURATION
         + DOOM_SPEECH_DURATION
         + magnetoDuration
-        + MAG_SPEECH_DURATION;
+        + MAG_SPEECH_DURATION + TEMPLE_DURATION;;
 
     return (glfwGetTime() - doomSceneStart) >= totalDuration;
 }
@@ -167,13 +168,31 @@ void updateShop(int cpoints){ //rendering shop and grayscale
     else canAfford(0);
 }
 
+float slideInFromRight(double time, double delay, float finalX){
+    float progress = (float)((time - delay) / 0.65);
+
+    if (progress < 0.0f) progress = 0.0f;
+    if (progress > 1.0f) progress = 1.0f;
+
+    return 1280.0f - (1280.0f - finalX) * progress;
+}
+
+float slideDownFromTop(double time, double delay, float finalY)
+{
+    float progress = (float)((time - delay) / 0.8);
+
+    if (progress < 0.0f) progress = 0.0f;
+    if (progress > 1.0f) progress = 1.0f;
+
+    return 720.0f - (720.0f - finalY) * progress;
+}
 
 void renderGame() {
     //int doomFrame = (int)(glfwGetTime() * 8.0) % 8;
     
     if (gameState == GameState::CUTSCENE){
         double elapsed = glfwGetTime() - doomSceneStart;
-        drawback();
+        
 
         // Calculate the different scene timings
         double seatedDuration =
@@ -190,6 +209,97 @@ void renderGame() {
 
         double magnetoEnd =
             magnetoStart + magnetoDuration;
+        
+        double templeStart = magnetoEnd + MAG_SPEECH_DURATION;
+        if (elapsed >= templeStart){
+             drawtemple();
+             drawInfinityGuantlet(35, 115, 200, 200);
+             double templeElapsed = elapsed - templeStart;
+
+           drawdoom(slideInFromRight(templeElapsed, 0.0, 650), 70, 160, 160);
+           drawmagneto(slideInFromRight(templeElapsed, 0.4, 830), 70, 160, 160);
+           drawthanos(slideInFromRight(templeElapsed, 0.8, 1010), 70, 160, 160);
+
+
+           // Doom's speech bubble appears after everyone arrives
+            if (templeElapsed >= 1.45 && templeElapsed < 3.5)
+            {
+                glm::vec4 bubbleOutline(0.05f, 0.05f, 0.07f, 1.0f);
+                glm::vec4 bubbleWhite(1.0f, 1.0f, 1.0f, 1.0f);
+                glm::vec4 bubbleText(0.05f, 0.05f, 0.07f, 1.0f);
+
+                // Pointer towards Doom
+                drawTriangle(710, 270, 50, -35, bubbleOutline);
+                drawTriangle(715, 270, 40, -27, bubbleWhite);
+
+                // Speech bubble
+                drawRect(500, 270, 480, 110, bubbleOutline);
+                drawRect(504, 274, 472, 102, bubbleWhite);
+
+                // Dialogue
+                drawTextCentered(
+                    "THERE IT IS!",
+                    510, 335, 460, 30,
+                    1.8f, bubbleText
+                );
+
+                drawTextCentered(
+                    "LET'S GO GET THAT GAUNTLET, DOOMIES!!!",
+                    510, 295, 460, 30,
+                    1.5f, bubbleText
+                );
+            }
+
+            // HEROES ENTER FROM ABOVE
+            if (templeElapsed >= 3.5)
+            {
+                float capY = slideDownFromTop(templeElapsed, 3.5, 70);
+                float spiderY = slideDownFromTop(templeElapsed, 3.75, 70);
+                float hulkY = slideDownFromTop(templeElapsed, 4.0, 70);
+
+                drawCaptainAmericaRun(260, capY, 120, 120);
+                drawSPstand(390, spiderY, 120, 120);
+                drawhulk(520, hulkY, 120, 120);
+            }
+
+            // CAPTAIN AMERICA'S SPEECH
+            if (templeElapsed >= 4.85)
+            {
+                glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
+                glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
+                glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
+
+                // Speech bubble pointer
+                drawTriangle(310, 255, 50, -35, outline);
+                drawTriangle(315, 255, 40, -27, white);
+
+                // Speech bubble
+                drawRect(220, 255, 420, 105, outline);
+                drawRect(224, 259, 412, 97, white);
+
+                // Dialogue
+                 if (templeElapsed < 6.3)
+                {
+                    drawTextCentered(
+                        "NOT SO FAST, DOOMIES!",
+                        235, 290, 390, 35,
+                        1.8f, textColor
+                    );
+                }
+                else
+                {
+                    drawTextCentered(
+                        "AVENGERS, ASSEMBLE!",
+                        235, 290, 390, 35,
+                        1.8f, textColor
+                    );
+                }
+            }
+            
+             
+             return;
+        }
+        drawback();
 
 
         // Speech bubble colours

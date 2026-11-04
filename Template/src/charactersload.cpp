@@ -43,6 +43,14 @@ Pixeldata t2;
 //objects
 Pixeldata background;
 Pixeldata thought;
+Pixeldata temple;
+bool loadtemple(){
+    temple.ppointer=stbi_load(CHARACTERS_DIR "doom/temple.png",&temple.width,&temple.height,&temple.channels,0);
+    if (temple.ppointer==nullptr){
+        return false;
+    }
+    return true;
+}
 bool loadback(){
     background.ppointer=stbi_load(CHARACTERS_DIR "doom/background.png",&background.width,&background.height,&background.channels,0);
     if (background.ppointer==nullptr){

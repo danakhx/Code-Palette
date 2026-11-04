@@ -131,7 +131,8 @@ int main() {
 
     if(loadback()) std::cout << "background\n";
     else std::cout << "Failed to background t2\n";
-    
+    if(loadtemple()) std::cout << "temple\n";
+    else std::cout << "Failed to load temple\n";
 
 
 

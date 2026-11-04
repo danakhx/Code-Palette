@@ -49,6 +49,8 @@ extern Pixeldata m2;
 extern Pixeldata t1;
 extern Pixeldata t2;
 extern Pixeldata background;
+extern Pixeldata temple;
+bool loadtemple();
 bool loadback();
 bool loadm1();
 bool loadm2();
