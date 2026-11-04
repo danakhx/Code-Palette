@@ -173,6 +173,7 @@ void renderGame() {
     
     if (gameState == GameState::CUTSCENE){
         double elapsed = glfwGetTime() - doomSceneStart;
+        drawback();
 
         // Calculate the different scene timings
         double seatedDuration =

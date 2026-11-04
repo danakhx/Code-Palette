@@ -128,6 +128,9 @@ int main() {
     else std::cout << "Failed to load t1\n";
      if(loadt2()) std::cout << "thought t2\n";
     else std::cout << "Failed to load t2\n";
+
+    if(loadback()) std::cout << "background\n";
+    else std::cout << "Failed to background t2\n";
     
 
 

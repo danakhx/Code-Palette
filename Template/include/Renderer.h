@@ -61,3 +61,4 @@ void drawm2(float x, float y, float w, float h, int frameIndex);
 
 void drawt1(float x, float y, float w, float h);
 void drawt2(float x, float y, float w, float h);
+void drawback();

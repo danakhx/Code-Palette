@@ -41,7 +41,16 @@ Pixeldata m2;
 Pixeldata t1;
 Pixeldata t2;
 //objects
+Pixeldata background;
 Pixeldata thought;
+bool loadback(){
+    background.ppointer=stbi_load(CHARACTERS_DIR "doom/background.png",&background.width,&background.height,&background.channels,0);
+    if (background.ppointer==nullptr){
+        return false;
+    }
+    return true;
+
+}
 bool loadt1(){
    t1.ppointer=stbi_load(CHARACTERS_DIR "thanos/thanos1.png",&t1.width,&t1.height,&t1.channels,0);
     if (t1.ppointer==nullptr){

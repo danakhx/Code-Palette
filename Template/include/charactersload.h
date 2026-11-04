@@ -42,12 +42,14 @@ extern Pixeldata thought;
 bool load1();
 bool load2();
 bool load3();
-extern Pixeldata u;
-extern Pixeldata f;
+extern Pixeldata u;//up dom
+extern Pixeldata f;//final doom
 extern Pixeldata m1;
 extern Pixeldata m2;
 extern Pixeldata t1;
 extern Pixeldata t2;
+extern Pixeldata background;
+bool loadback();
 bool loadm1();
 bool loadm2();
 bool loadt1();

@@ -77,6 +77,7 @@ static GLuint m1t=0;
 static GLuint m2t=0;
 static GLuint t1t=0;
 static GLuint t2t=0;
+static GLuint backt=0;
 static const char* vertexShaderSource = R"(
 #version 410 core
 layout (location = 0) in vec3 aPos;
@@ -251,6 +252,7 @@ void initRenderer() {
     m2t=characterstextures(m2);
     t1t=characterstextures(t1);
     t2t=characterstextures(t2);
+    backt=characterstextures(background);
 
 
     float triVertices[] = {
@@ -450,6 +452,7 @@ void cleanupRenderer() {
     glDeleteTextures(1,&m2t);
     glDeleteTextures(1,&t2t);
     glDeleteTextures(1,&t1t);
+    glDeleteTextures(1,&backt);
 
 
 }
@@ -508,6 +511,31 @@ void drawSprite(GLuint texture, float x, float y, float w, float h){
     glBindVertexArray(characterVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
+
+
+void drawback(){
+    if (backt == 0)
+        return;
+    // Screen dimensions
+    const float screenW = 1280.0f;
+    const float screenH = 720.0f;
+
+    // Preserve the original image proportions
+    float bgH = screenW *
+        ((float)background.height / background.width);
+
+    // Centre the background vertically
+    float bgY = (screenH - bgH) / 2.0f;
+
+    drawSprite(
+        backt,
+        0.0f,
+        bgY,
+        screenW,
+        bgH
+    );
+}
+
 void drawLoki(float x, float y, float w, float h){
     drawSprite(lokiTexture, x, y, w, h);
 }
