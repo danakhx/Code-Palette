@@ -251,3 +251,28 @@ void drawGameScreen(){
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
         //drawplayer();
 }
+
+void drawGameScreenfire(){
+
+        drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.35f, 0.05f, 0.05f, 1.0f)); //background red
+        drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
+        drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
+        drawRect(0.0f, 175.0f, 1280.0f, 120.0f, laneColor(2));//lane 2
+        drawRect(0.0f, 295.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 2 divider
+        drawRect(0.0f, 310.0f, 1280.0f, 120.0f, laneColor(3));//lane 3
+        drawRect(0.0f, 430.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 3 divider
+        drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.50f, 0.10f, 0.10f, 1.0f)); // outer base
+        drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.80f, 0.20f, 0.20f, 1.0f)); // inner base
+        drawInfinityGuantlet(50,192,80,110);
+        drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.25f, 0.02f, 0.02f, 1.0f));//enviroment space
+        //player shop will include players and coin count
+        //each slot will take 200px since the full thing is 800
+        drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
+        drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
+        drawpointReactor(268.5f, 625.0f, 70.0f, 70.0f);
+        drawText("Points: $", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
+        drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
+        drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
+        drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
+        //drawplayer();
+}

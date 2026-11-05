@@ -820,6 +820,10 @@ void update(float deltaTime){
 
         for(player& p : players){
             bool touchingEnemy = false;//collisions loop lazm y2ofo
+            if (p.hp <=30)
+            {
+                drawGameScreenfire();
+            }
             for(enemyTest& enemy: enemies){
                 if(p.lane==enemy.lane && p.x + p.w >= enemy.x && p.x <= enemy.x + enemy.w){
                     enemy.move=0;
@@ -846,6 +850,8 @@ void update(float deltaTime){
                 }
                 touchingEnemy = true;
             }
+            
+            
         }
         // No enemy touching Cap anymore
         if(!touchingEnemy && p.type == 1){
@@ -897,8 +903,9 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
 
             p.hp -= 1;
             projectileHit = true;
-            break;
+            
         }
+        
     }
 
     // Remove projectile ONLY once
