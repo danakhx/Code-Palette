@@ -467,12 +467,14 @@ GLuint characterstextures(Pixeldata player){
      glGenTextures(1,&textureID);
      glBindTexture(GL_TEXTURE_2D,textureID);
      int x=player.channels;
+     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
      if (x==3) {
         glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,player.width,player.height,0,GL_RGB,GL_UNSIGNED_BYTE,player.ppointer);
      }
      else{
         glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,player.width,player.height,0,GL_RGBA,GL_UNSIGNED_BYTE,player.ppointer);
      }
+     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
      glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
