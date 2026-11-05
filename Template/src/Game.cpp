@@ -44,7 +44,7 @@ const float capFrameDuration = 0.15f;
 const float jumpDuration = 0.8f;
 const float duckDuration = 0.6f;
 const float jumpHeight = 80.0f;
-
+const float minShrinkScale = 0.5f;
 
 
 GameState gameState = GameState::MAIN_MENU;
@@ -477,8 +477,8 @@ void renderGame() {
         for(const player& p : players){
              float playerY = laneCenter(p.lane) - p.h / 2.0f;
               // Smaller visual dimensions
-             float drawW = p.w * 0.75f;
-             float drawH = p.h * 0.75f;
+             float drawW = p.w * HPscale(p.hp, p.maxhp);
+             float drawH = p.h * HPscale(p.hp, p.maxhp);
             float drawX = p.x + (p.w - drawW) / 2.0f;   // Keep character centered horizontally
              // Keep character anchored to the bottom of its original position
              float drawY = playerY;
@@ -503,14 +503,14 @@ void renderGame() {
             }
             else if(p.type==2){
                 if(p.action == PlayerAction::DUCKING){
-                     drawSPcrouch(drawX, drawY - 15.0f, drawW, drawH);
+                     drawSPcrouch(drawX, drawY - 1, drawW, drawH);
                 }
                 else{
                      drawSPstand(drawX  - 15.0f, drawY + p.jumpOffset - 25.0f, drawW+ 25.0f, drawH  + 30.0f);
                 }
             }
             else{
-                drawhulk(p.x, playerY, p.w, p.h);
+                drawhulk(drawX,drawY, drawW,drawH);
             }
             float top = laneCenter(p.lane) - p.h/2 + p.h;         
             float w = p.w;                                    
@@ -706,6 +706,11 @@ float laneCenter(int lane){
     else{
         return 0.0f; //invalid lane
     }
+}
+
+float HPscale(int currentHP, int maxHP) {
+   return (float)(0.5f + (1 - 0.5f) * ((float)currentHP / maxHP) );
+   
 }
 
 

@@ -27,6 +27,7 @@ void restartGame();
 int maxCount(int w);
 void updateShop(int cpoints);
 int randomLane();
+float HPscale(int currentHP, int maxHP);
 
 struct impactEffect {
     int lane;
