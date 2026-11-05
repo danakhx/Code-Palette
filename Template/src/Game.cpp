@@ -607,10 +607,11 @@ void onClick(float mouseX, float mouseY){
             //gameState = GameState::PLAYING;
             
              //return;
-        }
-    else if(isMouseOver(mExit, mouseX, mouseY)){
+             else if(isMouseOver(mExit, mouseX, mouseY)){
         glfwSetWindowShouldClose(gWindow, true);return;
     }
+        }
+    
 
     else if(gameState == GameState::PAUSED){
         if(isMouseOver(pContinue, mouseX, mouseY)){
@@ -816,7 +817,6 @@ void update(float deltaTime){
             bool touchingEnemy = false;//collisions loop lazm y2ofo
             for(enemyTest& enemy: enemies){
                 if(p.lane==enemy.lane && p.x + p.w >= enemy.x && p.x <= enemy.x + enemy.w){
-                    touchingEnemy = true;
                     enemy.move=0;
                     p.move=0;
 
@@ -829,10 +829,7 @@ void update(float deltaTime){
                             if(p.fightFrame >= 5){
                                   p.fightFrame = 0;
                                     enemy.hp -= 1;
-
                             }
-                            
-                            
                         }
                     }
                     if(enemy.type==3){
@@ -842,7 +839,7 @@ void update(float deltaTime){
                         enemy.projTimer=3.0f;
                     }
                 }
-                break;
+                touchingEnemy = true;
             }
         }
         // No enemy touching Cap anymore
@@ -905,6 +902,13 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
     }
 }
 
+        for(enemyTest& back : enemies){ //enemies wait behind each other
+            for(const enemyTest& front : enemies){
+                if(back.lane==front.lane && back.x > front.x && back.x < front.x + front.w + 10.0f){
+                    back.move=0;
+                }
+            }
+        }
 
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
             //also use & to move actual enemy not just a copy (pointer)
@@ -993,9 +997,12 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
         }//wave 3 mix of all
         else if(wave ==3 && enemyCount<12){
             if (spawnTimer >= 5.0f) {
-            spawnHardEnemy(randomLane());
-            spawnMediumEnemy(randomLane());
-            spawnEasyEnemy(randomLane());
+            int firstLane = randomLane();
+            int secondLane = firstLane % 3 + 1;
+            int thirdLane = secondLane % 3 + 1;
+            spawnHardEnemy(firstLane);
+            spawnMediumEnemy(secondLane);
+            spawnEasyEnemy(thirdLane);
             spawnTimer = 0.0f;
             enemyCount+=3;
         }
