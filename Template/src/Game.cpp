@@ -880,8 +880,7 @@ void onClick(float mouseX, float mouseY)
                             players.push_back(p);
                         }
                     }
-                    points -= total;
-                    selectedLanes = {false, false, false, false};
+                    
                 }
                 points -= total;
                 placedFirstPlayer = true;
