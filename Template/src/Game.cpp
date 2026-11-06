@@ -760,14 +760,17 @@ void onClick(float mouseX, float mouseY)
                         if (characterType == 1) {
                             player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
                             players.push_back(p);
+                            playSound("capS");
                         }
                         else if (characterType == 2) {
                             player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
                             players.push_back(p);
+                            playSound("spiderS");
                         }
                         else if (characterType == 3) {
                             player p = {i, 205.0f, 100, 100, 0, 3, 7, 7, 0.0f, 1};
                             players.push_back(p);
+                            playSound("hulkS");
                         }
                     }
                     
