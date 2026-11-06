@@ -53,6 +53,9 @@ GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow *gWindow;
 
 static double doomSceneStart = -1.0;
+static bool doomTalkPlayed = false;
+static bool capStopPlayed = false;
+static bool capAssemblePlayed = false;
 static bool doomVoicePlayed = false;
 static bool doomCelebPlayed = false;
 static const double DOOM_FPS = 4.0; // frames per second
@@ -69,6 +72,9 @@ void startDoomScene()
     doomSceneStart = glfwGetTime();
     doomVoicePlayed = false;
     doomCelebPlayed = false;
+     doomTalkPlayed = false;
+     capStopPlayed = false;
+     capAssemblePlayed = false;
 }
 
 // true once all 8 frames have played
@@ -376,6 +382,10 @@ void renderGame()
             // Doom's speech bubble appears after everyone arrives
             if (templeElapsed >= 1.45 && templeElapsed < 3.5)
             {
+                if (!doomTalkPlayed){
+                    playSound("get");
+                    doomTalkPlayed = true;
+                }
                 glm::vec4 bubbleOutline(0.05f, 0.05f, 0.07f, 1.0f);
                 glm::vec4 bubbleWhite(1.0f, 1.0f, 1.0f, 1.0f);
                 glm::vec4 bubbleText(0.05f, 0.05f, 0.07f, 1.0f);
@@ -429,7 +439,11 @@ void renderGame()
 
                 // Dialogue
                 if (templeElapsed < 6.3)
-                {
+                { 
+                    if (!capStopPlayed){
+                        playSound("stop");
+                        capStopPlayed = true;
+                    }
                     drawTextCentered(
                         "NOT SO FAST, DOOMIES!",
                         235, 290, 390, 35,
@@ -437,6 +451,10 @@ void renderGame()
                 }
                 else
                 {
+                     if (!capAssemblePlayed){
+                        playSound("assemble");
+                         capAssemblePlayed = true;
+                     }
                     drawTextCentered(
                         "AVENGERS, ASSEMBLE!",
                         235, 290, 390, 35,

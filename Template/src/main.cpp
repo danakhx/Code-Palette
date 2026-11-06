@@ -222,6 +222,25 @@ int main() {
         else{
             std::cout << "FAILED to ceeleb song!" << std::endl;
         }
+        if(loadSound("get",CHARACTERS_DIR "doom/talk.wav", false)){
+            std::cout << "loaded22" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to talk" << std::endl;
+        }
+        if(loadSound("stop",CHARACTERS_DIR "coin/stop.wav", false)){
+             std::cout << "loadedewgabhq" << std::endl;
+        }
+        else{
+            std::cout << "FAILED tostop" << std::endl;
+        }
+        if(loadSound("assemble",CHARACTERS_DIR "coin/assemble.wav", false)){
+            std::cout << "lassemble" << std::endl;
+        }
+        else{
+            std::cout << "FAILED tostop" << std::endl;
+        }
+
 
     }//loading dooms voice
     else{
