@@ -246,39 +246,26 @@ glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
 }
 
 
-static void drawPillar()
+
+
+
+static void Streetlight(float x, float y)
 {
-
-}
-
-static void drawTorch()
-{
-
-}
-
-static void drawBanner()
-{
-
-}
-
-static void drawStoneWall()
-{
-
-}
-
-static void drawGate()
-{
-
+    drawTriangle(x + 20, y+82, 50, 82, glm::vec4(1.0f, 0.92f, 0.55f, 0.12f)); //light cone
+    drawRect(x+0, y+0, 14, 6, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //base
+    drawRect(x+5,y+ 6, 4, 84, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //pole
+    drawRect(x+5,y+ 86, 30, 4, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //arm
+    drawRect(x+28,y+ 80, 18, 8, glm::vec4(0.15f, 0.16f, 0.18f, 1.0f)); //lamp head
 }
 
 void drawEnvironment()
 {
-
+Streetlight(450, 450);
 }
 
 void drawGameScreen(){
 
-        drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
+        drawEnvironment(); //background
         drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
         drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
         drawRect(0.0f, 175.0f, 1280.0f, 120.0f, laneColor(2));//lane 2
@@ -288,7 +275,7 @@ void drawGameScreen(){
         drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
         drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
         drawInfinityGuantlet(50,192,80,110);
-        drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
+        //enviroment space
         //player shop will include players and coin count
         //each slot will take 200px since the full thing is 800
         drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border

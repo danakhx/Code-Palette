@@ -27,6 +27,7 @@ void drawPauseScreen();
 void drawWinscreen();
 void drawLoseScreen();
 void drawGameScreen();
+static void Streetlight(float x, float y);
 void drawEnvironment();
 
 extern Pixeldata Loki;
