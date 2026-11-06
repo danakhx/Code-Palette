@@ -45,7 +45,7 @@ const float jumpDuration = 0.8f;
 const float duckDuration = 0.6f;
 const float jumpHeight = 80.0f;
 const float minShrinkScale = 0.5f;
-const float basex= 0;
+const float basex= 200.0f; // x position where enemies reach the base
 
 GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow *gWindow;
@@ -1268,7 +1268,7 @@ void update(float deltaTime)
         // TEST LOOP WILL BE REMOVED LATER
         for (int i = enemies.size() - 1; i >= 0; i--)
         {
-            if (enemies[i].x == basex)
+            if (enemies[i].x <= basex)
             {
                 gameState = GameState::LOST;
                 return;
