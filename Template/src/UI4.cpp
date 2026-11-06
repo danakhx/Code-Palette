@@ -304,10 +304,16 @@ static void Car(float x, float y)
 void drawEnvironment()
 {
 Streetlight(450, 450);
-Trafficsign(600, 450);
+Streetlight(220, 450);
+Streetlight(650, 450);
+Streetlight(980, 450);
+Trafficsign(850, 450);
 Bench(350, 450);
+Bench(110, 450);
 Tc(320, 450);
+Tc(80, 450);
 Car(700, 450);
+Car(1000, 450);
 }
 
 void drawGameScreen(){
