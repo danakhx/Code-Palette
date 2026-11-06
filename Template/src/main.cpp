@@ -222,6 +222,24 @@ int main() {
         else{
             std::cout << "FAILED to ceeleb song!" << std::endl;
         }
+        if(loadSound("shield", CHARACTERS_DIR "captainAmerica/shield.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load shield sound!" << std::endl;
+        }
+        if(loadSound("webs", CHARACTERS_DIR "spiderman/webs.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load webs sound!" << std::endl;
+        }
+        if(loadSound("pew", CHARACTERS_DIR "death/pew.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load pew sound!" << std::endl;
+        }
 
     }//loading dooms voice
     else{
