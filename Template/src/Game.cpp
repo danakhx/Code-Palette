@@ -727,15 +727,15 @@ void spawnEnemy(int lane){
 
 }
 void spawnEasyEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,1,5,5, 0.0f, 1};
+enemyTest enemy= {lane, 1280.0, 100,100,90,1,5,5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,2, 5, 5, 0.0f, 1};
+enemyTest enemy= {lane, 1280.0, 100,100,90,2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,150,3, 7, 7, 0.0f, 1};
+enemyTest enemy= {lane, 1280.0, 100,100,110,3, 7, 7, 0.0f, 1};
     enemies.push_back(enemy);
 }
 int randomLane() {
@@ -897,15 +897,21 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
     // Enemy projectile hits a player
     for(player& p : players){
 
-        if(proj.side == 1 &&
-           proj.lane == p.lane &&
-           proj.x >= p.x &&
-           proj.x <= p.x + p.w){
+    bool dodged =
+    (p.action == PlayerAction::DUCKING && proj.y > 0.0f) ||
+    (p.action == PlayerAction::JUMPING && proj.y < 0.0f);
 
-            p.hp -= 1;
-            projectileHit = true;
-            break;
-        }
+    if(proj.side == 1 &&
+    proj.lane == p.lane &&
+    proj.x >= p.x &&
+    proj.x <= p.x + p.w &&
+    !dodged){
+
+    p.hp -= 1;
+    projectileHit = true;
+    break;
+}
+
     }
 
     // Remove projectile ONLY once
@@ -985,13 +991,6 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
             }
         }
 
-
-        //TEST LOOP WILL BE REMOVED LATER
-        for(int i = enemies.size() - 1; i >= 0; i--){
-        if(enemies[i].x + enemies[i].w < 0){
-        enemies.erase(enemies.begin() + i);
-        }
-        }//end of test loop
         //below is wave management kolaha
         spawnTimer += deltaTime;
         if(wave ==1 && enemyCount< 4){
