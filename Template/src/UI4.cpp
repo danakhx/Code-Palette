@@ -6,6 +6,9 @@
 #include <iostream>
 #include <algorithm>
 #include "stb_image.h"
+#include <string>
+#include "sound.h"
+
 
 #ifndef ENTITIES_DIR
 #define ENTITIES_DIR "Template/src/Entities/"
@@ -163,6 +166,14 @@ Button player1 = {407.0f, 585.0f, 195.0f, 130.0f};
 Button player2 = {608.0f, 585.0f, 195.0f, 130.0f};
 Button player3 = {809.0f, 585.0f, 195.0f, 130.0f};
 
+//SOUNDDDD
+Button mSound={390, 270, 500,100};
+Button volInc={680, 390, 70, 70};
+Button volDec={770, 390, 70, 70};
+Button muteB={440, 280, 400, 70};
+Button returnSound={440, 170, 400, 70};
+
+
 
 void drawPrices(){
     drawTextCentered("$10",    414.0f, 588.0f, 180.0f, 32.0f, 2.0f, glm::vec4(1, 1, 1, 1));
@@ -233,8 +244,8 @@ void drawMainMenu()   {
     //shade
     drawRect(0,0,1280,720, glm::vec4(0.0f, 0.0f, 0.0f, 0.5f)); 
     //loki
-    drawRect(100, 380, 200, 80, glm::vec4(1, 1, 1, 1.));
-    drawTextCentered("Welcome back, Avenger!", 100, 380, 200, 80, 1.5f, glm::vec4(0, 0, 0, 1));
+    drawRect(40, 380, 260, 80, glm::vec4(1, 1, 1, 1.));
+    drawTextCentered("Welcome back, Avenger!", 40, 380, 260, 80, 2.0f, glm::vec4(0, 0, 0, 1));
     drawTriangle(185, 380, 30, -25, glm::vec4(1,1,1,1));
     drawLoki(0, 100, 400, 400);
     //end of loki
@@ -380,4 +391,28 @@ void drawGameScreen(){
         drawRect(407.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(1));
         drawRect(608.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(2));
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(3));
+}
+
+void drawSoundMenu(){
+    drawRect(0,0,1280,720, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); //background
+    drawRect(340, 135, 600, 450, glm::vec4(0.565f, 0.643f, 0.682f, 1.0f)); //background el gowa
+    drawTextCentered("Sound Menu", 0, 500, 1280, 50, 5.0f, glm::vec4(1, 1, 1, 1));
+    //start row 1
+    std::string volText = "Volume: " + std::to_string(voLevel);
+    drawTextCentered(volText.c_str(), 400, 390, 300, 70, 4.0f, glm::vec4(1, 1, 1, 1));  
+    drawRect(680, 390, 70, 70, glm::vec4(0.361f, 0.420f, 0.753f, 1.0f));   //vol inc
+    drawTextCentered("+",680, 390, 70, 70, 5.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(770, 390, 70, 70, glm::vec4(0.361f, 0.420f, 0.753f, 1.0f));   //vol dec
+    drawTextCentered("-",770, 390, 70, 70, 5.0f, glm::vec4(1, 1, 1, 1));
+    //end row 1
+    drawRect(440, 280, 400, 70, glm::vec4(0.361f, 0.420f, 0.753f, 1.0f));   // Mute
+    drawTextCentered(mute ? "Unmute":"Mute", 440, 280, 400, 70, 3.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(440, 170, 400, 70, glm::vec4(0.361f, 0.420f, 0.753f, 1.0f));
+    drawTextCentered("Return to Main Menu", 440, 170, 400, 70, 3.0f, glm::vec4(1, 1, 1, 1));
+    //loki
+    drawRect(80, 380, 220, 80, glm::vec4(1, 1, 1, 1.));
+    drawTextCentered("Manage sound here!", 80, 380, 220, 80, 2.0f, glm::vec4(0, 0, 0, 1));
+    drawTriangle(185, 380, 30, -25, glm::vec4(1,1,1,1));
+    drawLoki(0, 100, 400, 400);
+    //end of loki
 }

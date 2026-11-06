@@ -2,7 +2,7 @@
 #include <vector>
 #include <array>
 
-enum class GameState { MAIN_MENU, CUTSCENE, PLAYING, PAUSED, WON, LOST };
+enum class GameState { MAIN_MENU, CUTSCENE, PLAYING, PAUSED, WON, LOST, SOUND };
 extern GameState gameState;
 extern int hoverLane;
 extern std::array<bool, 4> selectedLanes;// 4 lanes bcuz lane 123 w 0 unuseddd

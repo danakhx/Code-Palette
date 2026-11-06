@@ -599,6 +599,8 @@ void renderGame()
         drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
         drawLoseScreen();
         break;
+
+    case GameState::SOUND: drawSoundMenu(); break;
     default:
         break;
     }
@@ -670,6 +672,11 @@ void onClick(float mouseX, float mouseY)
         else if (isMouseOver(mExit, mouseX, mouseY))
         {
             glfwSetWindowShouldClose(gWindow, true);
+            return;
+        }
+        else if (isMouseOver(mSound, mouseX, mouseY))
+        {
+            gameState = GameState::SOUND;
             return;
         }
     }
@@ -780,6 +787,28 @@ void onClick(float mouseX, float mouseY)
 
                 selectedLanes = {false, false, false, false};
             }}}
+}
+else if (gameState == GameState::SOUND){
+    if (isMouseOver(volInc, mouseX, mouseY))
+    {
+        increaseVol();
+        return;
+    }
+    else if (isMouseOver(volDec, mouseX, mouseY))
+    {
+        decreaseVol();
+        return;
+    }
+    else if (isMouseOver(muteB, mouseX, mouseY))
+    {
+        toggleMute();
+        return;
+    }
+    else if (isMouseOver(returnSound, mouseX, mouseY))
+    {
+        gameState = GameState::MAIN_MENU;
+        return;
+    }
 }
 }
 
