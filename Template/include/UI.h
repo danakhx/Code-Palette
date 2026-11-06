@@ -63,3 +63,12 @@ bool loadGraySpider();
 bool loadHulkFace();
 bool loadGrayHulk();
 bool loadPointReactor();
+
+//SOUNDDDD
+extern Button mSound;
+extern Button muteB;
+extern Button volInc;
+extern Button volDec;
+extern Button returnSound;
+void drawSoundMenu();
+

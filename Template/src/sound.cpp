@@ -8,6 +8,8 @@
 
 ma_engine soundEngine;
 bool audioReady = false;
+int voLevel=10;
+bool mute=false;
 
 std::unordered_map<std::string, std::unique_ptr<ma_sound>> sounds;
 
@@ -87,3 +89,32 @@ void shutdownAudio()
     }
 }
 
+static void applyVolume(){
+    if(!audioReady){
+        return;
+    }
+    float soundValue= mute? 0.0f : (float)voLevel/10.0f;
+    ma_engine_set_volume(&soundEngine, soundValue);
+}
+
+void increaseVol(){
+    if(voLevel<10){
+        voLevel++;
+    }
+    mute = false;
+    applyVolume();
+
+}
+
+void decreaseVol(){
+    if(voLevel>0){
+        voLevel--;
+    }
+    mute=false;
+    applyVolume();
+}
+
+void toggleMute(){
+    mute=!mute;
+    applyVolume();
+}
