@@ -204,6 +204,22 @@ int main() {
         else {
             std::cout << "FAILED to load player death sound" << std::endl;
         }
+        if (loadSound("gameSong", "Template/src/characters/back/back.mp3", true)) {
+            std::cout << "Game song loaded!" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load game song!" << std::endl;
+        }
+        if(loadSound("loseFirst", "Template/src/characters/doom/woah.wav", false)) {
+            std::cout << "first loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load first song!" << std::endl;
+        }
+        
+
+        
+
 
     }//loading dooms voice
     else{

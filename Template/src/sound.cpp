@@ -1,7 +1,7 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 #include "sound.h"
-
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <memory>
