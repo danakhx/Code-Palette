@@ -258,9 +258,19 @@ static void Streetlight(float x, float y)
     drawRect(x+28,y+ 80, 18, 8, glm::vec4(0.15f, 0.16f, 0.18f, 1.0f)); //lamp head
 }
 
+static void Trafficsign(float x, float y)
+{
+    drawRect(x+18, y+0, 4, 60, glm::vec4(0.45f, 0.45f, 0.48f, 1.0f)); //pole
+    drawRect(x+0,y+ 60, 40, 36, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //outer triangle
+    drawRect(x+5,y+ 64, 30, 26, glm::vec4(0.98f, 0.80f, 0.1f, 1.0f)); //inner triangle
+    drawRect(x+18,y+ 70, 4, 10, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //!bar
+    drawRect(x+18,y+ 66, 4, 3, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //!.
+}
+
 void drawEnvironment()
 {
 Streetlight(450, 450);
+Trafficsign(600, 450);
 }
 
 void drawGameScreen(){
