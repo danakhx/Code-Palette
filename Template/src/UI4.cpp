@@ -269,6 +269,27 @@ void drawMainMenu()   {
  void drawLoseScreen()
  {
     drawTextCentered("Defeat", 0, 550, 1280, 50, 5.0f, glm::vec4(1, 0, 0, 1));
+    // DOOM'S SPEECH BUBBLE
+    glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
+    glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
+     // Speech bubble pointer
+    drawTriangle(1050, 385, 45, -30, outline);
+    drawTriangle(1055, 385, 35, -23, white);
+      // Speech bubble
+    drawRect(900, 380, 350, 150, outline);
+    drawRect(904, 384, 342, 142, white);
+    // Doom's dialogue
+    drawTextCentered("NO ONE DEFEATS DOOM!",910, 490, 330, 25, 1.3f, textColor);
+
+    drawTextCentered("RETURN TO YOUR OWN WORLD",910, 460, 330, 25, 1.1f, textColor);
+
+    drawTextCentered("KNOWING THAT THIS ONE",910, 430, 330, 25, 1.1f, textColor);
+
+    drawTextCentered("BELONGS TO DOOM!",910, 400, 330, 25, 1.3f, textColor);
+    int doomFrame = (int)(glfwGetTime() * 4.0) % 8;
+    drawDoomFrame(930, 105, 260, 168, doomFrame);
+
     drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.290f, 0.078f, 0.549f, 1.0f)); //playagain button
     drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
     drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.533f, 0.055f, 0.310f, 1.0f)); //mainmenu button
