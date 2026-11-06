@@ -754,6 +754,7 @@ void onClick(float mouseX, float mouseY)
             restartGame();
             stopSound("bgSong");
             gameState = GameState::MAIN_MENU;
+            playSound("startMusic");
             return;
         }
     }
@@ -777,6 +778,7 @@ void onClick(float mouseX, float mouseY)
             stopSound("gameSong");
             stopSound("loseFirst");
             gameState = GameState::MAIN_MENU;
+            playSound("startMusic");
             return;
         }
     }
