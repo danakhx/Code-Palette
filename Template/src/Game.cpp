@@ -952,6 +952,7 @@ void update(float deltaTime)
                 if (droppedPoints[i].lane == p.lane && p.x + p.w - 10.0f >= droppedPoints[i].x && p.x <= droppedPoints[i].x + 20.0f)
                 {
                     points += droppedPoints[i].value;
+                    playSound("coin");
                     droppedPoints.erase(droppedPoints.begin() + i);
                 }
             }

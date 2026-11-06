@@ -168,6 +168,12 @@ int main() {
         else{
             std::cout << "FAILED to load welcome sound!" << std::endl;
         }
+        if(loadSound("coin", "Template/src/characters/coin/coin.wav", false)){
+             std::cout << "coin" << std::endl;
+        }
+        else{
+            std::cout<<"not coin"<<std::endl;
+        }
     }//loading dooms voice
     else{
          std::cout << "FAILED to initialize audio!" << std::endl;
