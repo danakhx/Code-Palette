@@ -682,7 +682,7 @@ void onClick(float mouseX, float mouseY)
             return;
         }
         else if (isMouseOver(pRestart, mouseX, mouseY))
-        {
+        {   stopSound("gameSong");
             // restart the game (restart function not done yet)
             restartGame();
             gameState = GameState::PLAYING;
@@ -1216,6 +1216,7 @@ void update(float deltaTime)
             else
             {
                 gameState = GameState::WON;
+                playSound("gameSong");
             }
         }
     }
