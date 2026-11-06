@@ -216,6 +216,12 @@ int main() {
         else{
             std::cout << "FAILED to load first song!" << std::endl;
         }
+        if(loadSound("doomCeleb", CHARACTERS_DIR "doom/celeb.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to ceeleb song!" << std::endl;
+        }
 
     }//loading dooms voice
     else{

@@ -54,6 +54,7 @@ extern GLFWwindow *gWindow;
 
 static double doomSceneStart = -1.0;
 static bool doomVoicePlayed = false;
+static bool doomCelebPlayed = false;
 static const double DOOM_FPS = 4.0; // frames per second
 static const int DOOM_FRAMES = 8;
 const double DOOM_RISE_DURATION = 0.5;
@@ -67,6 +68,7 @@ void startDoomScene()
 {
     doomSceneStart = glfwGetTime();
     doomVoicePlayed = false;
+    doomCelebPlayed = false;
 }
 
 // true once all 8 frames have played
@@ -535,6 +537,10 @@ void renderGame()
 
         if (elapsed >= magnetoEnd)
         {
+            if (!doomCelebPlayed){
+                playSound("doomCeleb");
+                doomCelebPlayed = true;
+            }
             // Speech bubble colours
             glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
             glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
