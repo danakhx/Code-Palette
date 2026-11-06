@@ -25,7 +25,7 @@ int hoverLane = -1;
 std::array<bool, 4> selectedLanes = {false, false, false, false};
 int enemyCount = 0;
 float spawnTimer = 4.0f;
-int points=30;
+int points=50;
 bool placedFirstPlayer = false;
 std::vector<impactEffect> impacts;
 
@@ -167,7 +167,7 @@ void restartGame()
     impacts.clear();
     hoverLane=-1;
     droppedPoints.clear();
-    points=30;
+    points=50;
     placedFirstPlayer = false;
     selectedLanes = {false, false, false, false};
     projectiles.clear();
@@ -745,6 +745,7 @@ void onClick(float mouseX, float mouseY)
         {
             // restart the game (restart function not done yet)
             restartGame();
+            stopSound("bgSong");
             gameState = GameState::MAIN_MENU;
             return;
         }
@@ -759,6 +760,7 @@ void onClick(float mouseX, float mouseY)
             stopSound("gameSong");
             stopSound("loseFirst");
             gameState = GameState::PLAYING;
+            playSound("bgSong");
             return;
         }
         else if (isMouseOver(pMainMenu, mouseX, mouseY))
@@ -912,17 +914,17 @@ void spawnEnemy(int lane)
 }
 void spawnEasyEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 1, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 60, 1, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 2, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 60, 2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 100, 3, 7, 7, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 80, 3, 7, 7, 0.0f, 1};
     enemies.push_back(enemy);
 }
 
@@ -978,6 +980,7 @@ void update(float deltaTime)
     if (gameState == GameState::CUTSCENE && doomSceneDone())
     {
         gameState = GameState::PLAYING;
+        playSound("bgSong");
         return;
     }
 
@@ -1108,7 +1111,7 @@ void update(float deltaTime)
                         if (enemy.projTimer <= 0.0f)
                         {
                             p.hp -= 2;
-                            enemy.projTimer = 3.0f;
+                            enemy.projTimer = 4.0f;
                         }
                     }
                     touchingEnemy = true;
@@ -1295,6 +1298,7 @@ void update(float deltaTime)
             if (enemies[i].x <= basex)
             {
                 gameState = GameState::LOST;
+                stopSound("bgSong");
                 playSound("loseFirst");
                 return;
             }
@@ -1349,6 +1353,7 @@ void update(float deltaTime)
             else
             {
                 gameState = GameState::WON;
+                stopSound("bgSong");
                 playSound("gameSong");
             }
         }

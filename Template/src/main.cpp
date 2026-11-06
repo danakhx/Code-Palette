@@ -266,6 +266,12 @@ int main() {
         else{
             std::cout << "FAILED tostop" << std::endl;
         }
+        if(loadSound("bgSong", CHARACTERS_DIR "death/bgSong.mp3", true)){ //true to let it loop
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load background song!" << std::endl;
+        }
 
 
     }//loading dooms voice
