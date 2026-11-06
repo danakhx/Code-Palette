@@ -215,18 +215,23 @@ static void drawEntities()
         for (const enemyTest &enemy : enemies)
         {
             float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
+            float drawW = enemy.w * HPscale(enemy.hp, enemy.maxhp);
+            float drawH = enemy.h * HPscale(enemy.hp, enemy.maxhp);
+            float drawX = enemy.x + (enemy.w - drawW) / 2.0f; 
+            float drawY = enemyY;
             if (enemy.type == 1)
             {
-                drawdoom(enemy.x, enemyY, enemy.w, enemy.h);
+                drawdoom(drawX, drawY, drawW, drawH);
             }
             else if (enemy.type == 2)
             {
-                drawmagneto(enemy.x, enemyY, enemy.w, enemy.h);
+                drawmagneto(drawX, drawY, drawW, drawH);
             }
             else
             {
-                drawthanos(enemy.x, enemyY, enemy.w, enemy.h);
+                drawthanos(drawX, drawY, drawW, drawH);
             }
+
             float top = laneCenter(enemy.lane) - enemy.h / 2 + enemy.h;
             float w = enemy.w;
             float h = 6.0f;
@@ -243,15 +248,13 @@ static void drawEntities()
         for (const player &p : players)
         {
             float playerY = laneCenter(p.lane) - p.h / 2.0f;
-            // Smaller visual dimensions
             float drawW = p.w * HPscale(p.hp, p.maxhp);
             float drawH = p.h * HPscale(p.hp, p.maxhp);
-            float drawX = p.x + (p.w - drawW) / 2.0f; // Keep character centered horizontally
-            // Keep character anchored to the bottom of its original position
+            float drawX = p.x + (p.w - drawW) / 2.0f;
             float drawY = playerY;
+            float duckH= drawH*0.6f;
             if (p.type == 1)
             {
-
                 if (p.fighting)
                 {
                     drawCaptainAmericaFight(drawX, drawY, drawW, drawH, p.fightFrame);
@@ -263,7 +266,7 @@ static void drawEntities()
                 }
                 else if (p.action == PlayerAction::DUCKING)
                 {
-                    drawCcrouch(drawX, drawY, drawW, drawH);
+                    drawCcrouch(drawX, drawY, drawW, duckH);
                 }
                 else
                 {
@@ -274,11 +277,11 @@ static void drawEntities()
             {
                 if (p.action == PlayerAction::DUCKING)
                 {
-                    drawSPcrouch(drawX, drawY - 1, drawW, drawH);
+                    drawSPcrouch(drawX, drawY - 1, drawW, duckH);
                 }
                 else
                 {
-                    drawSPstand(drawX - 15.0f, drawY + p.jumpOffset - 25.0f, drawW + 25.0f, drawH + 30.0f);
+                    drawSPstand(drawX - 5.0f, drawY + p.jumpOffset - 25.0f, drawW + 10.0f, drawH + 12.0f);
                 }
             }
             else
@@ -571,127 +574,10 @@ void renderGame()
         drawMainMenu();
         break;
     case GameState::PLAYING:
-        drawGameScreen();
-        updateShop(points);
-        drawText(std::to_string(points).c_str(), 315, 608, 2.0f, glm::vec4(1, 1, 1, 1));
-        for (const enemyTest &enemy : enemies)
-        {
-            float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
-            if (enemy.type == 1)
-            {
-                drawdoom(enemy.x, enemyY, enemy.w, enemy.h);
-            }
-            else if (enemy.type == 2)
-            {
-                drawmagneto(enemy.x, enemyY, enemy.w, enemy.h);
-            }
-            else
-            {
-                drawthanos(enemy.x, enemyY, enemy.w, enemy.h);
-            }
-            float top = laneCenter(enemy.lane) - enemy.h / 2 + enemy.h;
-            float w = enemy.w;
-            float h = 6.0f;
-            float y = top + 2.0f;
-
-            float frac = (float)enemy.hp / enemy.maxhp;
-            if (frac < 0.0f)
-                frac = 0.0f;
-
-            drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
-            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f));
-        }
-
-        for (const player &p : players)
-        {
-            float playerY = laneCenter(p.lane) - p.h / 2.0f;
-            // Smaller visual dimensions
-            float drawW = p.w * HPscale(p.hp, p.maxhp);
-            float drawH = p.h * HPscale(p.hp, p.maxhp);
-            float drawX = p.x + (p.w - drawW) / 2.0f; // Keep character centered horizontally
-            // Keep character anchored to the bottom of its original position
-            float drawY = playerY;
-            if (p.type == 1)
-            {
-
-                if (p.fighting)
-                {
-                    drawCaptainAmericaFight(drawX, drawY, drawW, drawH, p.fightFrame);
-                }
-
-                else if (p.action == PlayerAction::JUMPING)
-                {
-                    drawCjump(drawX, drawY + p.jumpOffset, drawW, drawH);
-                }
-                else if (p.action == PlayerAction::DUCKING)
-                {
-                    drawCcrouch(drawX, drawY, drawW, drawH);
-                }
-                else
-                {
-                    drawCaptainAmericaRun(drawX, drawY, drawW, drawH);
-                }
-            }
-            else if (p.type == 2)
-            {
-                if (p.action == PlayerAction::DUCKING)
-                {
-                    drawSPcrouch(drawX, drawY - 1, drawW, drawH);
-                }
-                else
-                {
-                    drawSPstand(drawX - 15.0f, drawY + p.jumpOffset - 25.0f, drawW + 25.0f, drawH + 30.0f);
-                }
-            }
-            else
-            {
-                drawhulk(drawX, drawY, drawW, drawH);
-            }
-            float top = laneCenter(p.lane) - p.h / 2 + p.h;
-            float w = p.w;
-            float h = 6.0f;
-            float y = top + 2.0f;
-
-            float frac = (float)p.hp / p.maxhp;
-            if (frac < 0.0f)
-                frac = 0.0f;
-
-            drawRect(p.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
-            drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f));
-        }
-        for (const projectile &proj : projectiles)
-        {
-            float projectileY = laneCenter(proj.lane) + proj.y; // leh
-            if (proj.side == 0)
-            {
-                drawweb(proj.x, projectileY, 40.0f, 25.0f);
-            }
-            else
-            {
-                drawProjectile(proj.x, projectileY, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-            }
-        }
-        // DRAW IMPACT EFFECTS HERE
-
-        for (const impactEffect &impact : impacts)
-        {
-
-            float impactY = laneCenter(impact.lane) + impact.y;
-
-            drawimpact(
-                impact.x,
-                impactY,
-                60.0f,
-                60.0f);
-        }
-
-        for (const arcReactor &point : droppedPoints)
-        {
-            drawpointReactor(point.x, laneCenter(point.lane) - 50.0f, 30.0f, 30.0f);
-        }
+       drawEntities();
         break;
     case GameState::PAUSED:
-        drawGameScreen();
+        drawEntities();
         drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
         drawPauseScreen();
         break;
