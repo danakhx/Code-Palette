@@ -710,6 +710,7 @@ void onClick(float mouseX, float mouseY)
         {
             // restart the game (restart function not done yet)
             restartGame();
+            stopSound("gameSong");
             gameState = GameState::PLAYING;
             return;
         }
@@ -717,6 +718,7 @@ void onClick(float mouseX, float mouseY)
         {
             // restart the game (restart function not done yet)
             restartGame();
+            stopSound("gameSong");
             gameState = GameState::MAIN_MENU;
             return;
         }
