@@ -89,6 +89,10 @@ int main() {
     if(!loadAvengersBase()) std::cout << "Failed to load Avengers Base image." << std::endl;
     else std::cout << "Avengers Base image loaded!" << std::endl;
 
+    //screen
+    if(!loadScreen()) std::cout << "Failed to load Screen image." << std::endl;
+    else std::cout << "Screen image loaded!" << std::endl;
+
 
     //shop tests
     if(!loadCapFace()) std::cout << "Failed to load Captain America face image." << std::endl;
