@@ -286,12 +286,28 @@ static void Tc(float x, float y)
     
 }
 
+static void Car(float x, float y)
+{
+    drawRect(x+0, y+10, 110, 20, glm::vec4(0.75f, 0.10f, 0.12f, 1.0f)); //body
+    drawRect(x+25,y+ 30, 60, 16, glm::vec4(0.60f, 0.07f, 0.09f, 1.0f)); //cabin
+    drawRect(x+30,y+33, 22, 10, glm::vec4(0.60f, 0.80f, 0.92f, 1.0f)); //w1
+    drawRect(x+58,y+ 33, 22, 10, glm::vec4(0.60f, 0.80f, 0.92f, 1.0f));//w2
+    drawRect(x+14,y+0, 20, 20, glm::vec4(0.07f, 0.07f, 0.08f, 1.0f)); //wheel1
+    drawRect(x+76,y+ 0, 20, 20, glm::vec4(0.07f, 0.07f, 0.08f, 1.0f));//wheel2
+    drawRect(x+20,y+6, 8, 8, glm::vec4(0.65f, 0.65f, 0.68f, 1.0f)); //cap1
+    drawRect(x+82,y+ 6, 8, 8, glm::vec4(0.65f, 0.65f, 0.68f, 1.0f));//cap2
+    drawRect(x+104,y+16, 6, 6, glm::vec4(1.0f, 0.95f, 0.60f, 1.0f)); //headlight
+    drawRect(x+0,y+ 16, 5, 6, glm::vec4(0.90f, 0.05f, 0.05f, 1.0f));//tail light
+    
+}
+
 void drawEnvironment()
 {
 Streetlight(450, 450);
 Trafficsign(600, 450);
 Bench(350, 450);
 Tc(320, 450);
+Car(700, 450);
 }
 
 void drawGameScreen(){
