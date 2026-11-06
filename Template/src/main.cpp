@@ -154,7 +154,7 @@ int main() {
     bool audioReady = initAudio();
     if (audioReady){
         std::cout << "Audio engine initialized!" << std::endl;
-        if (loadSound("doomVoice", CHARACTERS_DIR "doom/doom1.wav", true)){
+        if (loadSound("doomVoice", CHARACTERS_DIR "doom/doom1.wav", false)){
             std::cout << "Doom voice loaded!" << std::endl;
             
         }
