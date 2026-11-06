@@ -46,6 +46,9 @@ bool loadInfinityGuantlet();
 extern Pixeldata AvengersBase;
 bool loadAvengersBase();
 
+extern Pixeldata screen;
+bool loadScreen();
+
 glm::vec4 laneColor(int lane);
 
 void canAfford(int p);

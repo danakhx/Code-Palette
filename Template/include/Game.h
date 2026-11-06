@@ -36,3 +36,6 @@ struct impactEffect {
     float y;
     float timer;
 };
+
+//loki stuff
+float lokiJumpOffset();

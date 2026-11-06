@@ -10,6 +10,12 @@
 #define ENTITIES_DIR "Template/src/Entities/"
 #endif
 
+//some loki stuff
+const float lokiJD=0.9f;
+const float lokiJH=30.0f;
+float lokiTimer=0.0f;
+
+
 std::vector<enemyTest> enemies;
 std::vector<player> players;
 std::vector<arcReactor> droppedPoints;
@@ -53,6 +59,11 @@ GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow *gWindow;
 
 static double doomSceneStart = -1.0;
+static bool doomTalkPlayed = false;
+static bool capStopPlayed = false;
+static bool capAssemblePlayed = false;
+static bool doomVoicePlayed = false;
+static bool doomCelebPlayed = false;
 static const double DOOM_FPS = 4.0; // frames per second
 static const int DOOM_FRAMES = 8;
 const double DOOM_RISE_DURATION = 0.5;
@@ -65,6 +76,11 @@ const double TEMPLE_DURATION = 8.0;
 void startDoomScene()
 {
     doomSceneStart = glfwGetTime();
+    doomVoicePlayed = false;
+    doomCelebPlayed = false;
+     doomTalkPlayed = false;
+     capStopPlayed = false;
+     capAssemblePlayed = false;
 }
 
 // true once all 8 frames have played
@@ -155,6 +171,7 @@ void restartGame()
     placedFirstPlayer = false;
     selectedLanes = {false, false, false, false};
     projectiles.clear();
+    lokiTimer = 0.0f;
 }
 void updateShop(int cpoints){ //rendering shop and grayscale
      int count = 0;
@@ -372,6 +389,10 @@ void renderGame()
             // Doom's speech bubble appears after everyone arrives
             if (templeElapsed >= 1.45 && templeElapsed < 3.5)
             {
+                if (!doomTalkPlayed){
+                    playSound("get");
+                    doomTalkPlayed = true;
+                }
                 glm::vec4 bubbleOutline(0.05f, 0.05f, 0.07f, 1.0f);
                 glm::vec4 bubbleWhite(1.0f, 1.0f, 1.0f, 1.0f);
                 glm::vec4 bubbleText(0.05f, 0.05f, 0.07f, 1.0f);
@@ -425,7 +446,11 @@ void renderGame()
 
                 // Dialogue
                 if (templeElapsed < 6.3)
-                {
+                { 
+                    if (!capStopPlayed){
+                        playSound("stop");
+                        capStopPlayed = true;
+                    }
                     drawTextCentered(
                         "NOT SO FAST, DOOMIES!",
                         235, 290, 390, 35,
@@ -433,6 +458,10 @@ void renderGame()
                 }
                 else
                 {
+                     if (!capAssemblePlayed){
+                        playSound("assemble");
+                         capAssemblePlayed = true;
+                     }
                     drawTextCentered(
                         "AVENGERS, ASSEMBLE!",
                         235, 290, 390, 35,
@@ -501,7 +530,10 @@ void renderGame()
         // Appears when Doom finishes standing
         // Disappears when Magneto starts his animation
         if (elapsed >= doomStandStart && elapsed < magnetoStart) {
-            playSound("doomVoice");
+            if (!doomVoicePlayed) {
+                playSound("doomVoice");
+                doomVoicePlayed = true;
+            }      
             // Pointer
             drawTriangle(615, 555, 50, -35, outline);
             drawTriangle(620, 555, 40, -27, white);
@@ -530,6 +562,10 @@ void renderGame()
 
         if (elapsed >= magnetoEnd)
         {
+            if (!doomCelebPlayed){
+                playSound("doomCeleb");
+                doomCelebPlayed = true;
+            }
             // Speech bubble colours
             glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
             glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
@@ -589,14 +625,14 @@ void renderGame()
     case GameState::WON:
         drawGameScreen();
         drawEntities();
-        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
         drawWinscreen();
         break;
 
     case GameState::LOST:
         drawGameScreen();
         drawEntities();
-        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
         drawLoseScreen();
         break;
 
@@ -720,6 +756,8 @@ void onClick(float mouseX, float mouseY)
         {
             // restart the game (restart function not done yet)
             restartGame();
+            stopSound("gameSong");
+            stopSound("loseFirst");
             gameState = GameState::PLAYING;
             return;
         }
@@ -727,6 +765,8 @@ void onClick(float mouseX, float mouseY)
         {
             // restart the game (restart function not done yet)
             restartGame();
+            stopSound("gameSong");
+            stopSound("loseFirst");
             gameState = GameState::MAIN_MENU;
             return;
         }
@@ -778,12 +818,12 @@ void onClick(float mouseX, float mouseY)
                     if (selectedLanes[i]) {
                         
                         if (characterType == 1) {
-                            player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
+                            player p = {i, 200.0f, 100, 100, 75, 1, 5,5, 0.0f, 1};
                             players.push_back(p);
                             playSound("capS");
                         }
                         else if (characterType == 2) {
-                            player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
+                            player p = {i, 200.0f, 100, 100, 75, 2, 5, 5, 0.0f, 1};
                             players.push_back(p);
                             playSound("spiderS");
                         }
@@ -872,18 +912,31 @@ void spawnEnemy(int lane)
 }
 void spawnEasyEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 1, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 1, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 2, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 3, 7, 7, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 100, 3, 7, 7, 0.0f, 1};
     enemies.push_back(enemy);
+}
+
+bool hulkDefends(const player &p, float attackX)
+{
+    if (p.type == 3){
+        return false;}
+
+    for (const player &p : players)
+    {
+        if (p.type == 3 && p.lane == p.lane && attackX >= p.x && attackX <= p.x + p.w)
+            return true;
+    }
+    return false;
 }
 int randomLane()
 {
@@ -907,6 +960,19 @@ int maxCount(int w)
     return 0;
 }
 
+// how high loki is rn
+float lokiJumpOffset()
+{
+    if (lokiTimer <= 0.0f){
+        return 0.0f;}
+
+    float progress = 1.0f - lokiTimer / lokiJD; // 0 to 1 for all jumps
+    float t = progress * 3;
+    t -= (int)t; // 0 to 1 for the current jump
+    return 4.0f * lokiJH * t * (1.0f - t);
+}
+
+
 void update(float deltaTime)
 {
     if (gameState == GameState::CUTSCENE && doomSceneDone())
@@ -917,6 +983,9 @@ void update(float deltaTime)
 
     if (gameState == GameState::PLAYING&&!isPlayerKeyOpen)
     {
+        if (lokiTimer > 0.0f)
+        lokiTimer -= deltaTime;
+
         hoverLane = whatLane(mouseX, mouseY);
         for (player &p : players)
             p.move = 1; // set all players movable
@@ -1029,10 +1098,11 @@ void update(float deltaTime)
                             {
                                 p.fightFrame = 0;
                                 enemy.hp -= 1;
+                                playSound("shield");
                             }
                         }
                     }
-                    if (enemy.type == 3)
+                    if (enemy.type == 3 && !hulkDefends(p, enemy.x))
                     {
                         enemy.projTimer -= deltaTime;
                         if (enemy.projTimer <= 0.0f)
@@ -1099,7 +1169,7 @@ void update(float deltaTime)
                     proj.lane == p.lane &&
                     proj.x >= p.x &&
                     proj.x <= p.x + p.w &&
-                    !dodged)
+                    !dodged && !hulkDefends(p,proj.x))
                 {
 
                     p.hp -= 1;
@@ -1135,6 +1205,7 @@ void update(float deltaTime)
                 if(enemy.projTimer<=0.0f){
                     projectile proj={enemy.lane, enemy.x, 30.0f,1};
                     projectiles.push_back(proj);
+                    playSound("pew");
                     enemy.projTimer = 4.0f; // reset timer
                 }
             }
@@ -1145,6 +1216,7 @@ void update(float deltaTime)
                 {
                     projectile proj = {enemy.lane, enemy.x, -30.0f, 1};
                     projectiles.push_back(proj);
+                    playSound("pew");
                     enemy.projTimer = 3.5f;
                 }
             }
@@ -1162,7 +1234,8 @@ void update(float deltaTime)
                 {
                     projectile proj = {p.lane, p.x + p.w, 0.0f, 0};
                     projectiles.push_back(proj);
-                    p.projTimer = 1.0f;
+                    playSound("webs");
+                    p.projTimer = 3.0f;
                 }
             }
         }
@@ -1184,6 +1257,22 @@ void update(float deltaTime)
             if (impacts[i].timer >= 0.25f)
             {
                 impacts.erase(impacts.begin() + i);
+            }
+        }
+        // removing players and enemies if they go offscreen
+        for (int i = players.size() - 1; i >= 0; i--)
+        {
+            if (players[i].x > 1280.0f)
+            {
+                players.erase(players.begin() + i);
+            }
+        }
+
+        for (int i = enemies.size() - 1; i >= 0; i--)
+        {
+            if (enemies[i].x + enemies[i].w < 0.0f)
+            {
+                enemies.erase(enemies.begin() + i);
             }
         }
 
@@ -1214,7 +1303,7 @@ void update(float deltaTime)
         spawnTimer += deltaTime;
         if (wave == 1 && enemyCount < 4)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 spawnEasyEnemy(randomLane());
                 spawnTimer = 0.0f;
@@ -1224,7 +1313,7 @@ void update(float deltaTime)
         } // wave 2 lazem tb2a mix of easy and medium not just medium
         else if (wave == 2 && enemyCount < 6)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 spawnMediumEnemy(randomLane());
                 spawnEasyEnemy(randomLane());
@@ -1235,7 +1324,7 @@ void update(float deltaTime)
         } // wave 3 mix of all
         else if (wave == 3 && enemyCount < 12)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 int firstLane = randomLane();
                 int secondLane = firstLane % 3 + 1;
@@ -1253,8 +1342,9 @@ void update(float deltaTime)
             if (wave < 3)
             {
                 wave++;
+                lokiTimer = lokiJD;
                 enemyCount = 0;
-                spawnTimer = 4.0f;
+                spawnTimer = 0.0f;
             }
             else
             {

@@ -17,6 +17,7 @@
 Pixeldata Loki;
 Pixeldata infinityGuantlet;
 Pixeldata AvengersBase;
+Pixeldata screen;
 
 //shop and points
 Pixeldata capFace;
@@ -82,6 +83,13 @@ bool loadLoki(){
 bool loadAvengersBase(){
     AvengersBase.ppointer=stbi_load(ENTITIES_DIR "AvengersBase.png",&AvengersBase.width,&AvengersBase.height,&AvengersBase.channels,0);
     if (AvengersBase.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadScreen(){
+    screen.ppointer=stbi_load(ENTITIES_DIR "screen.png",&screen.width,&screen.height,&screen.channels,0);
+    if (screen.ppointer == nullptr) {
         return false;
     }
     return true;
@@ -389,9 +397,6 @@ Car(700, 450);
 Car(1000, 450);
 }
 
-glm::vec4 shopSlotColor(int slot) {
-    return glm::vec4(0.376f, 0.490f, 0.545f, 1.0f);
-}
 void drawGameScreen(){
        
         drawEnvironment(); //background
@@ -419,6 +424,14 @@ void drawGameScreen(){
           drawTextCentered("Player KEY", playerKey.x, playerKey.y, playerKey.w, playerKey.h, 2.0f, glm::vec4(1, 1, 1, 1));
        
       
+        drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f));
+        drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f));
+        drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f));
+        drawScreen(1010.0f, 585.0f, 195.0f, 130.0f);
+        std::string waveText = "Wave: " + std::to_string(wave);
+        drawTextCentered(waveText.c_str(), 1010.0f, 585.0f, 195.0f, 130.0f, 3.0f, glm::vec4(0.553f, 0.169f, 0.047f,1)); 
+        drawLoki(1100.0f, 550.0f + lokiJumpOffset(), 220.0f, 220.0f);
+
 }
 void drawPlayerKeyScreen() {
       

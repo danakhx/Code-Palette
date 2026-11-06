@@ -9,6 +9,10 @@
 #include <cstdlib>  
 #include <ctime>   
 #include "sound.h"
+#ifndef CHARACTERS_DIR
+#define CHARACTERS_DIR "Template/src/characters/"
+#endif
+
 
 GLFWwindow* gWindow = nullptr;
 
@@ -89,6 +93,10 @@ int main() {
     if(!loadAvengersBase()) std::cout << "Failed to load Avengers Base image." << std::endl;
     else std::cout << "Avengers Base image loaded!" << std::endl;
 
+    //screen
+    if(!loadScreen()) std::cout << "Failed to load Screen image." << std::endl;
+    else std::cout << "Screen image loaded!" << std::endl;
+
 
     //shop tests
     if(!loadCapFace()) std::cout << "Failed to load Captain America face image." << std::endl;
@@ -154,7 +162,7 @@ int main() {
     bool audioReady = initAudio();
     if (audioReady){
         std::cout << "Audio engine initialized!" << std::endl;
-        if (loadSound("doomVoice", CHARACTERS_DIR "doom/doom1.wav", true)){
+        if (loadSound("doomVoice", CHARACTERS_DIR "doom/doom1.wav", false)){
             std::cout << "Doom voice loaded!" << std::endl;
             
         }
@@ -204,21 +212,60 @@ int main() {
         else {
             std::cout << "FAILED to load player death sound" << std::endl;
         }
-        if (loadSound("gameSong", "Template/src/characters/back/back.mp3", true)) {
+        if (loadSound("gameSong", CHARACTERS_DIR "back/back.mp3", true)) {
             std::cout << "Game song loaded!" << std::endl;
         }
         else {
             std::cout << "FAILED to load game song!" << std::endl;
         }
-        if(loadSound("loseFirst", "Template/src/characters/doom/woah.wav", false)) {
+        if(loadSound("loseFirst", CHARACTERS_DIR "doom/woah.wav", false)) {
             std::cout << "first loaded!" << std::endl;
         }
         else{
             std::cout << "FAILED to load first song!" << std::endl;
         }
-        
-
-        
+        if(loadSound("doomCeleb", CHARACTERS_DIR "doom/celeb.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to ceeleb song!" << std::endl;
+        }
+        if(loadSound("shield", CHARACTERS_DIR "captainAmerica/shield.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load shield sound!" << std::endl;
+        }
+        if(loadSound("webs", CHARACTERS_DIR "spiderman/webs.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load webs sound!" << std::endl;
+        }
+        if(loadSound("pew", CHARACTERS_DIR "death/pew.wav", false)){
+            std::cout << "loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load pew sound!" << std::endl;
+        }
+        if(loadSound("get",CHARACTERS_DIR "doom/talk.wav", false)){
+            std::cout << "loaded22" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to talk" << std::endl;
+        }
+        if(loadSound("stop",CHARACTERS_DIR "coin/stop.wav", false)){
+             std::cout << "loadedewgabhq" << std::endl;
+        }
+        else{
+            std::cout << "FAILED tostop" << std::endl;
+        }
+        if(loadSound("assemble",CHARACTERS_DIR "coin/assemble.wav", false)){
+            std::cout << "lassemble" << std::endl;
+        }
+        else{
+            std::cout << "FAILED tostop" << std::endl;
+        }
 
 
     }//loading dooms voice
