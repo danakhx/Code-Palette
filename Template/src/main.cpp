@@ -85,6 +85,11 @@ int main() {
     if(!loadInfinityGuantlet())std::cout << "Failed to load Infinity Gauntlet image." << std::endl;
     else std::cout << "Infinity Gauntlet image loaded!" << std::endl;
 
+    //base
+    if(!loadAvengersBase()) std::cout << "Failed to load Avengers Base image." << std::endl;
+    else std::cout << "Avengers Base image loaded!" << std::endl;
+
+
     //shop tests
     if(!loadCapFace()) std::cout << "Failed to load Captain America face image." << std::endl;
     else std::cout << "Captain America face image loaded!" << std::endl;

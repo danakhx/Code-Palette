@@ -19,6 +19,7 @@ static GLuint characterTexture = 0;
 static GLuint crouchTexture = 0;
 static GLuint lokiTexture = 0;
 static GLuint guantletTexture = 0;
+static GLuint AvengersBaseTexture = 0;
 
 
 //shop related
@@ -213,6 +214,7 @@ void initRenderer() {
     glBindVertexArray(0);
     lokiTexture = characterstextures(Loki);
     guantletTexture = characterstextures(infinityGuantlet);
+    AvengersBaseTexture = characterstextures(AvengersBase);
 
     //shop
     capFaceTexture      = characterstextures(capFace);
@@ -420,6 +422,7 @@ void cleanupRenderer() {
     glDeleteTextures(1, &crouchTexture);
     glDeleteTextures(1, &lokiTexture);
     glDeleteTextures(1, &guantletTexture);
+    glDeleteTextures(1, &AvengersBaseTexture);
 
     glDeleteTextures(1, &crunTexture);
     glDeleteTextures(1, &cfightTexture);
@@ -547,6 +550,9 @@ void drawLoki(float x, float y, float w, float h){
 void drawInfinityGuantlet(float x, float y, float w, float h){
     drawSprite(guantletTexture, x, y, w, h);
 
+}
+void drawAvengersBase(float x, float y, float w, float h){
+    drawSprite(AvengersBaseTexture, x, y, w, h);
 }
 void drawProjectile(float x, float y, glm::vec4 color){
     drawRect(x,y,20,5,color);

@@ -13,6 +13,7 @@
 
 Pixeldata Loki;
 Pixeldata infinityGuantlet;
+Pixeldata AvengersBase;
 
 //shop and points
 Pixeldata capFace;
@@ -71,6 +72,13 @@ bool isMouseOver(const Button& b, float mx, float my) {
 bool loadLoki(){
     Loki.ppointer=stbi_load(ENTITIES_DIR "loki.png",&Loki.width,&Loki.height,&Loki.channels,0);
     if (Loki.ppointer == nullptr) {
+        return false;
+    }
+    return true;
+}
+bool loadAvengersBase(){
+    AvengersBase.ppointer=stbi_load(ENTITIES_DIR "AvengersBase.png",&AvengersBase.width,&AvengersBase.height,&AvengersBase.channels,0);
+    if (AvengersBase.ppointer == nullptr) {
         return false;
     }
     return true;
@@ -272,8 +280,9 @@ void drawGameScreen(){
         drawRect(0.0f, 310.0f, 1280.0f, 120.0f, laneColor(3));//lane 3
         drawRect(0.0f, 430.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 3 divider
         drawRect(0.0f, 40.0f, 200.0f, 405.0f, glm::vec4(0.102f, 0.137f, 0.494f, 1.0f)); // outer base
-        drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
-        drawInfinityGuantlet(50,192,80,110);
+       // drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
+        drawAvengersBase(5.0f, 45.0f, 190.0f, 395.0f);
+        drawInfinityGuantlet(68,192,70,100);
         drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
         //player shop will include players and coin count
         //each slot will take 200px since the full thing is 800
