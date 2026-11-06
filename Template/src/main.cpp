@@ -140,8 +140,7 @@ int main() {
     glViewport(0, 0, 1280, 720);
 
     glfwSetKeyCallback(window, keyCallback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);   
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     
     

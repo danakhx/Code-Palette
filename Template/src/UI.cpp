@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <algorithm>
 #include "stb_image.h"
 
 #ifndef ENTITIES_DIR
@@ -29,10 +30,20 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 //MOUSE STUFF
 float mouseX=0, mouseY=0;
+int shopAffordable = 0;
+
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
   mouseX= xpos;
-  mouseY=720.0f-ypos;
+  mouseY=720.0f+ypos;
+  hoverShop = 0;
+    if (isMouseOver(player1, mouseX, mouseY)) {
+        hoverShop = 1;
+    } else if (isMouseOver(player2, mouseX, mouseY)) {
+        hoverShop = 2;
+    } else if (isMouseOver(player3, mouseX, mouseY)) {
+        hoverShop = 3;
+    }
 
 }
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -47,7 +58,6 @@ bool isMouseOver(const Button& b, float mx, float my) {
     return mx >= b.x && mx <= b.x + b.w &&
            my >= b.y && my <= b.y + b.h;
 }
-
 
  bool loadInfinityGuantlet(){
     infinityGuantlet.ppointer= stbi_load(ENTITIES_DIR "infinityGuantlet.png",
@@ -115,17 +125,35 @@ bool loadPointReactor(){
     }
     return true;
 }
-
+void drawShopCard(int playerNumber, float x, float y, glm::vec4 color) {
+    bool hovered = (playerNumber == hoverShop && playerNumber <= shopAffordable);
+    if (hovered) {
+        // bright outline, slightly bigger than the slot (covers the gray border)
+        glm::vec4 outline(
+            std::min(color.r + 0.25f, 1.0f),
+            std::min(color.g + 0.25f, 1.0f),
+            std::min(color.b + 0.25f, 1.0f),
+            color.a
+        );
+        drawRect(x - 9.0f, y - 5.0f, 199.0f, 134.0f, outline);
+        // normal color inside the outline
+        drawRect(x - 6.0f, y - 2.0f, 193.0f, 128.0f, color);
+    } else {
+        drawRect(x, y, 180.0f, 125.0f, color); // normal, smaller card
+    }
+}
 
 //buttons and ui
+
 Button mStart    = {390, 390, 500, 100};
 Button mExit     = {390, 150, 500, 100};
 Button pContinue = {390, 390, 500, 100};
 Button pRestart  = {390, 270, 500, 100};
 Button pMainMenu = {390, 150, 500, 100};
-Button player1 = {407,585,195,130};
-Button player2={608,585,195,130};
-Button player3={809,585,195,130};
+Button player1 = {407.0f, 585.0f, 195.0f, 130.0f};
+Button player2 = {608.0f, 585.0f, 195.0f, 130.0f};
+Button player3 = {809.0f, 585.0f, 195.0f, 130.0f};
+
 
 void drawPrices(){
     drawTextCentered("$10",    414.0f, 588.0f, 180.0f, 32.0f, 2.0f, glm::vec4(1, 1, 1, 1));
@@ -135,8 +163,9 @@ void drawPrices(){
 }
 
 void canAfford(int p){
+    
     switch(p){ //color them if u can afford them wl default yb2a gray
-        case 1: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f));
+        case 1: drawShopCard(1, 414.0f, 588.0f, glm::vec4(0.1f, 0.1f, 0.99f, 1.0f)); 
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
                 drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 drawgraySpider(666.5f, 620.0f, 70.0f, 86.2f);
@@ -144,19 +173,19 @@ void canAfford(int p){
                 drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;
-        case 2: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f)); 
+        case 2: drawShopCard(1, 414.0f, 588.0f, glm::vec4(0.1f, 0.1f, 0.99f, 1.0f));
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.776f, 0.157f, 0.157f, 1.0f));
+                drawShopCard(2, 615.0f, 588.0f, glm::vec4(0.99f, 0.1f, 0.1f, 1.0f));
                 drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
                 drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f)); 
                 drawgrayHulk(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;
-        case 3: drawRect(414.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.157f, 0.208f, 0.576f, 1.0f)); 
+        case 3: drawShopCard(1, 414.0f, 588.0f, glm::vec4(0.1f, 0.1f, 0.99f, 1.0f));
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
-                drawRect(615.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.776f, 0.157f, 0.157f, 1.0f));
+                drawShopCard(2, 615.0f, 588.0f, glm::vec4(0.99f, 0.1f, 0.1f, 1.0f));
                 drawspiderFace(666.5f, 620.0f, 70.0f, 86.2f);
-                drawRect(816.0f, 588.0f, 180.0f, 125.0f, glm::vec4(0.180f, 0.490f, 0.196f, 1.0f)); 
+                drawShopCard(3, 816.0f, 588.0f, glm::vec4(0.1f, 0.99f, 0.1f, 1.0f));
                 drawhulkFace(867.5f, 620.0f, 80.0f, 86.2f);
                 drawPrices();
                 break;
@@ -169,7 +198,7 @@ void canAfford(int p){
                 drawPrices();
         break;
     }
-
+    
 }
 
 void drawMainMenu()   {
@@ -226,9 +255,14 @@ glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
     return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);
 }
 
+int hoverShop = 0;
+
+glm::vec4 shopSlotColor(int slot) {
+    return glm::vec4(0.376f, 0.490f, 0.545f, 1.0f);
+}
 
 void drawGameScreen(){
-
+   
         drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
         drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
         drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
@@ -246,8 +280,7 @@ void drawGameScreen(){
         drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
         drawpointReactor(268.5f, 625.0f, 70.0f, 70.0f);
         drawText("Points: $", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
-        drawRect(407.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
-        drawRect(608.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
-        drawRect(809.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); 
-        //drawplayer();
+        drawRect(407.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(1));
+        drawRect(608.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(2));
+        drawRect(809.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(3));
 }
