@@ -740,6 +740,7 @@ void onClick(float mouseX, float mouseY)
             // restart the game (restart function not done yet)
             restartGame();
             stopSound("gameSong");
+            stopSound("loseFirst");
             gameState = GameState::PLAYING;
             return;
         }
@@ -748,6 +749,7 @@ void onClick(float mouseX, float mouseY)
             // restart the game (restart function not done yet)
             restartGame();
             stopSound("gameSong");
+            stopSound("loseFirst");
             gameState = GameState::MAIN_MENU;
             return;
         }
@@ -796,12 +798,12 @@ void onClick(float mouseX, float mouseY)
                     if (selectedLanes[i]) {
                         
                         if (characterType == 1) {
-                            player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
+                            player p = {i, 200.0f, 100, 100, 75, 1, 5,5, 0.0f, 1};
                             players.push_back(p);
                             playSound("capS");
                         }
                         else if (characterType == 2) {
-                            player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
+                            player p = {i, 200.0f, 100, 100, 75, 2, 5, 5, 0.0f, 1};
                             players.push_back(p);
                             playSound("spiderS");
                         }
@@ -890,18 +892,31 @@ void spawnEnemy(int lane)
 }
 void spawnEasyEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 1, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 1, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnMediumEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 2, 5, 5, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 70, 2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
 void spawnHardEnemy(int lane)
 {
-    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 3, 7, 7, 0.0f, 1};
+    enemyTest enemy = {lane, 1280.0, 100, 100, 100, 3, 7, 7, 0.0f, 1};
     enemies.push_back(enemy);
+}
+
+bool hulkDefends(const player &p, float attackX)
+{
+    if (p.type == 3){
+        return false;}
+
+    for (const player &p : players)
+    {
+        if (p.type == 3 && p.lane == p.lane && attackX >= p.x && attackX <= p.x + p.w)
+            return true;
+    }
+    return false;
 }
 int randomLane()
 {
@@ -1047,10 +1062,11 @@ void update(float deltaTime)
                             {
                                 p.fightFrame = 0;
                                 enemy.hp -= 1;
+                                playSound("shield");
                             }
                         }
                     }
-                    if (enemy.type == 3)
+                    if (enemy.type == 3 && !hulkDefends(p, enemy.x))
                     {
                         enemy.projTimer -= deltaTime;
                         if (enemy.projTimer <= 0.0f)
@@ -1117,7 +1133,7 @@ void update(float deltaTime)
                     proj.lane == p.lane &&
                     proj.x >= p.x &&
                     proj.x <= p.x + p.w &&
-                    !dodged)
+                    !dodged && !hulkDefends(p,proj.x))
                 {
 
                     p.hp -= 1;
@@ -1153,6 +1169,7 @@ void update(float deltaTime)
                 if(enemy.projTimer<=0.0f){
                     projectile proj={enemy.lane, enemy.x, 30.0f,1};
                     projectiles.push_back(proj);
+                    playSound("pew");
                     enemy.projTimer = 4.0f; // reset timer
                 }
             }
@@ -1163,6 +1180,7 @@ void update(float deltaTime)
                 {
                     projectile proj = {enemy.lane, enemy.x, -30.0f, 1};
                     projectiles.push_back(proj);
+                    playSound("pew");
                     enemy.projTimer = 3.5f;
                 }
             }
@@ -1180,7 +1198,8 @@ void update(float deltaTime)
                 {
                     projectile proj = {p.lane, p.x + p.w, 0.0f, 0};
                     projectiles.push_back(proj);
-                    p.projTimer = 1.0f;
+                    playSound("webs");
+                    p.projTimer = 3.0f;
                 }
             }
         }
@@ -1202,6 +1221,22 @@ void update(float deltaTime)
             if (impacts[i].timer >= 0.25f)
             {
                 impacts.erase(impacts.begin() + i);
+            }
+        }
+        // removing players and enemies if they go offscreen
+        for (int i = players.size() - 1; i >= 0; i--)
+        {
+            if (players[i].x > 1280.0f)
+            {
+                players.erase(players.begin() + i);
+            }
+        }
+
+        for (int i = enemies.size() - 1; i >= 0; i--)
+        {
+            if (enemies[i].x + enemies[i].w < 0.0f)
+            {
+                enemies.erase(enemies.begin() + i);
             }
         }
 
@@ -1232,7 +1267,7 @@ void update(float deltaTime)
         spawnTimer += deltaTime;
         if (wave == 1 && enemyCount < 4)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 spawnEasyEnemy(randomLane());
                 spawnTimer = 0.0f;
@@ -1242,7 +1277,7 @@ void update(float deltaTime)
         } // wave 2 lazem tb2a mix of easy and medium not just medium
         else if (wave == 2 && enemyCount < 6)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 spawnMediumEnemy(randomLane());
                 spawnEasyEnemy(randomLane());
@@ -1253,7 +1288,7 @@ void update(float deltaTime)
         } // wave 3 mix of all
         else if (wave == 3 && enemyCount < 12)
         {
-            if (spawnTimer >= 5.0f)
+            if (spawnTimer >= 8.0f)
             {
                 int firstLane = randomLane();
                 int secondLane = firstLane % 3 + 1;
@@ -1272,7 +1307,7 @@ void update(float deltaTime)
             {
                 wave++;
                 enemyCount = 0;
-                spawnTimer = 4.0f;
+                spawnTimer = 0.0f;
             }
             else
             {
