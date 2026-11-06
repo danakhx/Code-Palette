@@ -31,11 +31,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 //MOUSE STUFF
 float mouseX=0, mouseY=0;
 int shopAffordable = 0;
+int hoverShop = 0;
 
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
   mouseX= xpos;
-  mouseY=720.0f+ypos;
+  mouseY=720.0f-ypos;
   hoverShop = 0;
     if (isMouseOver(player1, mouseX, mouseY)) {
         hoverShop = 1;
@@ -163,7 +164,7 @@ void drawPrices(){
 }
 
 void canAfford(int p){
-    
+    shopAffordable=p;
     switch(p){ //color them if u can afford them wl default yb2a gray
         case 1: drawShopCard(1, 414.0f, 588.0f, glm::vec4(0.1f, 0.1f, 0.99f, 1.0f)); 
                 drawcapFace(465.5f, 620.0f, 75.0f, 86.2f);
@@ -255,7 +256,7 @@ glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
     return glm::vec4(0.50f, 0.50f, 0.50f, 1.0f);
 }
 
-int hoverShop = 0;
+
 
 glm::vec4 shopSlotColor(int slot) {
     return glm::vec4(0.376f, 0.490f, 0.545f, 1.0f);
