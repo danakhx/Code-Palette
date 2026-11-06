@@ -277,11 +277,21 @@ static void Bench(float x, float y)
     drawRect(x+92,y+ 24, 8, 12, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f));//support 2
 }
 
+static void Tc(float x, float y)
+{
+    drawRect(x+0, y+0, 22, 38, glm::vec4(0.22f, 0.42f, 0.30f, 1.0f)); //body
+    drawRect(x-2,y+ 32, 26, 10, glm::vec4(0.15f, 0.30f, 0.21f, 1.0f)); //lid
+    drawRect(x+0,y+10, 22, 5, glm::vec4(0.12f, 0.25f, 0.17f, 1.0f)); //Band
+    drawRect(x+15,y+ 26, 14, 5, glm::vec4(0.04f, 0.06f, 0.05f, 1.0f));//opening
+    
+}
+
 void drawEnvironment()
 {
 Streetlight(450, 450);
 Trafficsign(600, 450);
 Bench(350, 450);
+Tc(320, 450);
 }
 
 void drawGameScreen(){
