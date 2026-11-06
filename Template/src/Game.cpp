@@ -880,8 +880,10 @@ void update(float deltaTime)
             p.move = 1; // set all players movable
         for (int i = players.size() - 1; i >= 0; i--)
         { // players die loop
-            if (players[i].hp <= 0)
+            if (players[i].hp <= 0){
                 players.erase(players.begin() + i);
+            playSound("playerD");
+            }
         }
 
         // JUMP AND DUCK ANIMATION UPDATE
@@ -945,6 +947,7 @@ void update(float deltaTime)
                 }
                 droppedPoints.push_back(ar);
                 enemies.erase(enemies.begin() + i);
+                playSound("enemyD");
             }
         }
 

@@ -192,6 +192,18 @@ int main() {
         else {
             std::cout << "FAILED to load cap sound" << std::endl;
         }
+        if (loadSound("enemyD", CHARACTERS_DIR "death/enemyD.wav", false)) {
+        std::cout << "enemy death loaded" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load enemy death sound" << std::endl;
+        }
+        if (loadSound("playerD", CHARACTERS_DIR "death/playerD.wav", false)) {
+        std::cout << "player death loaded" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load player death sound" << std::endl;
+        }
 
     }//loading dooms voice
     else{
