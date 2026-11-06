@@ -8,7 +8,7 @@
 #include "Renderer.h"
 #include <cstdlib>  
 #include <ctime>   
-
+#include "sound.h"
 
 GLFWwindow* gWindow = nullptr;
 
@@ -151,6 +151,19 @@ int main() {
     
     // --- Set up shader, geometry and projection ---
     initRenderer();
+    bool audioReady = initAudio();
+    if (audioReady){
+        std::cout << "Audio engine initialized!" << std::endl;
+        if (loadSound("doomVoice", "Template/src/characters/doom/doom1.wav", true)){
+            std::cout << "Doom voice loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load Doom voice!" << std::endl;
+        }
+    }//loading dooms voice
+    else{
+         std::cout << "FAILED to initialize audio!" << std::endl;
+    }
    
     // --- Render loop ---
     lastTime = (float)glfwGetTime();
@@ -169,6 +182,9 @@ int main() {
     // --- Cleanup ---
     cleanupRenderer();
     cleanupGame();
+    if (audioReady){
+        shutdownAudio();
+    }
 
     glfwTerminate();
     return 0;

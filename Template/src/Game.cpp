@@ -5,6 +5,7 @@
 #include <iostream>
 #include "UI.h"
 #include "stb_image.h"
+#include "sound.h"
 #ifndef ENTITIES_DIR
 #define ENTITIES_DIR "Template/src/Entities/"
 #endif
@@ -499,8 +500,8 @@ void renderGame()
 
         // Appears when Doom finishes standing
         // Disappears when Magneto starts his animation
-        if (elapsed >= doomStandStart && elapsed < magnetoStart)
-        {
+        if (elapsed >= doomStandStart && elapsed < magnetoStart) {
+            playSound("doomVoice");
             // Pointer
             drawTriangle(615, 555, 50, -35, outline);
             drawTriangle(620, 555, 40, -27, white);
@@ -518,6 +519,9 @@ void renderGame()
                 "TO DOOM HUMANITY!",
                 360, 575, 560, 35,
                 2.0f, textColor);
+        }
+        else{
+            stopSound("doomVoice");
         }
 
         // Appears after Magneto finishes putting on his helmet
