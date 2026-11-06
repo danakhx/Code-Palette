@@ -24,8 +24,10 @@ extern Button player3;
 
 void drawMainMenu();
 void drawPauseScreen();
+void drawWinscreen();
+void drawLoseScreen();
 void drawGameScreen();
-void drawGameScreenfire();
+void drawEnvironment();
 
 extern Pixeldata Loki;
 bool loadLoki();
