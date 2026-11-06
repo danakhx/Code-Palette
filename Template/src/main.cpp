@@ -9,6 +9,10 @@
 #include <cstdlib>  
 #include <ctime>   
 #include "sound.h"
+#ifndef CHARACTERS_DIR
+#define CHARACTERS_DIR "Template/src/characters/"
+#endif
+
 
 GLFWwindow* gWindow = nullptr;
 
