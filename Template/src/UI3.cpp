@@ -267,10 +267,21 @@ static void Trafficsign(float x, float y)
     drawRect(x+18,y+ 66, 4, 3, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //!.
 }
 
+static void Bench(float x, float y)
+{
+    drawRect(x+0, y+18, 100, 10, glm::vec4(0.45f, 0.28f, 0.14f, 1.0f)); //seat
+    drawRect(x+0,y+ 30, 100, 8, glm::vec4(0.45f, 0.28f, 0.14f, 1.0f)); //backrest
+    drawRect(x+4,y+ 0, 8, 30, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f)); //leg1
+    drawRect(x+92,y+ 0, 8, 30, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f));//leg2
+    drawRect(x+4,y+ 24, 8, 12, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f)); //support1
+    drawRect(x+92,y+ 24, 8, 12, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f));//support 2
+}
+
 void drawEnvironment()
 {
 Streetlight(450, 450);
 Trafficsign(600, 450);
+Bench(350, 450);
 }
 
 void drawGameScreen(){

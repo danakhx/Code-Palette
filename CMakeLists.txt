@@ -29,6 +29,7 @@ file(GLOB SOURCES CONFIGURE_DEPENDS Template/src/*.cpp)
 add_executable(OpenGLStarter
     ${SOURCES}
     Template/src/glad.c
+    Template/src/UI3.cpp
 )
 
 target_include_directories(OpenGLStarter PRIVATE
