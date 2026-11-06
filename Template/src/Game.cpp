@@ -72,6 +72,9 @@ const int MAG_FPS = 4;
 const double DOOM_SPEECH_DURATION = 2.5;
 const double MAG_SPEECH_DURATION = 2.0;
 const double TEMPLE_DURATION = 8.0;
+
+static bool victorySoundStarted = false;
+static bool backMusicStarted = false;
 // call this once when the scene begins
 void startDoomScene()
 {
@@ -81,6 +84,7 @@ void startDoomScene()
      doomTalkPlayed = false;
      capStopPlayed = false;
      capAssemblePlayed = false;
+     
 }
 
 // true once all 8 frames have played
@@ -157,8 +161,11 @@ int magnetoSceneFrame()
     // Hold on the last frame after the animation ends
     return frame >= MAG_FRAMES ? MAG_FRAMES - 1 : frame;
 }
-void restartGame()
-{
+void restartGame(){
+    stopSound("victory");
+    stopSound("gameSong");
+    victorySoundStarted = false;
+    backMusicStarted = false;
     wave = 1;
     enemyCount = 0;
     spawnTimer = 4.0f;
@@ -975,8 +982,11 @@ float lokiJumpOffset()
 }
 
 
-void update(float deltaTime)
-{
+void update(float deltaTime){
+    if (gameState == GameState::WON && victorySoundStarted && !backMusicStarted &&  soundAtEnd("victory")){
+         playSound("gameSong");
+          backMusicStarted = true;
+    }
     if (gameState == GameState::CUTSCENE && doomSceneDone())
     {
         gameState = GameState::PLAYING;
@@ -1354,7 +1364,10 @@ void update(float deltaTime)
             {
                 gameState = GameState::WON;
                 stopSound("bgSong");
-                playSound("gameSong");
+                 if (!victorySoundStarted){
+                    playSound("victory");
+                     victorySoundStarted = true;
+                 }
             }
         }
     }

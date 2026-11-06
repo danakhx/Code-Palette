@@ -271,6 +271,11 @@ int main() {
         }
         else{
             std::cout << "FAILED to load background song!" << std::endl;
+        if(loadSound("victory",CHARACTERS_DIR "coin/victory.wav", false)){
+            std::cout << "vic" << std::endl;
+        }
+        else{
+            std::cout << "FAILED vicc" << std::endl;
         }
 
 

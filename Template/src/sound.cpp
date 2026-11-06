@@ -118,3 +118,14 @@ void toggleMute(){
     mute=!mute;
     applyVolume();
 }
+
+//cap speak
+bool soundAtEnd(const char* name)
+{
+    auto it = sounds.find(name);
+
+    if (it == sounds.end())
+        return false;
+
+    return ma_sound_at_end(it->second.get()) == MA_TRUE;
+}
