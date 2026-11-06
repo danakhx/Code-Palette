@@ -417,9 +417,7 @@ void drawGameScreen(){
         drawRect(206.0f, 585.0f, 195.0f, 130.0f, glm::vec4(0.376f, 0.490f, 0.545f, 1.0f)); // player shop
         drawpointReactor(268.5f, 625.0f, 70.0f, 70.0f);
         drawText("Points: $", 215, 608, 2.0f, glm::vec4(1, 1, 1, 1));
-        drawRect(407.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(1));
-        drawRect(608.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(2));
-        drawRect(809.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(3));
+        
          drawRect(playerKey.x, playerKey.y, playerKey.w, playerKey.h, glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
           drawTextCentered("Player KEY", playerKey.x, playerKey.y, playerKey.w, playerKey.h, 2.0f, glm::vec4(1, 1, 1, 1));
        
