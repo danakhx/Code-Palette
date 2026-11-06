@@ -40,6 +40,9 @@ bool loadLoki();
 extern Pixeldata infinityGuantlet;
 bool loadInfinityGuantlet();
 
+extern Pixeldata AvengersBase;
+bool loadAvengersBase();
+
 glm::vec4 laneColor(int lane);
 
 void canAfford(int p);

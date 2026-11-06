@@ -18,7 +18,8 @@ int hoverLane = -1;
 std::array<bool, 4> selectedLanes = {false, false, false, false};
 int enemyCount = 0;
 float spawnTimer = 4.0f;
-int points = 30;
+int points=30;
+bool placedFirstPlayer = false;
 std::vector<impactEffect> impacts;
 
 // Captain America movement test
@@ -149,22 +150,23 @@ void restartGame()
     impacts.clear();
     hoverLane=-1;
     droppedPoints.clear();
-    points = 30;
+    points=30;
+    placedFirstPlayer = false;
     selectedLanes = {false, false, false, false};
     projectiles.clear();
 }
-void updateShop(int cpoints)
-{ // rendering shop and grayscale
-    int count = 0;
-    for (int i = 1; i < 4; i++)
-    {
-        if (selectedLanes[i])
-        {
-            count++;
-        }
-    }
-    if (cpoints >= 30 && cpoints >= 30 * count)
-    {
+void updateShop(int cpoints){ //rendering shop and grayscale
+     int count = 0;
+        for (int i = 1; i < 4; i++) {
+            if (selectedLanes[i]) {
+                count++;
+            }}
+        if(!placedFirstPlayer){
+          if(cpoints>=10 && cpoints>=10*count) canAfford(1);
+            else canAfford(0);
+        return;
+    }        
+    if(cpoints>=30 && cpoints>=30*count){
         canAfford(3);
     }
     else if (cpoints >= 20 && cpoints >= 20 * count)
@@ -850,48 +852,43 @@ void onClick(float mouseX, float mouseY)
                 characterType = 1;
                 characterPrice = 10;
             }
-            else if (isMouseOver(player2, mouseX, mouseY))
-            {
-                characterType = 2;
-                characterPrice = 20;
-            }
-            else if (isMouseOver(player3, mouseX, mouseY))
-            {
-                characterType = 3;
-                characterPrice = 30;
-            }
-            if (characterType != 0)
-            {
-                int total = Counter * characterPrice;
-                if (points >= total)
-                {
-                    for (int i = 1; i < 4; i++)
-                    {
-                        if (selectedLanes[i])
-                        {
-                            if (characterType == 1)
-                            {
-                                player p = {i, 200.0f, 100, 100, 100, 1, 5, 5, 0.0f, 1};
-                                players.push_back(p);
-                            }
-                            else if (characterType == 2)
-                            {
-                                player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
-                                players.push_back(p);
-                            }
-                            else if (characterType == 3)
-                            {
-                                player p = {i, 205.0f, 100, 100, 0, 3, 7, 7, 0.0f, 1};
-                                players.push_back(p);
-                            }
+        else if ( isMouseOver(player2, mouseX, mouseY)) {
+            characterType = 2;
+            characterPrice = 20;
+        }
+        else if (isMouseOver(player3, mouseX, mouseY)) {
+            characterType = 3;
+            characterPrice = 30;
+        }
+        if (characterType != 0) {
+            if (!placedFirstPlayer && characterType != 1) return;   // first must be player 1
+            int total = Counter * characterPrice;
+            if (points >= total) {
+                for (int i = 1; i < 4; i++) {
+                    if (selectedLanes[i]) {
+                        
+                        if (characterType == 1) {
+                            player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
+                            players.push_back(p);
+                        }
+                        else if (characterType == 2) {
+                            player p = {i, 200.0f, 100, 100, 100, 2, 5, 5, 0.0f, 1};
+                            players.push_back(p);
+                        }
+                        else if (characterType == 3) {
+                            player p = {i, 205.0f, 100, 100, 0, 3, 7, 7, 0.0f, 1};
+                            players.push_back(p);
                         }
                     }
                     points -= total;
                     selectedLanes = {false, false, false, false};
                 }
-            }
-        }
-    }
+                points -= total;
+                placedFirstPlayer = true;
+
+                selectedLanes = {false, false, false, false};
+            }}}
+}
 }
 
 int whatLane(float mouseX, float mouseY)
@@ -1156,11 +1153,15 @@ void update(float deltaTime)
             // Enemy projectile hits a player
             for (player &p : players)
             {
+                bool dodged =
+                    (p.action == PlayerAction::DUCKING && proj.y > 0.0f) ||
+                    (p.action == PlayerAction::JUMPING && proj.y < 0.0f);
 
                 if (proj.side == 1 &&
                     proj.lane == p.lane &&
                     proj.x >= p.x &&
-                    proj.x <= p.x + p.w)
+                    proj.x <= p.x + p.w &&
+                    !dodged)
                 {
 
                     p.hp -= 1;
@@ -1175,30 +1176,26 @@ void update(float deltaTime)
             }
         }
 
-        for (enemyTest &back : enemies)
-        { // enemies wait behind each other
-            for (const enemyTest &front : enemies)
-            {
-                if (back.lane == front.lane && back.x > front.x && back.x < front.x + front.w + 10.0f)
-                {
-                    back.move = 0;
+        for(enemyTest& back : enemies){ //enemies wait behind each other
+            for(const enemyTest& front : enemies){
+                if(back.lane==front.lane && back.x > front.x && back.x < front.x + front.w + 10.0f){
+                    back.move=0;
                 }
             }
         }
 
-        for (enemyTest &enemy : enemies)
-        { // move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
-            // also use & to move actual enemy not just a copy (pointer)
-            if (enemy.move == 1)
-            {
-                enemy.x -= enemy.speed * deltaTime;
-            }
-            if (enemy.type == 1)
-            {
-                enemy.projTimer -= deltaTime;
-                if (enemy.projTimer <= 0.0f)
-                {
-                    projectile proj = {enemy.lane, enemy.x, 30.0f, 1};
+        for(enemyTest& enemy : enemies){//move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
+            //also use & to move actual enemy not just a copy (pointer)
+             if (enemy.x + enemy.w < 200.0f) {
+      gameState = GameState::LOST;
+      return;
+  }  
+            if(enemy.move==1){
+            enemy.x -= enemy.speed * deltaTime;}
+            if(enemy.type==1){
+                enemy.projTimer-=deltaTime;
+                if(enemy.projTimer<=0.0f){
+                    projectile proj={enemy.lane, enemy.x, 30.0f,1};
                     projectiles.push_back(proj);
                     enemy.projTimer = 4.0f; // reset timer
                 }
@@ -1327,6 +1324,7 @@ void update(float deltaTime)
         }
     }
 }
+
 void cleanupGame()
 {
 }
