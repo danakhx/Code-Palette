@@ -154,26 +154,45 @@ int main() {
     bool audioReady = initAudio();
     if (audioReady){
         std::cout << "Audio engine initialized!" << std::endl;
-        if (loadSound("doomVoice", "Template/src/characters/doom/doom1.wav", true)){
+        if (loadSound("doomVoice", CHARACTERS_DIR "doom/doom1.wav", true)){
             std::cout << "Doom voice loaded!" << std::endl;
             
         }
         else{
             std::cout << "FAILED to load Doom voice!" << std::endl;
         }
-        if (loadSound("startMusic", "Template/src/characters/doom/start.wav", true)){
+        if (loadSound("startMusic", CHARACTERS_DIR "doom/start.wav", true)){
             std::cout << "Welcome sound loaded!" << std::endl;
             playSound("startMusic");
         }
         else{
             std::cout << "FAILED to load welcome sound!" << std::endl;
         }
-        if(loadSound("coin", "Template/src/characters/coin/coin.wav", false)){
+        if(loadSound("coin", CHARACTERS_DIR "coin/coin.wav", false)){
              std::cout << "coin" << std::endl;
         }
         else{
             std::cout<<"not coin"<<std::endl;
         }
+        if (loadSound("hulkS", CHARACTERS_DIR "hulk/hulkS.wav", false)) {
+        std::cout << "hulk smash loaded" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load hulk smash" << std::endl;
+        }
+         if (loadSound("spiderS", CHARACTERS_DIR "spiderman/spiderS.wav", false)) {
+        std::cout << "spiderman sound loaded" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load spiderman sound" << std::endl;
+        }
+         if (loadSound("capS", CHARACTERS_DIR "captainAmerica/capS.wav", false)) {
+        std::cout << "cap sound loaded" << std::endl;
+        }
+        else {
+            std::cout << "FAILED to load cap sound" << std::endl;
+        }
+
     }//loading dooms voice
     else{
          std::cout << "FAILED to initialize audio!" << std::endl;

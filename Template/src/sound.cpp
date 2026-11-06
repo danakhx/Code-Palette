@@ -56,11 +56,9 @@ void playSound(const char* name)
 
     ma_sound* sound = it->second.get();
 
-    if (!ma_sound_is_playing(sound))
-    {
-        ma_sound_seek_to_pcm_frame(sound, 0);
-        ma_sound_start(sound);
-    }
+    ma_sound_seek_to_pcm_frame(sound, 0);
+    ma_sound_start(sound);
+
 }
 
 
