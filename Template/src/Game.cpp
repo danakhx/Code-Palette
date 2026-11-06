@@ -604,6 +604,10 @@ void renderGame()
     default:
         break;
     }
+      if (isPlayerKeyOpen) {
+      drawPlayerKeyScreen();
+      return;
+  }
 }
 // keyboard presses
 
@@ -651,6 +655,12 @@ void onKey(int key)
 // mouse clicks
 void onClick(float mouseX, float mouseY)
 {
+     if (isPlayerKeyOpen) {
+         
+          if (mouseX >= 820 && mouseX <= 1020 && mouseY >= 350 && mouseY <= 400) {
+              isPlayerKeyOpen = false;
+          }
+          return;}
     if (gameState == GameState::MAIN_MENU)
     {
         if (isMouseOver(mStart, mouseX, mouseY))
@@ -725,7 +735,10 @@ void onClick(float mouseX, float mouseY)
 
     else if (gameState == GameState::PLAYING)
     {
-
+        if (isMouseOver(playerKey, mouseX, mouseY)) {
+              isPlayerKeyOpen = !isPlayerKeyOpen;
+              return; // return so it doesn't trigger a lane selection
+          }
         int lane = whatLane(mouseX, mouseY);
         if (lane != -1)
         {
@@ -902,7 +915,7 @@ void update(float deltaTime)
         return;
     }
 
-    if (gameState == GameState::PLAYING)
+    if (gameState == GameState::PLAYING&&!isPlayerKeyOpen)
     {
         hoverLane = whatLane(mouseX, mouseY);
         for (player &p : players)

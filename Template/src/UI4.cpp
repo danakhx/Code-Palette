@@ -165,6 +165,8 @@ Button pMainMenu = {390, 150, 500, 100};
 Button player1 = {407.0f, 585.0f, 195.0f, 130.0f};
 Button player2 = {608.0f, 585.0f, 195.0f, 130.0f};
 Button player3 = {809.0f, 585.0f, 195.0f, 130.0f};
+Button playerKey = {20.0f, 630.0f, 170.0f, 40.0f};
+bool isPlayerKeyOpen = false;
 
 //SOUNDDDD
 Button mSound={390, 270, 500,100};
@@ -172,6 +174,7 @@ Button volInc={680, 390, 70, 70};
 Button volDec={770, 390, 70, 70};
 Button muteB={440, 280, 400, 70};
 Button returnSound={440, 170, 400, 70};
+
 
 
 
@@ -390,7 +393,7 @@ glm::vec4 shopSlotColor(int slot) {
     return glm::vec4(0.376f, 0.490f, 0.545f, 1.0f);
 }
 void drawGameScreen(){
-
+       
         drawEnvironment(); //background
         drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
         drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
@@ -412,8 +415,37 @@ void drawGameScreen(){
         drawRect(407.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(1));
         drawRect(608.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(2));
         drawRect(809.0f, 585.0f, 195.0f, 130.0f, shopSlotColor(3));
+         drawRect(playerKey.x, playerKey.y, playerKey.w, playerKey.h, glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
+          drawTextCentered("Player KEY", playerKey.x, playerKey.y, playerKey.w, playerKey.h, 2.0f, glm::vec4(1, 1, 1, 1));
+       
+      
 }
+void drawPlayerKeyScreen() {
+      
+      drawRect(0, 0, 1280, 720, glm::vec4(0, 0, 0, 0.5f));
 
+      // Main Menu Box
+      drawRect(150, 50, 880, 400, glm::vec4(0.1f, 0.1f, 0.2f, 1.0f));
+      
+  drawText("Character Playerkey", 250, 390, 4.0f, glm::vec4(1, 1, 1, 1));
+      // Character 1 Description
+      
+      drawText("Captain America:", 250, 180, 3.0f, glm::vec4(0.1f, 0.1f, 0.9f, 1.0f));
+      drawText("A close-ranged attacker", 250, 150, 2.2f, glm::vec4(1, 1, 1, 1));
+
+      // Character 2 Description
+      drawText("Spider-Man:", 250, 260, 3.0f, glm::vec4(0.9f, 0.1f, 0.1f, 1.0f));
+      drawText("A long-ranged attacker", 250, 230, 2.2f, glm::vec4(1, 1, 1, 1));
+
+      // Character 3 Description
+      drawText("Hulk:", 250, 340, 3.0f, glm::vec4(0.1f, 0.9f, 0.1f, 1.0f));
+      drawText("A non-moving and blocking defender", 250, 310, 2.2f, glm::vec4(1, 1, 1, 1));
+
+      // Close Button
+      
+       drawRect(820, 350, 200, 50, glm::vec4(0.5f, 0.1f, 0.1f, 1.0f));
+  drawTextCentered("Close", 820, 350, 200, 50, 2.0f, glm::vec4(1, 1, 1, 1));
+  }
 void drawSoundMenu(){
     drawRect(0,0,1280,720, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); //background
     drawRect(340, 135, 600, 450, glm::vec4(0.565f, 0.643f, 0.682f, 1.0f)); //background el gowa
