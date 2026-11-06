@@ -53,6 +53,7 @@ GameState gameState = GameState::MAIN_MENU;
 extern GLFWwindow *gWindow;
 
 static double doomSceneStart = -1.0;
+static bool doomVoicePlayed = false;
 static const double DOOM_FPS = 4.0; // frames per second
 static const int DOOM_FRAMES = 8;
 const double DOOM_RISE_DURATION = 0.5;
@@ -65,6 +66,7 @@ const double TEMPLE_DURATION = 8.0;
 void startDoomScene()
 {
     doomSceneStart = glfwGetTime();
+    doomVoicePlayed = false;
 }
 
 // true once all 8 frames have played
@@ -501,7 +503,10 @@ void renderGame()
         // Appears when Doom finishes standing
         // Disappears when Magneto starts his animation
         if (elapsed >= doomStandStart && elapsed < magnetoStart) {
-            playSound("doomVoice");
+            if (!doomVoicePlayed) {
+                playSound("doomVoice");
+                doomVoicePlayed = true;
+            }      
             // Pointer
             drawTriangle(615, 555, 50, -35, outline);
             drawTriangle(620, 555, 40, -27, white);
