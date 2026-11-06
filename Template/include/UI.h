@@ -21,12 +21,15 @@ extern Button pMainMenu;
 extern Button player1;
 extern Button player2;
 extern Button player3;
+extern Button playerKey;
+extern bool isPlayerKeyOpen;
 
 void drawMainMenu();
 void drawPauseScreen();
 void drawWinscreen();
 void drawLoseScreen();
 void drawGameScreen();
+void drawPlayerKeyScreen();
 static void Streetlight(float x, float y);
 static void Trafficsign(float x, float y);
 static void Bench(float x, float y);
