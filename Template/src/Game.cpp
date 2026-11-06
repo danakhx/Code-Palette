@@ -10,6 +10,12 @@
 #define ENTITIES_DIR "Template/src/Entities/"
 #endif
 
+//some loki stuff
+const float lokiJD=0.9f;
+const float lokiJH=30.0f;
+float lokiTimer=0.0f;
+
+
 std::vector<enemyTest> enemies;
 std::vector<player> players;
 std::vector<arcReactor> droppedPoints;
@@ -165,6 +171,7 @@ void restartGame()
     placedFirstPlayer = false;
     selectedLanes = {false, false, false, false};
     projectiles.clear();
+    lokiTimer = 0.0f;
 }
 void updateShop(int cpoints){ //rendering shop and grayscale
      int count = 0;
@@ -940,6 +947,19 @@ int maxCount(int w)
     return 0;
 }
 
+// how high loki is rn
+float lokiJumpOffset()
+{
+    if (lokiTimer <= 0.0f){
+        return 0.0f;}
+
+    float progress = 1.0f - lokiTimer / lokiJD; // 0 to 1 for all jumps
+    float t = progress * 3;
+    t -= (int)t; // 0 to 1 for the current jump
+    return 4.0f * lokiJH * t * (1.0f - t);
+}
+
+
 void update(float deltaTime)
 {
     if (gameState == GameState::CUTSCENE && doomSceneDone())
@@ -950,6 +970,9 @@ void update(float deltaTime)
 
     if (gameState == GameState::PLAYING)
     {
+        if (lokiTimer > 0.0f)
+        lokiTimer -= deltaTime;
+
         hoverLane = whatLane(mouseX, mouseY);
         for (player &p : players)
             p.move = 1; // set all players movable
@@ -1306,6 +1329,7 @@ void update(float deltaTime)
             if (wave < 3)
             {
                 wave++;
+                lokiTimer = lokiJD;
                 enemyCount = 0;
                 spawnTimer = 0.0f;
             }
