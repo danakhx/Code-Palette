@@ -19,6 +19,7 @@ std::array<bool, 4> selectedLanes = {false, false, false, false};
 int enemyCount=0;
 float spawnTimer = 4.0f;
 int points=30;
+bool placedFirstPlayer = false;
 std::vector<impactEffect> impacts;
 
 // Captain America movement test
@@ -147,6 +148,7 @@ void restartGame(){
     players.clear();
     droppedPoints.clear();
     points=30;
+    placedFirstPlayer = false;
     selectedLanes = {false, false, false, false};
     projectiles.clear();
 }
@@ -156,6 +158,11 @@ void updateShop(int cpoints){ //rendering shop and grayscale
             if (selectedLanes[i]) {
                 count++;
             }}
+        if(!placedFirstPlayer){
+          if(cpoints>=10 && cpoints>=10*count) canAfford(1);
+            else canAfford(0);
+        return;
+    }        
     if(cpoints>=30 && cpoints>=30*count){
         canAfford(3);
     }
@@ -472,6 +479,7 @@ void renderGame() {
 
             drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));          
             drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f)); 
+         
     }
         
         for(const player& p : players){
@@ -648,7 +656,7 @@ void onClick(float mouseX, float mouseY){
             characterType = 1;
             characterPrice = 10;
         }
-        else if (isMouseOver(player2, mouseX, mouseY)) {
+        else if ( isMouseOver(player2, mouseX, mouseY)) {
             characterType = 2;
             characterPrice = 20;
         }
@@ -657,10 +665,12 @@ void onClick(float mouseX, float mouseY){
             characterPrice = 30;
         }
         if (characterType != 0) {
+            if (!placedFirstPlayer && characterType != 1) return;   // first must be player 1
             int total = Counter * characterPrice;
             if (points >= total) {
                 for (int i = 1; i < 4; i++) {
                     if (selectedLanes[i]) {
+                        
                         if (characterType == 1) {
                             player p = {i, 200.0f, 100, 100, 100, 1, 5,5, 0.0f, 1};
                             players.push_back(p);
@@ -676,6 +686,8 @@ void onClick(float mouseX, float mouseY){
                     }
                 }
                 points -= total;
+                placedFirstPlayer = true;
+
                 selectedLanes = {false, false, false, false};
             }}}
 }
@@ -912,6 +924,10 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
 
         for(enemyTest& enemy : enemies){//move with time yaany d=v*t MOVING ENEMIES LOOP AND SHOOTING
             //also use & to move actual enemy not just a copy (pointer)
+             if (enemy.x + enemy.w < 200.0f) {
+      gameState = GameState::LOST;
+      return;
+  }  
             if(enemy.move==1){
             enemy.x -= enemy.speed * deltaTime;}
             if(enemy.type==1){
