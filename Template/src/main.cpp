@@ -156,9 +156,17 @@ int main() {
         std::cout << "Audio engine initialized!" << std::endl;
         if (loadSound("doomVoice", "Template/src/characters/doom/doom1.wav", true)){
             std::cout << "Doom voice loaded!" << std::endl;
+            
         }
         else{
             std::cout << "FAILED to load Doom voice!" << std::endl;
+        }
+        if (loadSound("startMusic", "Template/src/characters/doom/start.wav", true)){
+            std::cout << "Welcome sound loaded!" << std::endl;
+            playSound("startMusic");
+        }
+        else{
+            std::cout << "FAILED to load welcome sound!" << std::endl;
         }
     }//loading dooms voice
     else{

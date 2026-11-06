@@ -652,7 +652,7 @@ void onClick(float mouseX, float mouseY)
     if (gameState == GameState::MAIN_MENU)
     {
         if (isMouseOver(mStart, mouseX, mouseY))
-        {
+        {    stopSound("startMusic");
             if (isMouseOver(mExit, mouseX, mouseY))
             {
                 glfwSetWindowShouldClose(gWindow, true);
