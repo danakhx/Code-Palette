@@ -589,14 +589,14 @@ void renderGame()
     case GameState::WON:
         drawGameScreen();
         drawEntities();
-        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
         drawWinscreen();
         break;
 
     case GameState::LOST:
         drawGameScreen();
         drawEntities();
-        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
         drawLoseScreen();
         break;
 
