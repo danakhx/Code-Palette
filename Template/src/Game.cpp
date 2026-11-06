@@ -1164,6 +1164,7 @@ void update(float deltaTime)
             if (enemies[i].x <= basex)
             {
                 gameState = GameState::LOST;
+                playSound("loseFirst");
                 return;
             }
         } // end of test loop

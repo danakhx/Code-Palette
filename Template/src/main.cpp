@@ -210,6 +210,16 @@ int main() {
         else {
             std::cout << "FAILED to load game song!" << std::endl;
         }
+        if(loadSound("loseFirst", "Template/src/characters/doom/woah.wav", false)) {
+            std::cout << "first loaded!" << std::endl;
+        }
+        else{
+            std::cout << "FAILED to load first song!" << std::endl;
+        }
+        
+
+        
+
 
     }//loading dooms voice
     else{
