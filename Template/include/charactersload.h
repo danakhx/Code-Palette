@@ -70,7 +70,8 @@ enum class PlayerAction {
 
 struct player{int lane; float x; float w; float h;
 float speed; int type; int hp; int maxhp ; float projTimer; int move;   // we added fighting w keda ashan captain america each yoba leeh fight frame
- PlayerAction action; float actionTimer; float jumpOffset; bool fighting = false;int fightFrame = 0;float fightTimer = 0.0f;};//type order is captain america, spiderman, hulk
+ PlayerAction action; float actionTimer; float jumpOffset; bool fighting = false;int fightFrame = 0;float fightTimer = 0.0f;};
+ //type order is captain america, spiderman, hulk
 
 struct arcReactor{int lane; float x; int value;};
 

@@ -16,7 +16,7 @@ std::vector<projectile> projectiles;
 int wave = 1;
 int hoverLane = -1;
 std::array<bool, 4> selectedLanes = {false, false, false, false};
-int enemyCount=0;
+int enemyCount = 0;
 float spawnTimer = 4.0f;
 int points=30;
 bool placedFirstPlayer = false;
@@ -45,15 +45,15 @@ const float capFrameDuration = 0.15f;
 const float jumpDuration = 0.8f;
 const float duckDuration = 0.6f;
 const float jumpHeight = 80.0f;
-
-
+const float minShrinkScale = 0.5f;
+const float basex= 200.0f; // x position where enemies reach the base
 
 GameState gameState = GameState::MAIN_MENU;
-extern GLFWwindow* gWindow;
+extern GLFWwindow *gWindow;
 
 static double doomSceneStart = -1.0;
-static const double DOOM_FPS = 4.0;      // frames per second
-static const int    DOOM_FRAMES = 8;
+static const double DOOM_FPS = 4.0; // frames per second
+static const int DOOM_FRAMES = 8;
 const double DOOM_RISE_DURATION = 0.5;
 const int MAG_FRAMES = 8;
 const int MAG_FPS = 4;
@@ -61,7 +61,8 @@ const double DOOM_SPEECH_DURATION = 2.5;
 const double MAG_SPEECH_DURATION = 2.0;
 const double TEMPLE_DURATION = 8.0;
 // call this once when the scene begins
-void startDoomScene() {
+void startDoomScene()
+{
     doomSceneStart = glfwGetTime();
 }
 
@@ -78,19 +79,18 @@ bool doomSceneDone()
         (double)MAG_FRAMES / MAG_FPS;
 
     double totalDuration =
-        seatedDuration
-        + DOOM_RISE_DURATION
-        + DOOM_SPEECH_DURATION
-        + magnetoDuration
-        + MAG_SPEECH_DURATION + TEMPLE_DURATION;;
+        seatedDuration + DOOM_RISE_DURATION + DOOM_SPEECH_DURATION + magnetoDuration + MAG_SPEECH_DURATION + TEMPLE_DURATION;
+    ;
 
     return (glfwGetTime() - doomSceneStart) >= totalDuration;
 }
 
-int doomSceneFrame() {
-    if (doomSceneStart < 0.0) return 0;
+int doomSceneFrame()
+{
+    if (doomSceneStart < 0.0)
+        return 0;
     int f = (int)((glfwGetTime() - doomSceneStart) * DOOM_FPS);
-    return f >= DOOM_FRAMES ? DOOM_FRAMES - 1 : f;   // hold on the last frame
+    return f >= DOOM_FRAMES ? DOOM_FRAMES - 1 : f; // hold on the last frame
 }
 
 int doomSceneSecondFrame()
@@ -140,12 +140,15 @@ int magnetoSceneFrame()
     // Hold on the last frame after the animation ends
     return frame >= MAG_FRAMES ? MAG_FRAMES - 1 : frame;
 }
-void restartGame(){
-    wave=1;
-    enemyCount=0;
-    spawnTimer=4.0f;
+void restartGame()
+{
+    wave = 1;
+    enemyCount = 0;
+    spawnTimer = 4.0f;
     enemies.clear();
     players.clear();
+    impacts.clear();
+    hoverLane=-1;
     droppedPoints.clear();
     points=30;
     placedFirstPlayer = false;
@@ -166,20 +169,26 @@ void updateShop(int cpoints){ //rendering shop and grayscale
     if(cpoints>=30 && cpoints>=30*count){
         canAfford(3);
     }
-    else if(cpoints>=20 && cpoints>=20*count){
+    else if (cpoints >= 20 && cpoints >= 20 * count)
+    {
         canAfford(2);
     }
-    else if(cpoints>=10 && cpoints>=10*count){
+    else if (cpoints >= 10 && cpoints >= 10 * count)
+    {
         canAfford(1);
     }
-    else canAfford(0);
+    else
+        canAfford(0);
 }
 
-float slideInFromRight(double time, double delay, float finalX){
+float slideInFromRight(double time, double delay, float finalX)
+{
     float progress = (float)((time - delay) / 0.65);
 
-    if (progress < 0.0f) progress = 0.0f;
-    if (progress > 1.0f) progress = 1.0f;
+    if (progress < 0.0f)
+        progress = 0.0f;
+    if (progress > 1.0f)
+        progress = 1.0f;
 
     return 1280.0f - (1280.0f - finalX) * progress;
 }
@@ -188,18 +197,146 @@ float slideDownFromTop(double time, double delay, float finalY)
 {
     float progress = (float)((time - delay) / 0.8);
 
-    if (progress < 0.0f) progress = 0.0f;
-    if (progress > 1.0f) progress = 1.0f;
+    if (progress < 0.0f)
+        progress = 0.0f;
+    if (progress > 1.0f)
+        progress = 1.0f;
 
     return 720.0f - (720.0f - finalY) * progress;
 }
 
-void renderGame() {
-    //int doomFrame = (int)(glfwGetTime() * 8.0) % 8;
-    
-    if (gameState == GameState::CUTSCENE){
-        double elapsed = glfwGetTime() - doomSceneStart;
+
+static void drawEntities()
+{
         
+        drawGameScreen();
+        updateShop(points);
+        drawText(std::to_string(points).c_str(), 315, 608, 2.0f, glm::vec4(1, 1, 1, 1));
+        for (const enemyTest &enemy : enemies)
+        {
+            float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
+            if (enemy.type == 1)
+            {
+                drawdoom(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            else if (enemy.type == 2)
+            {
+                drawmagneto(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            else
+            {
+                drawthanos(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            float top = laneCenter(enemy.lane) - enemy.h / 2 + enemy.h;
+            float w = enemy.w;
+            float h = 6.0f;
+            float y = top + 2.0f;
+
+            float frac = (float)enemy.hp / enemy.maxhp;
+            if (frac < 0.0f)
+                frac = 0.0f;
+
+            drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
+            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f));
+        }
+
+        for (const player &p : players)
+        {
+            float playerY = laneCenter(p.lane) - p.h / 2.0f;
+            // Smaller visual dimensions
+            float drawW = p.w * HPscale(p.hp, p.maxhp);
+            float drawH = p.h * HPscale(p.hp, p.maxhp);
+            float drawX = p.x + (p.w - drawW) / 2.0f; // Keep character centered horizontally
+            // Keep character anchored to the bottom of its original position
+            float drawY = playerY;
+            if (p.type == 1)
+            {
+
+                if (p.fighting)
+                {
+                    drawCaptainAmericaFight(drawX, drawY, drawW, drawH, p.fightFrame);
+                }
+
+                else if (p.action == PlayerAction::JUMPING)
+                {
+                    drawCjump(drawX, drawY + p.jumpOffset, drawW, drawH);
+                }
+                else if (p.action == PlayerAction::DUCKING)
+                {
+                    drawCcrouch(drawX, drawY, drawW, drawH);
+                }
+                else
+                {
+                    drawCaptainAmericaRun(drawX, drawY, drawW, drawH);
+                }
+            }
+            else if (p.type == 2)
+            {
+                if (p.action == PlayerAction::DUCKING)
+                {
+                    drawSPcrouch(drawX, drawY - 1, drawW, drawH);
+                }
+                else
+                {
+                    drawSPstand(drawX - 15.0f, drawY + p.jumpOffset - 25.0f, drawW + 25.0f, drawH + 30.0f);
+                }
+            }
+            else
+            {
+                drawhulk(drawX, drawY, drawW, drawH);
+            }
+            float top = laneCenter(p.lane) - p.h / 2 + p.h;
+            float w = p.w;
+            float h = 6.0f;
+            float y = top + 2.0f;
+
+            float frac = (float)p.hp / p.maxhp;
+            if (frac < 0.0f)
+                frac = 0.0f;
+
+            drawRect(p.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
+            drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f));
+        }
+        for (const projectile &proj : projectiles)
+        {
+            float projectileY = laneCenter(proj.lane) + proj.y; // leh
+            if (proj.side == 0)
+            {
+                drawweb(proj.x, projectileY, 40.0f, 25.0f);
+            }
+            else
+            {
+                drawProjectile(proj.x, projectileY, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            }
+        }
+        // DRAW IMPACT EFFECTS HERE
+
+        for (const impactEffect &impact : impacts)
+        {
+
+            float impactY = laneCenter(impact.lane) + impact.y;
+
+            drawimpact(
+                impact.x,
+                impactY,
+                60.0f,
+                60.0f);
+        }
+
+        for (const arcReactor &point : droppedPoints)
+        {
+            drawpointReactor(point.x, laneCenter(point.lane) - 50.0f, 30.0f, 30.0f);
+        }
+        
+
+}
+void renderGame()
+{
+    // int doomFrame = (int)(glfwGetTime() * 8.0) % 8;
+
+    if (gameState == GameState::CUTSCENE)
+    {
+        double elapsed = glfwGetTime() - doomSceneStart;
 
         // Calculate the different scene timings
         double seatedDuration =
@@ -216,19 +353,19 @@ void renderGame() {
 
         double magnetoEnd =
             magnetoStart + magnetoDuration;
-        
+
         double templeStart = magnetoEnd + MAG_SPEECH_DURATION;
-        if (elapsed >= templeStart){
-             drawtemple();
-             drawInfinityGuantlet(35, 115, 200, 200);
-             double templeElapsed = elapsed - templeStart;
+        if (elapsed >= templeStart)
+        {
+            drawtemple();
+            drawInfinityGuantlet(35, 115, 200, 200);
+            double templeElapsed = elapsed - templeStart;
 
-           drawdoom(slideInFromRight(templeElapsed, 0.0, 650), 70, 160, 160);
-           drawmagneto(slideInFromRight(templeElapsed, 0.4, 830), 70, 160, 160);
-           drawthanos(slideInFromRight(templeElapsed, 0.8, 1010), 70, 160, 160);
+            drawdoom(slideInFromRight(templeElapsed, 0.0, 650), 70, 160, 160);
+            drawmagneto(slideInFromRight(templeElapsed, 0.4, 830), 70, 160, 160);
+            drawthanos(slideInFromRight(templeElapsed, 0.8, 1010), 70, 160, 160);
 
-
-           // Doom's speech bubble appears after everyone arrives
+            // Doom's speech bubble appears after everyone arrives
             if (templeElapsed >= 1.45 && templeElapsed < 3.5)
             {
                 glm::vec4 bubbleOutline(0.05f, 0.05f, 0.07f, 1.0f);
@@ -247,14 +384,12 @@ void renderGame() {
                 drawTextCentered(
                     "THERE IT IS!",
                     510, 335, 460, 30,
-                    1.8f, bubbleText
-                );
+                    1.8f, bubbleText);
 
                 drawTextCentered(
                     "LET'S GO GET THAT GAUNTLET, DOOMIES!!!",
                     510, 295, 460, 30,
-                    1.5f, bubbleText
-                );
+                    1.5f, bubbleText);
             }
 
             // HEROES ENTER FROM ABOVE
@@ -285,35 +420,30 @@ void renderGame() {
                 drawRect(224, 259, 412, 97, white);
 
                 // Dialogue
-                 if (templeElapsed < 6.3)
+                if (templeElapsed < 6.3)
                 {
                     drawTextCentered(
                         "NOT SO FAST, DOOMIES!",
                         235, 290, 390, 35,
-                        1.8f, textColor
-                    );
+                        1.8f, textColor);
                 }
                 else
                 {
                     drawTextCentered(
                         "AVENGERS, ASSEMBLE!",
                         235, 290, 390, 35,
-                        1.8f, textColor
-                    );
+                        1.8f, textColor);
                 }
             }
-            
-             
-             return;
+
+            return;
         }
         drawback();
-
 
         // Speech bubble colours
         glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
         glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
-
 
         // Before his animation, Magneto holds his helmet
         if (elapsed < magnetoStart)
@@ -324,12 +454,9 @@ void renderGame() {
         else
         {
             // After Doom's speech, Magneto puts on his helmet
-            drawm2(285, 224.25f, 126, 181,magnetoSceneFrame());
+            drawm2(285, 224.25f, 126, 181, magnetoSceneFrame());
             drawt2(890, 224.25f, 170, 231.25f);
         }
-
-
-      
 
         // PHASE 1: Doom is seated
         if (elapsed < seatedDuration)
@@ -338,15 +465,13 @@ void renderGame() {
             {
                 drawDoomFrame(
                     430, 224.25f, 420, 271.5f,
-                    doomSceneFrame()
-                );
+                    doomSceneFrame());
             }
             else
             {
                 drawDoom2Frame(
                     430, 226.5f, 420, 267,
-                    doomSceneSecondFrame()
-                );
+                    doomSceneSecondFrame());
             }
 
             // Thought bubble appears after Doom's first frame
@@ -369,8 +494,6 @@ void renderGame() {
             drawfinal(430, 224.25f, 420, 271.5f);
         }
 
-
-
         // Appears when Doom finishes standing
         // Disappears when Magneto starts his animation
         if (elapsed >= doomStandStart && elapsed < magnetoStart)
@@ -386,23 +509,18 @@ void renderGame() {
             drawTextCentered(
                 "WE NEED TO GET THE INFINITY GAUNTLET",
                 360, 610, 560, 35,
-                2.0f, textColor
-            );
+                2.0f, textColor);
 
             drawTextCentered(
                 "TO DOOM HUMANITY!",
                 360, 575, 560, 35,
-                2.0f, textColor
-            );
+                2.0f, textColor);
         }
 
-
-      
-
         // Appears after Magneto finishes putting on his helmet
-    
+
         // MAGNETO AND THANOS SPEECH BUBBLES
-     
+
         if (elapsed >= magnetoEnd)
         {
             // Speech bubble colours
@@ -411,7 +529,6 @@ void renderGame() {
             glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
 
             // MAGNETO'S SPEECH BUBBLE
-           
 
             // Pointer
             drawTriangle(324, 520, 48, -32, outline);
@@ -425,13 +542,9 @@ void renderGame() {
             drawTextCentered(
                 "DOOM HUMANITY!",
                 167, 556, 362, 35,
-                2.0f, textColor
-            );
+                2.0f, textColor);
 
-
- 
             // THANOS'S SPEECH BUBBLE
-            
 
             // Pointer
             drawTriangle(951, 520, 48, -32, outline);
@@ -445,104 +558,123 @@ void renderGame() {
             drawTextCentered(
                 "DOOM HUMANITY!",
                 794, 556, 362, 35,
-                2.0f, textColor
-            );
+                2.0f, textColor);
         }
 
         return;
     }
 
-        
-       
-    //drawDoomFrame(400, 200, 280, 180, 0);//checkety
-    switch (gameState) {
-        case GameState::MAIN_MENU: drawMainMenu();   break;
-        case GameState::PLAYING:
+    // drawDoomFrame(400, 200, 280, 180, 0);//checkety
+    switch (gameState)
+    {
+    case GameState::MAIN_MENU:
+        drawMainMenu();
+        break;
+    case GameState::PLAYING:
         drawGameScreen();
         updateShop(points);
         drawText(std::to_string(points).c_str(), 315, 608, 2.0f, glm::vec4(1, 1, 1, 1));
-        for(const enemyTest& enemy : enemies){
+        for (const enemyTest &enemy : enemies)
+        {
             float enemyY = laneCenter(enemy.lane) - enemy.h / 2.0f;
-            if(enemy.type==1){
-            drawdoom(enemy.x, enemyY, enemy.w, enemy.h);}
-            else if (enemy.type ==2){
-            drawmagneto(enemy.x, enemyY, enemy.w, enemy.h); }
-            else{
-             drawthanos(enemy.x, enemyY, enemy.w, enemy.h);}
-            float top = laneCenter(enemy.lane) - enemy.h/2 + enemy.h;    
-            float w = enemy.w;                                     
+            if (enemy.type == 1)
+            {
+                drawdoom(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            else if (enemy.type == 2)
+            {
+                drawmagneto(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            else
+            {
+                drawthanos(enemy.x, enemyY, enemy.w, enemy.h);
+            }
+            float top = laneCenter(enemy.lane) - enemy.h / 2 + enemy.h;
+            float w = enemy.w;
             float h = 6.0f;
             float y = top + 2.0f;
 
-            float frac = (float)enemy.hp / enemy.maxhp;        
-            if(frac < 0.0f) frac = 0.0f;
+            float frac = (float)enemy.hp / enemy.maxhp;
+            if (frac < 0.0f)
+                frac = 0.0f;
 
-            drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));          
-            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f)); 
-         
-    }
-        
-        for(const player& p : players){
-             float playerY = laneCenter(p.lane) - p.h / 2.0f;
-              // Smaller visual dimensions
-             float drawW = p.w * 0.75f;
-             float drawH = p.h * 0.75f;
-            float drawX = p.x + (p.w - drawW) / 2.0f;   // Keep character centered horizontally
-             // Keep character anchored to the bottom of its original position
-             float drawY = playerY;
-            if(p.type==1){
-                
-                 if(p.fighting){
-                    drawCaptainAmericaFight(drawX,drawY, drawW,drawH,p.fightFrame);
-                 }
-                
-                
-                
-                else if(p.action == PlayerAction::JUMPING){
-                     drawCjump(drawX, drawY + p.jumpOffset, drawW, drawH);
-                 }
-                else if(p.action == PlayerAction::DUCKING){
+            drawRect(enemy.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
+            drawRect(enemy.x, y, w * frac, h, glm::vec4(0.9f, 0.0f, 0.0f, 1.0f));
+        }
+
+        for (const player &p : players)
+        {
+            float playerY = laneCenter(p.lane) - p.h / 2.0f;
+            // Smaller visual dimensions
+            float drawW = p.w * HPscale(p.hp, p.maxhp);
+            float drawH = p.h * HPscale(p.hp, p.maxhp);
+            float drawX = p.x + (p.w - drawW) / 2.0f; // Keep character centered horizontally
+            // Keep character anchored to the bottom of its original position
+            float drawY = playerY;
+            if (p.type == 1)
+            {
+
+                if (p.fighting)
+                {
+                    drawCaptainAmericaFight(drawX, drawY, drawW, drawH, p.fightFrame);
+                }
+
+                else if (p.action == PlayerAction::JUMPING)
+                {
+                    drawCjump(drawX, drawY + p.jumpOffset, drawW, drawH);
+                }
+                else if (p.action == PlayerAction::DUCKING)
+                {
                     drawCcrouch(drawX, drawY, drawW, drawH);
                 }
-                else{
+                else
+                {
                     drawCaptainAmericaRun(drawX, drawY, drawW, drawH);
                 }
-
             }
-            else if(p.type==2){
-                if(p.action == PlayerAction::DUCKING){
-                     drawSPcrouch(drawX, drawY - 15.0f, drawW, drawH);
+            else if (p.type == 2)
+            {
+                if (p.action == PlayerAction::DUCKING)
+                {
+                    drawSPcrouch(drawX, drawY - 1, drawW, drawH);
                 }
-                else{
-                     drawSPstand(drawX  - 15.0f, drawY + p.jumpOffset - 25.0f, drawW+ 25.0f, drawH  + 30.0f);
+                else
+                {
+                    drawSPstand(drawX - 15.0f, drawY + p.jumpOffset - 25.0f, drawW + 25.0f, drawH + 30.0f);
                 }
             }
-            else{
-                drawhulk(p.x, playerY, p.w, p.h);
+            else
+            {
+                drawhulk(drawX, drawY, drawW, drawH);
             }
-            float top = laneCenter(p.lane) - p.h/2 + p.h;         
-            float w = p.w;                                    
+            float top = laneCenter(p.lane) - p.h / 2 + p.h;
+            float w = p.w;
             float h = 6.0f;
             float y = top + 2.0f;
 
-            float frac = (float)p.hp / p.maxhp;        
-            if(frac < 0.0f) frac = 0.0f;
+            float frac = (float)p.hp / p.maxhp;
+            if (frac < 0.0f)
+                frac = 0.0f;
 
-            drawRect(p.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));        
+            drawRect(p.x, y, w, h, glm::vec4(0.2f, 0.0f, 0.0f, 1.0f));
             drawRect(p.x, y, w * frac, h, glm::vec4(0.0f, 0.9f, 0.0f, 1.0f));
         }
-        for(const projectile& proj: projectiles){
-            float projectileY = laneCenter(proj.lane) + proj.y;//leh
-            if(proj.side==0){
+        for (const projectile &proj : projectiles)
+        {
+            float projectileY = laneCenter(proj.lane) + proj.y; // leh
+            if (proj.side == 0)
+            {
                 drawweb(proj.x, projectileY, 40.0f, 25.0f);
             }
-            else{
-                drawProjectile(proj.x,projectileY, glm::vec4(1.0f,0.0f,0.0f,1.0f));
+            else
+            {
+                drawProjectile(proj.x, projectileY, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
             }
         }
         // DRAW IMPACT EFFECTS HERE
 
-        for(const impactEffect& impact : impacts){
+        for (const impactEffect &impact : impacts)
+        {
 
             float impactY = laneCenter(impact.lane) + impact.y;
 
@@ -550,38 +682,58 @@ void renderGame() {
                 impact.x,
                 impactY,
                 60.0f,
-                60.0f
-            );
+                60.0f);
         }
 
-        for(const arcReactor& point: droppedPoints){
-            drawpointReactor(point.x,laneCenter(point.lane)-50.0f,30.0f,30.0f);
+        for (const arcReactor &point : droppedPoints)
+        {
+            drawpointReactor(point.x, laneCenter(point.lane) - 50.0f, 30.0f, 30.0f);
         }
         break;
-        case GameState::PAUSED:
+    case GameState::PAUSED:
         drawGameScreen();
-        drawRect(0,0,1280,720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
-        drawPauseScreen(); break; 
-        default: break;
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.8f));
+        drawPauseScreen();
+        break;
+
+    case GameState::WON:
+        drawGameScreen();
+        drawEntities();
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawWinscreen();
+        break;
+
+    case GameState::LOST:
+        drawGameScreen();
+        drawEntities();
+        drawRect(0, 0, 1280, 720, glm::vec4(0.0f, 0.0f, 0.0f, 0.4f));
+        drawLoseScreen();
+        break;
+    default:
+        break;
     }
 }
 // keyboard presses
 
+void setPlayerAction(PlayerAction action)
+{
 
-void setPlayerAction(PlayerAction action) {
+    for (player &p : players)
+    {
 
-    for (player& p : players) {
-
-        if ((p.type == 1 || p.type == 2) &&  p.lane >= 1 && p.lane <= 3 && selectedLanes[p.lane]) {
+        if ((p.type == 1 || p.type == 2) && p.lane >= 1 && p.lane <= 3 && selectedLanes[p.lane])
+        {
             p.action = action;
             p.actionTimer = 0.0f;
             p.jumpOffset = 0.0f;
         }
     }
 }
-void onKey(int key) {
+void onKey(int key)
+{
 
-    if (key == GLFW_KEY_ESCAPE) {
+    if (key == GLFW_KEY_ESCAPE)
+    {
         if (gameState == GameState::PLAYING)
             gameState = GameState::PAUSED;
         else if (gameState == GameState::PAUSED)
@@ -593,69 +745,113 @@ void onKey(int key) {
     if (gameState != GameState::PLAYING)
         return;
 
-    if (key == GLFW_KEY_W || key == GLFW_KEY_UP) {
+    if (key == GLFW_KEY_W || key == GLFW_KEY_UP)
+    {
         setPlayerAction(PlayerAction::JUMPING);
     }
 
-    else if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN) {
+    else if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN)
+    {
         setPlayerAction(PlayerAction::DUCKING);
     }
 }
 
 // mouse clicks
-void onClick(float mouseX, float mouseY){
-    if(gameState == GameState::MAIN_MENU){
-            if (isMouseOver(mStart, mouseX, mouseY)) {
-                    gameState = GameState::CUTSCENE;
-                    startDoomScene();
-                    return;
+void onClick(float mouseX, float mouseY)
+{
+    if (gameState == GameState::MAIN_MENU)
+    {
+        if (isMouseOver(mStart, mouseX, mouseY))
+        {
+            if (isMouseOver(mExit, mouseX, mouseY))
+            {
+                glfwSetWindowShouldClose(gWindow, true);
+                return;
             }
-            //CUTSCENE HENAAAAA
-            //enemies.clear();
-            //gameState = GameState::PLAYING;
-            
-             //return;
-             else if(isMouseOver(mExit, mouseX, mouseY)){
-        glfwSetWindowShouldClose(gWindow, true);return;
-    }
+            gameState = GameState::CUTSCENE;
+            startDoomScene();
+            return;
         }
-    
+        // CUTSCENE HENAAAAA
+        // enemies.clear();
+        // gameState = GameState::PLAYING;
 
-    else if(gameState == GameState::PAUSED){
-        if(isMouseOver(pContinue, mouseX, mouseY)){
-            gameState = GameState::PLAYING; return;
+        // return;
+        else if (isMouseOver(mExit, mouseX, mouseY))
+        {
+            glfwSetWindowShouldClose(gWindow, true);
+            return;
         }
-        else if(isMouseOver(pRestart, mouseX, mouseY)){
+    }
+
+    else if (gameState == GameState::PAUSED)
+    {
+        if (isMouseOver(pContinue, mouseX, mouseY))
+        {
+            gameState = GameState::PLAYING;
+            return;
+        }
+        else if (isMouseOver(pRestart, mouseX, mouseY))
+        {
             // restart the game (restart function not done yet)
             restartGame();
-            gameState = GameState::PLAYING; return;
+            gameState = GameState::PLAYING;
+            return;
         }
-        else if(isMouseOver(pMainMenu, mouseX, mouseY)){
-            //restart the game (restart function not done yet)
+        else if (isMouseOver(pMainMenu, mouseX, mouseY))
+        {
+            // restart the game (restart function not done yet)
             restartGame();
-            gameState = GameState::MAIN_MENU; return;
-
+            gameState = GameState::MAIN_MENU;
+            return;
         }
     }
- else if (gameState == GameState::PLAYING) {
 
-    int lane = whatLane(mouseX, mouseY);
-    if (lane != -1) {
-        selectedLanes[lane] = !selectedLanes[lane];
-        return;
-    }
-    if (selectedLanes[1] || selectedLanes[2] || selectedLanes[3]) {
-        int Counter = 0;
-        for (int i = 1; i < 4; i++) {
-            if (selectedLanes[i]) {
-                Counter++;
-            }}
-        int characterType = 0;
-        int characterPrice = 0;
-        if (isMouseOver(player1, mouseX, mouseY)) {
-            characterType = 1;
-            characterPrice = 10;
+    else if (gameState == GameState::WON || gameState== GameState::LOST)
+    {
+         if (isMouseOver(pRestart, mouseX, mouseY))
+        {
+            // restart the game (restart function not done yet)
+            restartGame();
+            gameState = GameState::PLAYING;
+            return;
         }
+        else if (isMouseOver(pMainMenu, mouseX, mouseY))
+        {
+            // restart the game (restart function not done yet)
+            restartGame();
+            gameState = GameState::MAIN_MENU;
+            return;
+        }
+    }
+    
+
+    else if (gameState == GameState::PLAYING)
+    {
+
+        int lane = whatLane(mouseX, mouseY);
+        if (lane != -1)
+        {
+            selectedLanes[lane] = !selectedLanes[lane];
+            return;
+        }
+        if (selectedLanes[1] || selectedLanes[2] || selectedLanes[3])
+        {
+            int Counter = 0;
+            for (int i = 1; i < 4; i++)
+            {
+                if (selectedLanes[i])
+                {
+                    Counter++;
+                }
+            }
+            int characterType = 0;
+            int characterPrice = 0;
+            if (isMouseOver(player1, mouseX, mouseY))
+            {
+                characterType = 1;
+                characterPrice = 10;
+            }
         else if ( isMouseOver(player2, mouseX, mouseY)) {
             characterType = 2;
             characterPrice = 20;
@@ -684,6 +880,7 @@ void onClick(float mouseX, float mouseY){
                             players.push_back(p);
                         }
                     }
+                    
                 }
                 points -= total;
                 placedFirstPlayer = true;
@@ -693,106 +890,140 @@ void onClick(float mouseX, float mouseY){
 }
 }
 
-
-int whatLane(float mouseX, float mouseY){
-    if(mouseX<200.0f){
+int whatLane(float mouseX, float mouseY)
+{
+    if (mouseX < 200.0f)
+    {
         return -1;
     }
-    else if(mouseY>=40.0f && mouseY<160.0f) return 1;
-    else if(mouseY>= 175.0f && mouseY< 295.0f)return 2;
-    else if(mouseY>=310.0f && mouseY<430.0f)return 3;
+    else if (mouseY >= 40.0f && mouseY < 160.0f)
+        return 1;
+    else if (mouseY >= 175.0f && mouseY < 295.0f)
+        return 2;
+    else if (mouseY >= 310.0f && mouseY < 430.0f)
+        return 3;
     return -1;
-
 }
 
-float laneCenter(int lane){
-    if(lane ==1){
+float laneCenter(int lane)
+{
+    if (lane == 1)
+    {
         return 100.0f;
     }
-    else if(lane ==2){
+    else if (lane == 2)
+    {
         return 235.0f;
     }
-    else if(lane ==3){
+    else if (lane == 3)
+    {
         return 370.0f;
     }
-    else{
-        return 0.0f; //invalid lane
+    else
+    {
+        return 0.0f; // invalid lane
     }
 }
 
+float HPscale(int currentHP, int maxHP)
+{
+    return (float)(0.5f + (1 - 0.5f) * ((float)currentHP / maxHP));
+}
 
-void spawnEnemy(int lane){
-    enemyTest enemy= {lane, 1280.0, 100,100,100};
-    enemies.push_back(enemy);
-
-}
-void spawnEasyEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,90,1,5,5, 0.0f, 1};
+void spawnEnemy(int lane)
+{
+    enemyTest enemy = {lane, 1280.0, 100, 100, 100};
     enemies.push_back(enemy);
 }
-void spawnMediumEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,90,2, 5, 5, 0.0f, 1};
+void spawnEasyEnemy(int lane)
+{
+    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 1, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
-void spawnHardEnemy(int lane){
-enemyTest enemy= {lane, 1280.0, 100,100,110,3, 7, 7, 0.0f, 1};
+void spawnMediumEnemy(int lane)
+{
+    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 2, 5, 5, 0.0f, 1};
     enemies.push_back(enemy);
 }
-int randomLane() {
+void spawnHardEnemy(int lane)
+{
+    enemyTest enemy = {lane, 1280.0, 100, 100, 150, 3, 7, 7, 0.0f, 1};
+    enemies.push_back(enemy);
+}
+int randomLane()
+{
     static int lastLane = 0;
     int lane;
-    do {
+    do
+    {
         lane = rand() % 3 + 1;
     } while (lane == lastLane);
     lastLane = lane;
     return lane;
 }
- int maxCount(int w){
-    if(w==1) return 4;
-    else if(w==2) return 6;
-    else if(w==3) return 12;
-    return 0;}
+int maxCount(int w)
+{
+    if (w == 1)
+        return 4;
+    else if (w == 2)
+        return 6;
+    else if (w == 3)
+        return 12;
+    return 0;
+}
 
-
-void update(float deltaTime){
-    if (gameState == GameState::CUTSCENE && doomSceneDone()){
+void update(float deltaTime)
+{
+    if (gameState == GameState::CUTSCENE && doomSceneDone())
+    {
         gameState = GameState::PLAYING;
         return;
     }
-    
-    if(gameState == GameState::PLAYING){ 
-    hoverLane = whatLane(mouseX, mouseY);
-      for(player& p : players) p.move = 1; //set all players movable
-      for(int i = players.size() - 1; i >= 0; i--){ //players die loop
-        if(players[i].hp <= 0) players.erase(players.begin() + i); }
+
+    if (gameState == GameState::PLAYING)
+    {
+        hoverLane = whatLane(mouseX, mouseY);
+        for (player &p : players)
+            p.move = 1; // set all players movable
+        for (int i = players.size() - 1; i >= 0; i--)
+        { // players die loop
+            if (players[i].hp <= 0)
+                players.erase(players.begin() + i);
+        }
 
         // JUMP AND DUCK ANIMATION UPDATE
-        for(player& p : players){///////ayo
+        for (player &p : players)
+        { ///////ayo
 
-            if(p.action == PlayerAction::JUMPING){
+            if (p.action == PlayerAction::JUMPING)
+            {
 
                 p.actionTimer += deltaTime;
 
                 // Spider-Man jump: smooth upward and downward movement
                 float t = p.actionTimer / jumpDuration;
 
-                if(t <= 1.0f){
-                    p.jumpOffset = 4.0f * jumpHeight * t * (1.0f-t);
+                if (t <= 1.0f)
+                {
+                    p.jumpOffset = 4.0f * jumpHeight * t * (1.0f - t);
                 }
 
                 // Finish jump
-                if(p.actionTimer >= jumpDuration){
+                if (p.actionTimer >= jumpDuration)
+                {
                     p.action = PlayerAction::RUNNING;
                     p.actionTimer = 0.0f;
                     p.jumpOffset = 0.0f;
                 }
             }
 
-            else if(p.action == PlayerAction::DUCKING){
+            else if (p.action == PlayerAction::DUCKING)
+            {
 
                 p.actionTimer += deltaTime;
 
-                if(p.actionTimer >= duckDuration){
+                if (p.actionTimer >= duckDuration)
+                {
                     p.action = PlayerAction::RUNNING;
                     p.actionTimer = 0.0f;
                     p.jumpOffset = 0.0f;
@@ -800,125 +1031,149 @@ void update(float deltaTime){
             }
         }
 
-
-
-        for(enemyTest& e : enemies) e.move = 1; //set all enemmies movable
-        for(int i = enemies.size() - 1; i >= 0; i--){ //ENEMIES DIE LOOP FOR POINTS AMD REMOVING ENEMIES
-            if(enemies[i].hp <= 0){
+        for (enemyTest &e : enemies)
+            e.move = 1; // set all enemmies movable
+        for (int i = enemies.size() - 1; i >= 0; i--)
+        { // ENEMIES DIE LOOP FOR POINTS AMD REMOVING ENEMIES
+            if (enemies[i].hp <= 0)
+            {
                 arcReactor ar;
-                if(enemies[i].type==1){
-                ar= {enemies[i].lane, enemies[i].x,15};}
-                else if(enemies[i].type==2){
-                ar= {enemies[i].lane, enemies[i].x,20};}
-                else{
-                ar= {enemies[i].lane, enemies[i].x,25};}
+                if (enemies[i].type == 1)
+                {
+                    ar = {enemies[i].lane, enemies[i].x, 15};
+                }
+                else if (enemies[i].type == 2)
+                {
+                    ar = {enemies[i].lane, enemies[i].x, 20};
+                }
+                else
+                {
+                    ar = {enemies[i].lane, enemies[i].x, 25};
+                }
                 droppedPoints.push_back(ar);
                 enemies.erase(enemies.begin() + i);
-}}
+            }
+        }
 
-        for(player& p:players){ //players collect points
-            for(int i= droppedPoints.size()-1;i>=0;i--){
-                if(droppedPoints[i].lane==p.lane && p.x + p.w -10.0f >= droppedPoints[i].x && p.x <= droppedPoints[i].x + 20.0f){
-                    points+=droppedPoints[i].value;
-                    droppedPoints.erase(droppedPoints.begin()+i);
+        for (player &p : players)
+        { // players collect points
+            for (int i = droppedPoints.size() - 1; i >= 0; i--)
+            {
+                if (droppedPoints[i].lane == p.lane && p.x + p.w - 10.0f >= droppedPoints[i].x && p.x <= droppedPoints[i].x + 20.0f)
+                {
+                    points += droppedPoints[i].value;
+                    droppedPoints.erase(droppedPoints.begin() + i);
                 }
             }
         }
 
-        for(player& p : players){
-            bool touchingEnemy = false;//collisions loop lazm y2ofo
-            for(enemyTest& enemy: enemies){
-                if(p.lane==enemy.lane && p.x + p.w >= enemy.x && p.x <= enemy.x + enemy.w){
-                    enemy.move=0;
-                    p.move=0;
+        for (player &p : players)
+        {
+            bool touchingEnemy = false; // collisions loop lazm y2ofo
 
-                    if(p.type==1){
+            for (enemyTest &enemy : enemies)
+            {
+                if (p.lane == enemy.lane && p.x + p.w >= enemy.x && p.x <= enemy.x + enemy.w)
+                {
+                    enemy.move = 0;
+                    p.move = 0;
+
+                    if (p.type == 1)
+                    {
                         p.fighting = true;
                         p.fightTimer += deltaTime;
-                        if(p.fightTimer >= capFrameDuration){
+                        if (p.fightTimer >= capFrameDuration)
+                        {
                             p.fightTimer = 0.0f;
                             p.fightFrame++;
-                            if(p.fightFrame >= 5){
-                                  p.fightFrame = 0;
-                                    enemy.hp -= 1;
+                            if (p.fightFrame >= 5)
+                            {
+                                p.fightFrame = 0;
+                                enemy.hp -= 1;
                             }
                         }
                     }
-                    if(enemy.type==3){
-                        enemy.projTimer-=deltaTime;
-                        if(enemy.projTimer<=0.0f){
-                        p.hp-=2;
-                        enemy.projTimer=3.0f;
+                    if (enemy.type == 3)
+                    {
+                        enemy.projTimer -= deltaTime;
+                        if (enemy.projTimer <= 0.0f)
+                        {
+                            p.hp -= 2;
+                            enemy.projTimer = 3.0f;
+                        }
                     }
+                    touchingEnemy = true;
                 }
-                touchingEnemy = true;
+            }
+            // No enemy touching Cap anymore
+            if (!touchingEnemy && p.type == 1)
+            {
+                p.fighting = false;
+                p.fightFrame = 0;
+                p.fightTimer = 0.0f;
+            }
+            if (!touchingEnemy)
+            {
+                p.move = 1;
             }
         }
-        // No enemy touching Cap anymore
-        if(!touchingEnemy && p.type == 1){
-             p.fighting = false;
-             p.fightFrame = 0;
-             p.fightTimer = 0.0f;
-    }
-    if(!touchingEnemy){
-        p.move = 1;
-    }
-}      
-        
-for(int i = projectiles.size() - 1; i >= 0; i--){
 
-    projectile proj = projectiles[i];
-    bool projectileHit = false;
+        for (int i = projectiles.size() - 1; i >= 0; i--)
+        {
 
-    // Spider-Man's web hits an enemy
-    for(enemyTest& enemy : enemies){
+            projectile proj = projectiles[i];
+            bool projectileHit = false;
 
-        if(proj.side == 0 &&
-           proj.lane == enemy.lane &&
-           proj.x >= enemy.x &&
-           proj.x <= enemy.x + enemy.w){
+            // Spider-Man's web hits an enemy
+            for (enemyTest &enemy : enemies)
+            {
 
-            enemy.hp -= 1;
+                if (proj.side == 0 &&
+                    proj.lane == enemy.lane &&
+                    proj.x >= enemy.x &&
+                    proj.x <= enemy.x + enemy.w)
+                {
 
-            impactEffect impact = {
-                enemy.lane,
-                enemy.x,
-                proj.y,
-                0.0f
-            };
+                    enemy.hp -= 1;
 
-            impacts.push_back(impact);
+                    impactEffect impact = {
+                        enemy.lane,
+                        enemy.x,
+                        proj.y,
+                        0.0f};
 
-            projectileHit = true;
-            break;
+                    impacts.push_back(impact);
+
+                    projectileHit = true;
+                    break;
+                }
+            }
+
+            // Enemy projectile hits a player
+            for (player &p : players)
+            {
+                bool dodged =
+                    (p.action == PlayerAction::DUCKING && proj.y > 0.0f) ||
+                    (p.action == PlayerAction::JUMPING && proj.y < 0.0f);
+
+                if (proj.side == 1 &&
+                    proj.lane == p.lane &&
+                    proj.x >= p.x &&
+                    proj.x <= p.x + p.w &&
+                    !dodged)
+                {
+
+                    p.hp -= 1;
+                    projectileHit = true;
+                }
+            }
+
+            // Remove projectile ONLY once
+            if (projectileHit)
+            {
+                projectiles.erase(projectiles.begin() + i);
+            }
         }
-    }
-
-    // Enemy projectile hits a player
-    for(player& p : players){
-
-    bool dodged =
-    (p.action == PlayerAction::DUCKING && proj.y > 0.0f) ||
-    (p.action == PlayerAction::JUMPING && proj.y < 0.0f);
-
-    if(proj.side == 1 &&
-    proj.lane == p.lane &&
-    proj.x >= p.x &&
-    proj.x <= p.x + p.w &&
-    !dodged){
-
-    p.hp -= 1;
-    projectileHit = true;
-    break;
-}
-
-    }
-
-    // Remove projectile ONLY once
-    if(projectileHit){
-        projectiles.erase(projectiles.begin() + i);
-    }
-}
 
         for(enemyTest& back : enemies){ //enemies wait behind each other
             for(const enemyTest& front : enemies){
@@ -941,101 +1196,134 @@ for(int i = projectiles.size() - 1; i >= 0; i--){
                 if(enemy.projTimer<=0.0f){
                     projectile proj={enemy.lane, enemy.x, 30.0f,1};
                     projectiles.push_back(proj);
-                    enemy.projTimer=4.0f; //reset timer 
-            }}
-            if(enemy.type==2){
-                enemy.projTimer-=deltaTime;
-                if(enemy.projTimer<=0.0f){
-                    projectile proj={enemy.lane, enemy.x, -30.0f,1};
+                    enemy.projTimer = 4.0f; // reset timer
+                }
+            }
+            if (enemy.type == 2)
+            {
+                enemy.projTimer -= deltaTime;
+                if (enemy.projTimer <= 0.0f)
+                {
+                    projectile proj = {enemy.lane, enemy.x, -30.0f, 1};
                     projectiles.push_back(proj);
-                    enemy.projTimer=3.5f; 
-            }}
-        }
-        for(player& p: players){ //MOVING PLAYERS AND SPIDERMAN SHOOTS
-            if(p.move==1){
-            p.x+=p.speed*deltaTime;}
-            if(p.type==2){
-                p.projTimer-=deltaTime;
-                if(p.projTimer<=0.0f){
-                    projectile proj={p.lane, p.x+p.w, 0.0f,0};
-                    projectiles.push_back(proj);
-                    p.projTimer=1.0f; 
+                    enemy.projTimer = 3.5f;
                 }
             }
         }
-        for(projectile& proj: projectiles){ //moving projectiles
-            if(proj.side==0){
-                proj.x+= 200.0f*deltaTime;
+        for (player &p : players)
+        { // MOVING PLAYERS AND SPIDERMAN SHOOTS
+            if (p.move == 1)
+            {
+                p.x += p.speed * deltaTime;
             }
-            if(proj.side==1){
-                proj.x-= 200.0f*deltaTime;
+            if (p.type == 2)
+            {
+                p.projTimer -= deltaTime;
+                if (p.projTimer <= 0.0f)
+                {
+                    projectile proj = {p.lane, p.x + p.w, 0.0f, 0};
+                    projectiles.push_back(proj);
+                    p.projTimer = 1.0f;
+                }
             }
-
         }
-        for(int i = impacts.size() - 1; i >= 0; i--){ // UPDATE IMPACT EFFECTS HERE
+        for (projectile &proj : projectiles)
+        { // moving projectiles
+            if (proj.side == 0)
+            {
+                proj.x += 200.0f * deltaTime;
+            }
+            if (proj.side == 1)
+            {
+                proj.x -= 200.0f * deltaTime;
+            }
+        }
+        for (int i = impacts.size() - 1; i >= 0; i--)
+        { // UPDATE IMPACT EFFECTS HERE
             impacts[i].timer += deltaTime;
 
-            if(impacts[i].timer >= 0.25f){
+            if (impacts[i].timer >= 0.25f)
+            {
                 impacts.erase(impacts.begin() + i);
             }
         }
 
-        //removing projs if they go offscreen
-        
-        for(int i = projectiles.size() - 1; i >= 0; i--){
+        // removing projs if they go offscreen
 
-            if(projectiles[i].x > 1280.0f ||
-            projectiles[i].x < 200.0f){
+        for (int i = projectiles.size() - 1; i >= 0; i--)
+        {
+
+            if (projectiles[i].x > 1280.0f ||
+                projectiles[i].x < 200.0f)
+            {
 
                 projectiles.erase(projectiles.begin() + i);
             }
         }
 
-        //below is wave management kolaha
+        // TEST LOOP WILL BE REMOVED LATER
+        for (int i = enemies.size() - 1; i >= 0; i--)
+        {
+            if (enemies[i].x <= basex)
+            {
+                gameState = GameState::LOST;
+                return;
+            }
+        } // end of test loop
+        // below is wave management kolaha
         spawnTimer += deltaTime;
-        if(wave ==1 && enemyCount< 4){
-            if (spawnTimer >= 5.0f) {
-            spawnEasyEnemy(randomLane());
-            spawnTimer = 0.0f;
-            enemyCount++;
-        }
+        if (wave == 1 && enemyCount < 4)
+        {
+            if (spawnTimer >= 5.0f)
+            {
+                spawnEasyEnemy(randomLane());
+                spawnTimer = 0.0f;
+                enemyCount++;
+            }
 
-        }//wave 2 lazem tb2a mix of easy and medium not just medium
-        else if (wave ==2 && enemyCount<6){
-            if (spawnTimer >= 5.0f) {
-            spawnMediumEnemy(randomLane());
-            spawnEasyEnemy(randomLane());
-            spawnTimer = 0.0f;
-            enemyCount+=2;
-        }
+        } // wave 2 lazem tb2a mix of easy and medium not just medium
+        else if (wave == 2 && enemyCount < 6)
+        {
+            if (spawnTimer >= 5.0f)
+            {
+                spawnMediumEnemy(randomLane());
+                spawnEasyEnemy(randomLane());
+                spawnTimer = 0.0f;
+                enemyCount += 2;
+            }
 
-        }//wave 3 mix of all
-        else if(wave ==3 && enemyCount<12){
-            if (spawnTimer >= 5.0f) {
-            int firstLane = randomLane();
-            int secondLane = firstLane % 3 + 1;
-            int thirdLane = secondLane % 3 + 1;
-            spawnHardEnemy(firstLane);
-            spawnMediumEnemy(secondLane);
-            spawnEasyEnemy(thirdLane);
-            spawnTimer = 0.0f;
-            enemyCount+=3;
+        } // wave 3 mix of all
+        else if (wave == 3 && enemyCount < 12)
+        {
+            if (spawnTimer >= 5.0f)
+            {
+                int firstLane = randomLane();
+                int secondLane = firstLane % 3 + 1;
+                int thirdLane = secondLane % 3 + 1;
+                spawnHardEnemy(firstLane);
+                spawnMediumEnemy(secondLane);
+                spawnEasyEnemy(thirdLane);
+                spawnTimer = 0.0f;
+                enemyCount += 3;
+            }
         }
-        }
-        //update wave / increment wave
-        if(enemyCount == maxCount(wave) && enemies.empty()){
-            if(wave < 3){
+        // update wave / increment wave
+        if (enemyCount == maxCount(wave) && enemies.empty())
+        {
+            if (wave < 3)
+            {
                 wave++;
                 enemyCount = 0;
-                spawnTimer = 4.0f; 
-    } else {
-        gameState = GameState::WON;
+                spawnTimer = 4.0f;
+            }
+            else
+            {
+                gameState = GameState::WON;
+            }
+        }
     }
 }
-    }
-}
-void cleanupGame(){
-    
-}
 
-
+void cleanupGame()
+{
+}

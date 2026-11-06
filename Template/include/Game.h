@@ -14,7 +14,8 @@ void renderGame();
 void onKey(int key);
 void onClick(float mouseX, float mouseY);
 void cleanupGame();
-void update(float deltaTime);   
+void update(float deltaTime);  
+ 
 
 //for game logic
 float laneCenter(int lane);
@@ -27,6 +28,7 @@ void restartGame();
 int maxCount(int w);
 void updateShop(int cpoints);
 int randomLane();
+float HPscale(int currentHP, int maxHP);
 
 struct impactEffect {
     int lane;

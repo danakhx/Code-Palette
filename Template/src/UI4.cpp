@@ -257,6 +257,25 @@ void drawMainMenu()   {
     drawTextCentered("Return to Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
  }
 
+ void drawWinscreen()
+ {
+    drawTextCentered("Victory!", 0, 550, 1280, 50, 5.0f, glm::vec4(0, 1, 0, 1));
+    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.290f, 0.078f, 0.549f, 1.0f)); //playagain button
+    drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.533f, 0.055f, 0.310f, 1.0f)); //mainmenu button
+    drawTextCentered("Return To Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+ }
+
+ void drawLoseScreen()
+ {
+    drawTextCentered("Defeat", 0, 550, 1280, 50, 5.0f, glm::vec4(1, 0, 0, 1));
+    drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.290f, 0.078f, 0.549f, 1.0f)); //playagain button
+    drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+    drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.533f, 0.055f, 0.310f, 1.0f)); //mainmenu button
+    drawTextCentered("Return To Main Menu", 390, 150, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
+
+ }
+
 glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
     if (lane == hoverLane || selectedLanes[lane]){
         return glm::vec4(0.700f, 0.700f, 0.700f, 1.0f);}
@@ -266,13 +285,81 @@ glm::vec4 laneColor(int lane) { //CHANGE COLOR OF HOVRED AND SELECTED LANES
 
 
 
+
+
+static void Streetlight(float x, float y)
+{
+    drawTriangle(x + 20, y+82, 50, 82, glm::vec4(1.0f, 0.92f, 0.55f, 0.12f)); //light cone
+    drawRect(x+0, y+0, 14, 6, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //base
+    drawRect(x+5,y+ 6, 4, 84, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //pole
+    drawRect(x+5,y+ 86, 30, 4, glm::vec4(0.22f, 0.23f, 0.26f, 1.0f)); //arm
+    drawRect(x+28,y+ 80, 18, 8, glm::vec4(0.15f, 0.16f, 0.18f, 1.0f)); //lamp head
+}
+
+static void Trafficsign(float x, float y)
+{
+    drawRect(x+18, y+0, 4, 60, glm::vec4(0.45f, 0.45f, 0.48f, 1.0f)); //pole
+    drawRect(x+0,y+ 60, 40, 36, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //outer triangle
+    drawRect(x+5,y+ 64, 30, 26, glm::vec4(0.98f, 0.80f, 0.1f, 1.0f)); //inner triangle
+    drawRect(x+18,y+ 70, 4, 10, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //!bar
+    drawRect(x+18,y+ 66, 4, 3, glm::vec4(0.05f, 0.05f, 0.05f, 1.0f)); //!.
+}
+
+static void Bench(float x, float y)
+{
+    drawRect(x+0, y+18, 100, 10, glm::vec4(0.45f, 0.28f, 0.14f, 1.0f)); //seat
+    drawRect(x+0,y+ 30, 100, 8, glm::vec4(0.45f, 0.28f, 0.14f, 1.0f)); //backrest
+    drawRect(x+4,y+ 0, 8, 30, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f)); //leg1
+    drawRect(x+92,y+ 0, 8, 30, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f));//leg2
+    drawRect(x+4,y+ 24, 8, 12, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f)); //support1
+    drawRect(x+92,y+ 24, 8, 12, glm::vec4(0.20f, 0.20f, 0.22f, 1.0f));//support 2
+}
+
+static void Tc(float x, float y)
+{
+    drawRect(x+0, y+0, 22, 38, glm::vec4(0.22f, 0.42f, 0.30f, 1.0f)); //body
+    drawRect(x-2,y+ 32, 26, 10, glm::vec4(0.15f, 0.30f, 0.21f, 1.0f)); //lid
+    drawRect(x+0,y+10, 22, 5, glm::vec4(0.12f, 0.25f, 0.17f, 1.0f)); //Band
+    drawRect(x+15,y+ 26, 14, 5, glm::vec4(0.04f, 0.06f, 0.05f, 1.0f));//opening
+    
+}
+
+static void Car(float x, float y)
+{
+    drawRect(x+0, y+10, 110, 20, glm::vec4(0.75f, 0.10f, 0.12f, 1.0f)); //body
+    drawRect(x+25,y+ 30, 60, 16, glm::vec4(0.60f, 0.07f, 0.09f, 1.0f)); //cabin
+    drawRect(x+30,y+33, 22, 10, glm::vec4(0.60f, 0.80f, 0.92f, 1.0f)); //w1
+    drawRect(x+58,y+ 33, 22, 10, glm::vec4(0.60f, 0.80f, 0.92f, 1.0f));//w2
+    drawRect(x+14,y+0, 20, 20, glm::vec4(0.07f, 0.07f, 0.08f, 1.0f)); //wheel1
+    drawRect(x+76,y+ 0, 20, 20, glm::vec4(0.07f, 0.07f, 0.08f, 1.0f));//wheel2
+    drawRect(x+20,y+6, 8, 8, glm::vec4(0.65f, 0.65f, 0.68f, 1.0f)); //cap1
+    drawRect(x+82,y+ 6, 8, 8, glm::vec4(0.65f, 0.65f, 0.68f, 1.0f));//cap2
+    drawRect(x+104,y+16, 6, 6, glm::vec4(1.0f, 0.95f, 0.60f, 1.0f)); //headlight
+    drawRect(x+0,y+ 16, 5, 6, glm::vec4(0.90f, 0.05f, 0.05f, 1.0f));//tail light
+    
+}
+
+void drawEnvironment()
+{
+Streetlight(450, 450);
+Streetlight(220, 450);
+Streetlight(650, 450);
+Streetlight(980, 450);
+Trafficsign(850, 450);
+Bench(350, 450);
+Bench(110, 450);
+Tc(320, 450);
+Tc(80, 450);
+Car(700, 450);
+Car(1000, 450);
+}
+
 glm::vec4 shopSlotColor(int slot) {
     return glm::vec4(0.376f, 0.490f, 0.545f, 1.0f);
 }
-
 void drawGameScreen(){
-   
-        drawRect(0.0f, 0.0f, 1280.0f, 720.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f)); //background
+
+        drawEnvironment(); //background
         drawRect(0.0f, 40.0f, 1280.0f, 120.0f, laneColor(1));//lane 1
         drawRect(0.0f, 160.0f, 1280.0f, 15.0f, glm::vec4(0.933f, 0.933f, 0.933f, 1.0f));//lane 1 divider
         drawRect(0.0f, 175.0f, 1280.0f, 120.0f, laneColor(2));//lane 2
@@ -283,7 +370,7 @@ void drawGameScreen(){
        // drawRect(5.0f, 45.0f, 190.0f, 395.0f, glm::vec4(0.247f, 0.318f, 0.710f, 1.0f)); // inner base
         drawAvengersBase(5.0f, 45.0f, 190.0f, 395.0f);
         drawInfinityGuantlet(68,192,70,100);
-        drawRect(0.0f, 445.0f, 1280.0f, 155.0f, glm::vec4(0.239f, 0.239f, 0.239f, 1.0f));//enviroment space
+       //enviroment space
         //player shop will include players and coin count
         //each slot will take 200px since the full thing is 800
         drawRect(200.0f, 580.0f, 810.0f, 140.0f, glm::vec4(0.149f, 0.196f, 0.220f, 1.0f)); // shop border
