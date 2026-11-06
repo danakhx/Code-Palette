@@ -282,6 +282,29 @@ void drawMainMenu()   {
  void drawWinscreen()
  {
     drawTextCentered("Victory!", 0, 550, 1280, 50, 5.0f, glm::vec4(0, 1, 0, 1));
+     // Captain America speech bubble
+    glm::vec4 outline(0.05f, 0.05f, 0.07f, 1.0f);
+    glm::vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 textColor(0.05f, 0.05f, 0.07f, 1.0f);
+    // Speech bubble pointer
+    drawTriangle(1050, 405, 50, -35, outline);
+    drawTriangle(1055, 405, 40, -27, white);
+    // Speech bubble
+    drawRect(820, 405, 410, 110, outline);
+    drawRect(824, 409, 402, 102, white);
+    // Captain America's dialogue
+    drawTextCentered(
+        "DOOM IS DONE,",
+        834, 470, 382, 30,
+        1.8f, textColor
+    );
+
+    drawTextCentered(
+        "GOOD WORK, SOLDIER!",
+        834, 435, 382, 30,
+        1.7f, textColor
+    );
+    drawCcrouch(950, 80, 270, 270);
     drawRect(390.0f, 270.0f, 500.0f, 100.0f, glm::vec4(0.290f, 0.078f, 0.549f, 1.0f)); //playagain button
     drawTextCentered("Restart", 390, 270, 500, 100, 3.0f, glm::vec4(1, 1, 1, 1));
     drawRect(390.0f, 150.0f, 500.0f, 100.0f, glm::vec4(0.533f, 0.055f, 0.310f, 1.0f)); //mainmenu button

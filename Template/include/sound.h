@@ -9,7 +9,7 @@ void playSound(const char* name);
 void stopSound(const char* name);
 
 void shutdownAudio();
-
+bool soundAtEnd(const char* name);
 extern bool mute;
 extern int voLevel;
 void increaseVol();
